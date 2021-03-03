@@ -1,0 +1,52 @@
+<html lang="en">
+
+<head>
+
+    <title>SocketIO test console</title>
+
+
+    <script src="https://cdn.socket.io/3.1.1/socket.io.min.js"
+        integrity="sha384-gDaozqUvc4HTgo8iZjwth73C6dDDeOJsAgpxBcMpZYztUfjHXpzrpdrHRdVp8ySO" crossorigin="anonymous">
+    </script>
+
+    <script>
+        var socket = io('http://' + document.domain + ":5000");
+
+        // when connected to the server.
+        socket.on('connect', () => {
+            console.log("Connected.")
+            socket.send("User has connected.");
+            // globalThis.socket = socket
+        });
+
+        // when message is received back from the server
+        // via @socketio.on('message')
+        socket.on('message', (msg) => {
+            document.getElementById('message').innerHTML += `
+            <li>` + msg + `</li>
+            `
+            console.log("Received message.")
+        })
+    </script>
+
+</head>
+
+<body>
+    <script>
+        function message() {
+            var msgEl = document.getElementById("sendMessage")
+            var msg = msgEl.value
+            socket.emit("my event", msg)
+            msgEl.value = ''
+        }
+    </script>
+
+    <h1>SocketIO Testing</h1>
+    <ul id="message"></ul>
+
+    <input type="text" placeholder="Enter your message here" id="sendMessage">
+    <button onclick="message()">Send</button>
+
+</body>
+
+</html>
