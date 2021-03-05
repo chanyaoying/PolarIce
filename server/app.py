@@ -2,7 +2,6 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO, emit, send
 from flask_cors import CORS
 import random
-from settings import ID_LENGTH
 
 app = Flask(__name__)
 CORS(app)
@@ -23,9 +22,10 @@ def test():
 #     return render_template("index.html")
 
 
-# @socketio.on('connect')
-# def test_connect():
-#     print("User connected.")
+@socketio.on('connect')
+def test_connect():
+    print("User connected.")
+    emit('connect', "User connected.")
 
 
 # @socketio.on('disconnect')
@@ -43,6 +43,12 @@ def handle_message(msg):
 def handle_custom_event(data):
     print(f"Custom event data: {data}")
     print(f"Custom event type: {type(data)}")
+
+
+@socketio.on('testing')
+def testing(msg):
+    print(msg)
+    emit('testing', "This message came from the server")
 
 
 # @socketio.on('create')

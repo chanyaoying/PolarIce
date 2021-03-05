@@ -11,7 +11,16 @@
 </template>
 
 <script>
-export default {};
+export default {
+    sockets: {
+        connect(data) {
+            console.log("Connect listener: " + data)
+        },
+        testing(data) {
+            console.log("Tested socket for client! " + data);
+        },
+    },
+};
 </script>
 
 <style scoped>
