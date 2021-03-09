@@ -62,16 +62,17 @@ def load_user(user_id):
 @app.route('/')
 def index():
     if current_user.is_authenticated: #determine if the current user interacting with app is logged in or not
-        return (
-            "<p>Hello, {}! You're logged in! Email: {}</p>"
-            "<div><p>Google Profile Picture:</p>"
-            '<img src="{}" alt="Google profile pic"></img></div>'
-            '<a class="button" href="/logout">Logout</a>'.format(
-                current_user.name, current_user.email, current_user.profile_pic
-            )
-        )
+        # return (
+        #     "<p>Hello, {}! You're logged in! Email: {}</p>"
+        #     "<div><p>Google Profile Picture:</p>"
+        #     '<img src="{}" alt="Google profile pic"></img></div>'
+        #     '<a class="button" href="/logout">Logout</a>'.format(
+        #         current_user.name, current_user.email, current_user.profile_pic
+        #     )
+        # )
+        return jsonify({'code': 200, 'name':current_user.name, 'email': current_user.email, 'pp': current_user.profile_pic})
     else:
-        return '<a class="button" href="/login">Google Login</a>'
+        return jsonify({'code': 400})
 
 def get_google_provider_cfg(): # retrieve Google's providor config. 
     return requests.get(GOOGLE_DISCOVERY_URL).json()
