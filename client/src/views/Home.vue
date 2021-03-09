@@ -1,9 +1,7 @@
 <template>
     <div class="home">
-        <!-- <img alt="Vue logo" src="../assets/logo.png" /> -->
-        <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
         <button @click="testing">Test</button>
-        <button @click="login()">login</button>
+        <button @click="login()">Login</button>
     </div>
 </template>
 
@@ -23,11 +21,15 @@ export default {
             axios
                 .get("https://127.0.0.1:5000/")
                 .then((res) => {
-                    console.log(res);
+                    if (res.data.code == 400) {
+                        location.replace("https://127.0.0.1:5000/login");
+                    } else {
+                        console.log("you dubm bij :>> ", res.data.code);
+                    }
                 })
                 .catch((err) => {
                     console.log(err);
-                })
+                });
         },
     },
 };

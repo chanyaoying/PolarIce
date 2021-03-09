@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, json, jsonify, redirect, url_for
+from flask import Flask, render_template, request, json, jsonify, redirect, url_for, session
 from dotenv import load_dotenv
 load_dotenv()
 from flask_login import (
@@ -59,7 +59,8 @@ client = WebApplicationClient(GOOGLE_CLIENT_ID)
 def load_user(user_id):
     return User.get(user_id)
 
-@app.route('/')
+# root route should display ENTER ROOM ID + MANAGE ROOMS
+@app.route('/') # should change to /manage
 def index():
     if current_user.is_authenticated: #determine if the current user interacting with app is logged in or not
         # return (
@@ -70,7 +71,9 @@ def index():
         #         current_user.name, current_user.email, current_user.profile_pic
         #     )
         # )
-        return jsonify({'code': 200, 'name':current_user.name, 'email': current_user.email, 'pp': current_user.profile_pic})
+        # session['auth'] = current_user
+        redirect("http://localhost:8080/allRoom")
+        return jsonify({'code': 200, 'name':current_user.name, 'email': current_user.email, 'profile_pic': current_user.profile_pic})
     else:
         return jsonify({'code': 400})
 
@@ -150,6 +153,9 @@ def callback():
 
     # Begin user session by logging the user in
     login_user(user)
+
+    # store session
+    session['auth'] = unique_id
 
     # Send user back to homepage
     return redirect(url_for("index"))
