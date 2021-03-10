@@ -151,3 +151,5 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+virtualenv/Scripts/autopep8.exe
+virtualenv/Scripts/pycodestyle.exe
