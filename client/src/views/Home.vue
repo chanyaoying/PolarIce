@@ -17,18 +17,23 @@ export default {
             this.$socket.client.emit("testing", "Test string");
         },
         login() {
-            // console.log('loggin in')
             axios
                 .get("https://127.0.0.1:5000/")
                 .then((res) => {
-                    if (res.data.code == 400) { // if not logged in
-                        window.location.href = "https://127.0.0.1:5000/login"; // route to login endpoint
-                    } else {
-                        console.log("here", res.data.code);
-                    }
+                    console.log("we did it: ", res)
                 })
                 .catch((err) => {
-                    console.log(err);
+                    try {
+                        let status = err.response.status;
+                        if (status == 400) {
+                            console.log("Redirecting to login page.")
+                            window.location.href = "https://127.0.0.1:5000/login";
+                        }
+                    } catch (error) {
+                        console.log('error :>> ', error);
+                        console.log('err :>> ', err);
+                    }
+                    
                 });
         },
     },

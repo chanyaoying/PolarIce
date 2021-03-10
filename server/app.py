@@ -28,7 +28,7 @@ from user import User
 
 app = Flask(__name__)
 
-CORS(app)
+CORS(app, supports_credentials=True)
 
 app.config['ENV'] = 'development'
 app.config['DEBUG'] = True
@@ -68,13 +68,11 @@ def load_user(user_id):
 # root route should display ENTER ROOM ID + MANAGE ROOMS
 @app.route('/') # should change to /manage
 def index():
-    print("current user is authenticated", current_user)
     if current_user.is_authenticated: #determine if the current user interacting with app is logged in or not
-        print("HEHREHERHEHRHE")
-        return jsonify({'code': 200, 'name':current_user.name, 'email': current_user.email, 'profile_pic': current_user.profile_pic})
+        return jsonify({'name':current_user.name, 'email': current_user.email, 'profile_pic': current_user.profile_pic}), 200
     else:
         print("not logged in")
-        return jsonify({'code': 400})
+        return "Bad request.", 400
 
 def get_google_provider_cfg(): # retrieve Google's providor config. 
     return requests.get(GOOGLE_DISCOVERY_URL).json()
@@ -152,13 +150,11 @@ def callback():
 
     # Begin user session by logging the user in
     login_user(user)
-    print("value after logging in",current_user.is_authenticated)
 
     # either (cookie) jwt/access token? 
     # session['auth'] = unique_id
-    # return redirect("https://localhost:8080/allRoom/"+ unique_id) #send to create room
-    print("I am here")
-    return redirect("https://localhost:8080/allRoom")
+    # return redirect("https://127.0.0.1:8080/allRoom/"+ unique_id) #send to create room
+    return redirect("https://127.0.0.1:8080/allRoom")
 
 @app.route("/logout")
 @login_required
@@ -215,4 +211,4 @@ def testing(msg):
 if __name__ == '__main__':
     # print('Running...')
     # socketio.run(app)
-    app.run(ssl_context="adhoc")
+    app.run(ssl_context="adhoc", port=5000)
