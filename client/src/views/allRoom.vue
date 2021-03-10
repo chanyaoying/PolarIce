@@ -1,8 +1,9 @@
 <template>
     <div>
         {{ userData }}
-        <input type="text /" />
+        <button @click="created()"> prof details </button>
         <button @click="createRoom()">Create Room</button>
+        <h1>{this.userData}</h1>
     </div>
 </template>
 
@@ -13,14 +14,17 @@ export default {
     data: () => ({
         userData: '',
     }),
-    created() {
-        axios.get('https://127.0.0.1:5000/').then((res) => {
-            console.log('res :>> ', res)
-            this.userData = res.data
-        }).catch((err) => {
-            console.log('err :>> ', err); 
-        });
-        console.log('this.userData :>> ', this.userData);
+    methods: {
+        created() {
+            axios
+                .get('https://127.0.0.1:5000/').then((res) => {
+                    console.log('result :>> ', res)
+                    this.userData = res.data
+                }).catch((err) => {
+                    console.log('err :>> ', err); 
+            });
+            console.log('this.userData :>> ', this.userData);
+        }
     }
 }
 </script>

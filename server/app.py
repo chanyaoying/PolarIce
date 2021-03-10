@@ -68,21 +68,12 @@ def load_user(user_id):
 # root route should display ENTER ROOM ID + MANAGE ROOMS
 @app.route('/') # should change to /manage
 def index():
+    print("current user is authenticated", current_user)
     if current_user.is_authenticated: #determine if the current user interacting with app is logged in or not
-        # return (
-        #     "<p>Hello, {}! You're logged in! Email: {}</p>"
-        #     "<div><p>Google Profile Picture:</p>"
-        #     '<img src="{}" alt="Google profile pic"></img></div>'
-        #     '<a class="button" href="/logout">Logout</a>'.format(
-        #         current_user.name, current_user.email, current_user.profile_pic
-        #     )
-        # )
-        session['auth'] = current_user
-        print("auth session", session['auth'])
-        print('hello world')
-        redirect("https://localhost:8080/allRoom")
+        print("HEHREHERHEHRHE")
         return jsonify({'code': 200, 'name':current_user.name, 'email': current_user.email, 'profile_pic': current_user.profile_pic})
     else:
+        print("not logged in")
         return jsonify({'code': 400})
 
 def get_google_provider_cfg(): # retrieve Google's providor config. 
@@ -161,10 +152,13 @@ def callback():
 
     # Begin user session by logging the user in
     login_user(user)
+    print("value after logging in",current_user.is_authenticated)
 
     # either (cookie) jwt/access token? 
     # session['auth'] = unique_id
-    return redirect("https://localhost:8080/allRoom/"+ unique_id) #send to create room
+    # return redirect("https://localhost:8080/allRoom/"+ unique_id) #send to create room
+    print("I am here")
+    return redirect("https://localhost:8080/allRoom")
 
 @app.route("/logout")
 @login_required
