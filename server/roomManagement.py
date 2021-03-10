@@ -1,12 +1,13 @@
-from flask import Flask, render_template, request, json, jsonify, redirect, url_for, session
-from dotenv import load_dotenv
-load_dotenv()
-
-# from flask.ext.session import Session
-# SESSION_TYPE = 'redis'
-# app.config.from_object(__name__)
-# Session(app)
-
+from user import User
+from db import init_db_command
+import sqlite3
+import os
+import requests
+import random
+from oauthlib.oauth2 import WebApplicationClient
+from flask import Flask, jsonify, redirect, url_for, request, json
+from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
 from flask_login import (
     LoginManager,
     current_user,
@@ -14,17 +15,8 @@ from flask_login import (
     login_user,
     logout_user,
 )
-from flask_sqlalchemy import SQLAlchemy
-from flask_socketio import SocketIO, emit, send
-from flask_cors import CORS
-from oauthlib.oauth2 import WebApplicationClient
-import random
-import requests
-import os
-import sqlite3
-# Internal imports
-from db import init_db_command
-from user import User
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -34,8 +26,9 @@ app.config['ENV'] = 'development'
 app.config['DEBUG'] = True
 app.config['SECRET_KEY'] = 'mysecret'
 
-socketio = SocketIO(app, cors_allowed_origins="*")
 
+######################################################################################
+# AUTHENTICATION
 ######################################################################################
 
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
@@ -43,7 +36,7 @@ print("CLIENT ID IS", GOOGLE_CLIENT_ID)
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", None)
 GOOGLE_DISCOVERY_URL = (
     "https://accounts.google.com/.well-known/openid-configuration"
-)   
+)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
 # User session management setup
 # https://flask-login.readthedocs.io/en/latest
@@ -61,21 +54,27 @@ except sqlite3.OperationalError:
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
 # Flask-Login helper to retrieve a user from our db
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.get(user_id)
 
 # root route should display ENTER ROOM ID + MANAGE ROOMS
-@app.route('/') # should change to /manage
+
+
+@app.route('/')  # should change to /manage
 def index():
-    if current_user.is_authenticated: #determine if the current user interacting with app is logged in or not
-        return jsonify({'name':current_user.name, 'email': current_user.email, 'profile_pic': current_user.profile_pic}), 200
+    if current_user.is_authenticated:  # determine if the current user interacting with app is logged in or not
+        return jsonify({'name': current_user.name, 'email': current_user.email, 'profile_pic': current_user.profile_pic}), 200
     else:
         print("not logged in")
         return "Bad request.", 400
 
-def get_google_provider_cfg(): # retrieve Google's providor config. 
+
+def get_google_provider_cfg():  # retrieve Google's providor config.
     return requests.get(GOOGLE_DISCOVERY_URL).json()
+
 
 @app.route("/login")
 def login():
@@ -90,8 +89,9 @@ def login():
         redirect_uri=request.base_url + "/callback",
         scope=["openid", "email", "profile"],
     )
-    print("request_uri",request_uri)
+    print("request_uri", request_uri)
     return redirect(request_uri)
+
 
 @app.route("/login/callback")
 def callback():
@@ -119,7 +119,7 @@ def callback():
 
     # Parse the tokens!
     client.parse_request_body_response(json.dumps(token_response.json()))
-    
+
     # Now that you have tokens (yay) let's find and hit the URL
     # from Google that gives you the user's profile information,
     # including their Google profile image and email
@@ -151,10 +151,9 @@ def callback():
     # Begin user session by logging the user in
     login_user(user)
 
-    # either (cookie) jwt/access token? 
-    # session['auth'] = unique_id
-    # return redirect("https://127.0.0.1:8080/allRoom/"+ unique_id) #send to create room
+    # either (cookie) jwt/access token?
     return redirect("https://127.0.0.1:8080/allRoom")
+
 
 @app.route("/logout")
 @login_required
@@ -163,52 +162,45 @@ def logout():
     return redirect(url_for("index"))
 
 ######################################################################################
+# ROOM CREATION (LOGIN REQUIRED)
+######################################################################################
 
-@app.route('/testpoint')
-def test():
-    return "Server Alive"
-
-# @app.route("/testconsole")
-# def testconsole():
-#     return render_template("index.html")
-
-@socketio.on('connect')
-def test_connect():
-    print("User connected.")
-    emit('connect', "User connected.")
-
-# @socketio.on('disconnect')
-# def test_connect():
-#     print("Client disconnected.")
-
-@socketio.on('message')
-def handle_message(msg):
-    print('received message: ' + str(msg))
-    send(str(msg), broadcast=True)
-
-@socketio.on("my event")
-def handle_custom_event(data):
-    print(f"Custom event data: {data}")
-    print(f"Custom event type: {type(data)}")
-
-@socketio.on('testing')
-def testing(msg):
-    print(msg)
-    emit('testing', "This message came from the server")
-
-# @socketio.on('create')
-# def on_create(arg):
-#     room = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(ID_LENGTH))
-#     print(f'Room created. ID: {room}\nArg: {arg}')
-
-# @socketio.on('join')
-# def on_join(join_arg):
-#     print(f'Room joined. join_arg: {join_arg}')
+# TODO
 
 
+@app.route('/create')
+@login_required
+def createRoom():
+    """
+    Authenticated user will send a giant json with all the details of the room/questions.
+    A unique RoomID is generated.
+    Parse this json and send the room state to the database.
+    Return a success message to the client.
+    """
+    pass
+
+
+@app.route('/getQuestionBank')
+@login_required
+def questionBank():
+    """
+    Authenticated user will request for question from the question bank.
+    Retrieve the questions and return it as a json to the client.
+    """
+    pass
+
+
+@app.route('/start/<int:roomID>')
+@login_required
+def start(roomID):
+    """
+    Authenticated user sends the roomID of the room to be started.
+    Invoke the gameManagment microservice.
+    The gameManagment microservice should return a unique link to join the game.
+    Return the unique link to the client.
+    """
+    pass
 
 
 if __name__ == '__main__':
-    # print('Running...')
-    # socketio.run(app)
     app.run(ssl_context="adhoc", port=5000)
