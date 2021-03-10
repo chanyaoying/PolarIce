@@ -72,6 +72,7 @@ def index():
         #     )
         # )
         # session['auth'] = current_user
+        print('hello world')
         redirect("http://localhost:8080/allRoom")
         return jsonify({'code': 200, 'name':current_user.name, 'email': current_user.email, 'profile_pic': current_user.profile_pic})
     else:
@@ -122,6 +123,8 @@ def callback():
 
     # Parse the tokens!
     client.parse_request_body_response(json.dumps(token_response.json()))
+    print('token', token_response.json().id_token)
+    
 
     # Now that you have tokens (yay) let's find and hit the URL
     # from Google that gives you the user's profile information,
@@ -155,10 +158,12 @@ def callback():
     login_user(user)
 
     # store session
+    # either (cookie) jwt/access token? 
     session['auth'] = unique_id
 
     # Send user back to homepage
-    return redirect(url_for("index"))
+    # return redirect(url_for("index"))
+    return redirect("http://localhost:8080")
 
 @app.route("/logout")
 @login_required
