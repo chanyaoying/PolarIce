@@ -21,10 +21,10 @@ export default {
             axios
                 .get("https://127.0.0.1:5000/")
                 .then((res) => {
-                    if (res.data.code == 400) {
-                        location.replace("https://127.0.0.1:5000/login");
+                    if (res.data.code == 400) { // if not logged in
+                        window.location.href = "https://127.0.0.1:5000/login"; // route to login endpoint
                     } else {
-                        console.log("you dubm bij :>> ", res.data.code);
+                        console.log("here", res.data.code);
                     }
                 })
                 .catch((err) => {

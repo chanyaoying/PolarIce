@@ -1,6 +1,12 @@
 from flask import Flask, render_template, request, json, jsonify, redirect, url_for, session
 from dotenv import load_dotenv
 load_dotenv()
+
+# from flask.ext.session import Session
+# SESSION_TYPE = 'redis'
+# app.config.from_object(__name__)
+# Session(app)
+
 from flask_login import (
     LoginManager,
     current_user,
@@ -71,9 +77,10 @@ def index():
         #         current_user.name, current_user.email, current_user.profile_pic
         #     )
         # )
-        # session['auth'] = current_user
+        session['auth'] = current_user
+        print("auth session", session['auth'])
         print('hello world')
-        redirect("http://localhost:8080/allRoom")
+        redirect("https://localhost:8080/allRoom")
         return jsonify({'code': 200, 'name':current_user.name, 'email': current_user.email, 'profile_pic': current_user.profile_pic})
     else:
         return jsonify({'code': 400})
@@ -123,9 +130,7 @@ def callback():
 
     # Parse the tokens!
     client.parse_request_body_response(json.dumps(token_response.json()))
-    print('token', token_response.json().id_token)
     
-
     # Now that you have tokens (yay) let's find and hit the URL
     # from Google that gives you the user's profile information,
     # including their Google profile image and email
@@ -157,13 +162,9 @@ def callback():
     # Begin user session by logging the user in
     login_user(user)
 
-    # store session
     # either (cookie) jwt/access token? 
-    session['auth'] = unique_id
-
-    # Send user back to homepage
-    # return redirect(url_for("index"))
-    return redirect("http://localhost:8080")
+    # session['auth'] = unique_id
+    return redirect("https://localhost:8080/allRoom/"+ unique_id) #send to create room
 
 @app.route("/logout")
 @login_required
