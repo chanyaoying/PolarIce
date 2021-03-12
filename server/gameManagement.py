@@ -57,4 +57,4 @@ def testing(msg):
 
 
 if __name__ == '__main__':
-    socketio.run(port=5001)
+    socketio.run(app, port=5001)
