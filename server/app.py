@@ -169,7 +169,7 @@ def logout():
 
 
 @app.route('/create')
-@login_required
+@login_required #decorater (wrapper for function) deifined by flask-login. using google oauth, check if works. 
 def createRoom():
     """
     Authenticated user will send a giant json with all the details of the room/questions.

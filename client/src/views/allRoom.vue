@@ -14,7 +14,6 @@ export default {
     data: () => ({
         userData: "",
     }),
-
     created() {
         authAxios
             .get("https://127.0.0.1:5000/")
@@ -26,5 +25,8 @@ export default {
                 console.log("err :>> ", err);
             });
     },
+    methods: {
+        // insert logic for method
+    }
 };
 </script>
