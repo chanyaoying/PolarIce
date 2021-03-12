@@ -85,6 +85,24 @@ class Query(graphene.ObjectType):
     # all_users = SQLAlchemyConnectionField(UserObject)
 schema = graphene.Schema(query=Query)
 
+class CreateRoom(graphene.Mutation):
+    class Arguments:
+        roomid = graphene.Int(required=True)
+        profid = graphene.Int(required=True) 
+
+    room = graphene.Field(lambda: RoomObject)
+
+    def mutate(self, info, roomid, profid):
+        room = Room(roomid=roomid, profid=profid)
+        # if room is not None:
+        #     post.author = user
+        db.session.add(room)
+        db.session.commit()
+        return CreateRoom(room=room)
+class Mutation(graphene.ObjectType):
+    create_room = CreateRoom.Field()
+schema = graphene.Schema(query=Query, mutation=Mutation)
+
 # Routes 
 app.add_url_rule(
     '/graphql',
