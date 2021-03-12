@@ -10,3 +10,6 @@ oauthlib==3.0.1
 pyOpenSSL==19.0.0
 Flask-Login==0.4.1
 python-dotenv==0.15.0
+graphene
+graphene_sqlalchemy
+flask_graphql
