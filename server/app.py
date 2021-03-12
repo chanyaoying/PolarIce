@@ -1,13 +1,18 @@
+# Imports 
 from user import User
 from db import init_db_command
-import sqlite3
-import os
-import requests
-import random
 from oauthlib.oauth2 import WebApplicationClient
 from flask import Flask, jsonify, redirect, url_for, request, json
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from flask_graphql import GraphQLView
+# from schema import schema
+import sqlite3
+import os
+import requests
+import random
+import graphene
+from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
 from flask_login import (
     LoginManager,
     current_user,
@@ -20,12 +25,49 @@ load_dotenv()
 
 app = Flask(__name__)
 
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+# app.add_url_rule('/graphql', view_func=GraphQLView.as_view( #add graphQL
+#     'graphql',
+#     schema=schema,
+#     graphiql=True,
+# ))
+
 CORS(app, supports_credentials=True)
 
+# Configs
 app.config['ENV'] = 'development'
 app.config['DEBUG'] = True
 app.config['SECRET_KEY'] = 'mysecret'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' +    os.path.join(basedir, 'data.sqlite')
+app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
+# Modules
+db = SQLAlchemy(app)
+
+######################################################################################
+# Models
+######################################################################################
+class Room(db.Model):
+    __tablename__ = 'rooms'
+    
+    roomid = db.Column(db.Integer, primary_key=True)
+    profid = db.Column(db.Integer, index=True, unique=True)
+    # questions = db.relationship('Question', backref='author')
+    
+    def __repr__(self):
+        return '< %r>' % self.profid
+# class Question(db.Model):
+#     __tablename__ = 'questions'
+    
+#     questionid = db.Column(db.Integer, primary_key=True)
+#     question = db.Column(db.String(256), index=True)
+#     # answer = db.Column(db.Text) # not sure about this     
+#     prof_id = db.Column(db.Integer, db.ForeignKey('rooms.profid')) # not sure about this
+    
+    # def __repr__(self):
+    #     return '<Question %r>' % self.question
 
 ######################################################################################
 # AUTHENTICATION
@@ -172,7 +214,7 @@ def logout():
 @login_required #decorater (wrapper for function) deifined by flask-login. using google oauth, check if works. 
 def createRoom():
     """
-    Authenticated user will send a giant json with all the details of the room/questions.
+    Authenticated user  with all the details of the room/questions.
     A unique RoomID is generated.
     Parse this json and send the room state to the database.
     Return a success message to the client.
