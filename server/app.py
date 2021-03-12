@@ -13,6 +13,7 @@ import requests
 import random
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
+from flask_graphql import GraphQLView
 from flask_login import (
     LoginManager,
     current_user,
@@ -69,12 +70,37 @@ class Room(db.Model):
     # def __repr__(self):
     #     return '<Question %r>' % self.question
 
+# Schema Objects 
+''' 
+show what kind of type of object will be shown in the graph. 
+'''
+
+class RoomObject(SQLAlchemyObjectType):
+    class Meta:
+        model = Room
+        interfaces = (graphene.relay.Node, )
+class Query(graphene.ObjectType):
+    node = graphene.relay.Node.Field()
+    all_roooms = SQLAlchemyConnectionField(RoomObject)
+    # all_users = SQLAlchemyConnectionField(UserObject)
+schema = graphene.Schema(query=Query)
+
+# Routes 
+app.add_url_rule(
+    '/graphql',
+    view_func=GraphQLView.as_view(
+        'graphql',
+        schema=schema,
+        graphiql=True # for having the GraphiQL interface
+    )
+)
+
+
 ######################################################################################
 # AUTHENTICATION
 ######################################################################################
 
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
-print("CLIENT ID IS", GOOGLE_CLIENT_ID)
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", None)
 GOOGLE_DISCOVERY_URL = (
     "https://accounts.google.com/.well-known/openid-configuration"

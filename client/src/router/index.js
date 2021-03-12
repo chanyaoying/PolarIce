@@ -25,9 +25,9 @@ const routes = [
     component: () => import('../views/allRoom.vue')
   },
   {
-    path: '/helloWorld',
-    name: 'helloWorld',
-    component: () => import('../views/helloWorld.vue')
+    path: '/createRoom',
+    name: 'createRoom',
+    component: () => import('../views/createRoom.vue')
   }
 ]
 
