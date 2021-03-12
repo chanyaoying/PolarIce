@@ -1,7 +1,8 @@
 <template>
     <div class="home">
-        <button @click="testing">Test</button>
-        <button @click="login()">Login</button>
+        <button @click="login()">Login</button> <br>
+        <input type="number" placeholder="Room ID" v-model="roomID">
+        <button @click="joinRoom">Join Room</button>
     </div>
 </template>
 
@@ -12,9 +13,12 @@ import axios from "axios";
 
 export default {
     name: "Home",
+    data: () => ({
+        roomID: 0,
+    }),
     methods: {
-        testing() {
-            this.$socket.client.emit("testing", "Test string");
+        joinRoom() {
+            
         },
         login() {
             axios

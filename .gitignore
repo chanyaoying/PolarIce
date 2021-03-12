@@ -154,3 +154,4 @@ pnpm-debug.log*
 *.sw?
 virtualenv/Scripts/autopep8.exe
 virtualenv/Scripts/pycodestyle.exe
+client/package-lock.json

@@ -2,8 +2,10 @@
     <div id="app">
         <div id="nav">
             <router-link to="/">Home</router-link> |
-            <router-link to="/about">About</router-link> | 
-            <router-link to= "/createRoom">createRoom</router-link>
+            <router-link to="/play">About</router-link> | 
+            <router-link to= "/createRoom">createRoom</router-link> | 
+            <router-link to= "/playGame">Play Game</router-link>
+            <!-- <p @click="test">test</p> -->
         </div>
         <transition name="fade" mode="out-in">
             <router-view />
@@ -13,14 +15,19 @@
 
 <script>
 export default {
-    sockets: {
-        connect(data) {
-            console.log("Connect listener: " + data)
-        },
-        testing(data) {
-            console.log("Tested socket for client! " + data);
-        },
-    },
+    // sockets: {
+    //     connect(data) {
+    //         console.log("Connect listener: " + data)
+    //     },
+    //     testing(data) {
+    //         console.log("Tested socket for client! " + data);
+    //     },
+    // },
+    // methods: {
+    //     test() {
+    //         this.$socket.client.emit('testing', "TEST")
+    //     }
+    // }
 };
 </script>
 

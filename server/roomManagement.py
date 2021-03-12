@@ -280,12 +280,15 @@ def questionBank():
 @login_required
 def start(roomID):
     """
+    Client calls this function.
     Authenticated user sends the roomID of the room to be started.
-    Invoke the gameManagment microservice.
-    The gameManagment microservice should return a unique link to join the game.
+    The room will become live. A room that is not live cannot be connected by a student, even if the roomID exists.
+    A unique link is generated for clients to join via websocket
     Return the unique link to the client.
+
+    This is just a simple function to make sure that the user is can only perform this when authenticated.
     """
-    pass
+    return f"https://127.0.0.1:8080/playGame/{roomID}", 200 # this link is where users will connect to the room
 
 
 if __name__ == '__main__':
