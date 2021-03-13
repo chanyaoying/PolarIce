@@ -1,6 +1,6 @@
 # ESD-project
 
-## Running the Backend
+## Installation: Back end
 ### Setting up a virtual environment
 If you have not set up your virtual environment, it is recommended that you do so. If not, install the modules used in this project at your own risk!
 A virtual environment allows dependencies to be separated between projects. As the dependency modules are updated, conflicts can arise between projects if dependencies are shared and the necessary versions are not the same. A virtual environment eliminates these conflicts by allowing the dependencies to be project specific and isolated from the system.
@@ -56,7 +56,7 @@ Then run the app.
 python roomManagement.py
 ```
 
-## Running the Frontend
+## Installation: Front end
 ### Have node.js installed
 Make sure that you have node.js installed on your machine.
 https://nodejs.org/en/download/
