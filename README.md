@@ -1,17 +1,34 @@
 # ESD-project
 
 ## Running the Backend
+### Setting up a virtual environment
+If you have not set up your virtual environment, it is recommended that you do so. If not, install the modules used in this project at your own risk!
+A virtual environment allows dependencies to be separated between projects. As the dependency modules are updated, conflicts can arise between projects if dependencies are shared and the necessary versions are not the same. A virtual environment eliminates these conflicts by allowing the dependencies to be project specific and isolated from the system.
+```bash
+cd server
+python -m venv venv
+```
+This creates a fresh virtual environment called "venv", located in ESD-project/server.
+
 ### Activate virtual environment
 Before running the Flask apps, you first have to activate the virtual environment, like so:
+
+Windows
 ```bash
-virtualenv\Scripts\activate
+cd server
+venv\Scripts\activate
+```
+
+UNIX bash
+```bash
+cd server
+venv/bin/activate
 ```
 This prevents any conflicts between the Python packages used in this project and the packages in your local machine.
 
 ### Install packages
 Then install the required Python packages.
 ```bash
-cd server
 pip install -r requirements.txt
 ```
 
@@ -21,14 +38,17 @@ Run Flask Apps with
 python filename.py
 ```
 
-If you fail to run roomManagement.py, run these commands to set the environment variable FLASK_APP:
-```bash
-set FLASK_APP=roomManagement
-```
+### Running roomManagement.py
+If you fail to run roomManagement.py, we have to set the environment variable FLASK_APP within our virtual environment.
 
-For macOS, Linux users:
+Add this line of code at the end of <code>venv/bin/activate</code> if you are using a UNIX system. 
 ```bash
 export FLASK_APP=roomManagement
+```
+
+For Windows, in <code>venv\Scripts\activate.bat</code>.
+```batch
+set FLASK_APP=roomManagement
 ```
 
 Then run the app.
