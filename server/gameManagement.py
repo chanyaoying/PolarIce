@@ -5,7 +5,7 @@
 # 4. Update the clients on the game state
 
 
-from flask import Flask
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, send, join_room, leave_room
 
@@ -22,18 +22,71 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 
 
 ####
+# Data
+####
+
+players_data = {'testRoom': ['TestPlayer1', 'TestPlayer2']} # placeholder
+
+
+####
+# Room creation Event
+####
+
+@app.route('/live', methods=['GET', 'POST'])
+def startRoom(): 
+    """
+    Get room data from graphql model or from roomManagement.py (not decided yet)
+    
+    GET: Return all live rooms.
+    POST: Put the roomID into live_rooms, return that live room.
+    """
+    
+    global players_data
+
+    if request.method == 'GET':
+        roomID = request.args.get('roomID')
+        return jsonify({'live': roomID in players_data}), 200
+    
+    if request.method == 'POST':
+        try:
+            roomID = request.form['roomID']
+        except Exception as error:
+            print(error) # for logging
+            raise error
+            
+        players_data[roomID] = []
+        
+        # for logging
+        print(f"Room with roomID: {roomID}")
+        
+        return jsonify(players_data[roomID]), 200
+
+    return "Bad request.", 400
+    
+        
+
+
+####
 # Room join/leave Events
 ####
 
 @socketio.on('join')
 def on_join(data):
+    global players_data
     username = data['username']
     room = data['room']
-    join_room(room)
-    send(username + ' has entered the room.', room=room)
+
+    if room in players_data:
+        join_room(room)
+        send(username + ' has entered the room.', room=room)
+    else:
+        # return error
+        # send message which includes error
+        pass
 
 @socketio.on('leave')
 def on_leave(data):
+    global players_data
     username = data['username']
     room = data['room']
     leave_room(room)
@@ -76,11 +129,6 @@ def handle_sendMessage(data):
 if __name__ == '__main__':
     socketio.run(app, port=5001)
 
-
-
-####
-# Connection Events
-####
 
 
 
