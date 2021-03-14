@@ -1,11 +1,18 @@
 <template>
     <div class="home">
+        <img src="../assets/PolarIcelogo.png"> <br>
         <button @click="login()">Login</button> <br>
         <input type="number" placeholder="Room ID" v-model="roomID">
         <button @click="joinRoom">Join Room</button>
         <b-button>LOL</b-button>
     </div>
 </template>
+
+<style scoped>
+    img{
+        width:20%;
+    }
+</style>
 
 <script>
 // @ is an alias to /src
