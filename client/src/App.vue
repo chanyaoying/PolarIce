@@ -1,5 +1,6 @@
 <template>
     <div id="app">
+
         <b-navbar id="nav" toggleable="lg" type="dark" variant="">
             <b-navbar-brand href="#" style="color:black; font-weight:bold; font-size:40px;">
                 PolarIce
@@ -14,7 +15,6 @@
             <b-collapse id="nav-collapse" is-nav>
             <b-navbar-nav>
                 <b-nav-item href="#" style="padding:0px 50px;"><router-link to="/">Home</router-link></b-nav-item>
-                <b-nav-item href="#" style="padding:0px 50px;"><router-link to="/play">About</router-link></b-nav-item>
                 <b-nav-item href="#" style="padding:0px 50px;"><router-link to= "/createRoom">Create Room</router-link></b-nav-item>
                 <b-nav-item href="#" style="padding:0px 50px;"><router-link to= "/playGame">Play Game</router-link></b-nav-item>
             </b-navbar-nav>
@@ -39,21 +39,7 @@
 
 
 <script>
-export default {
-    // sockets: {
-    //     connect(data) {
-    //         console.log("Connect listener: " + data)
-    //     },
-    //     testing(data) {
-    //         console.log("Tested socket for client! " + data);
-    //     },
-    // },
-    // methods: {
-    //     test() {
-    //         this.$socket.client.emit('testing', "TEST")
-    //     }
-    // }
-};
+export default {};
 </script>
 
 <style scoped>
