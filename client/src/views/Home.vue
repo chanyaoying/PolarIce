@@ -1,19 +1,32 @@
 <template>
     <div class="home">
-        <img src="../assets/PolarIcelogo.png"> <br>
+
+        <b-img src="../assets/PolarIcelogo.png"> </b-img><br>
 
         <h1 style="color: red">{{ errorMessage }}</h1>
-        <button @click="login()">Login</button> <br />
-        <input type="text" placeholder="Room ID" v-model="roomID" />
-      <button @click="joinRoom">Join Room</button>
-        <b-button>LOL</b-button>
+        
+        <b-button @click="login()" variant="dark">Login</b-button> <br/>
+
+        <b-input-group id="join" class="mt-3">
+            <b-form-input id="roomid" type="text" v-model="roomID" placeholder="Room ID" ></b-form-input>
+            <b-input-group-append>
+            <b-button @click="joinRoom" >Join Room</b-button>
+            </b-input-group-append>
+        </b-input-group>
+
     </div>
 </template>
 
 <style scoped>
     img{
         width:20%;
+        margin-top: 20px;
     }
+    #join{
+        width:400px;
+        margin:auto;
+    }
+
 </style>
 
 <script>
