@@ -1,3 +1,6 @@
+# TODO
+# dont hard code urls
+
 # Imports 
 from user import User
 from db import init_db_command
@@ -238,7 +241,7 @@ def callback():
     login_user(user)
 
     # either (cookie) jwt/access token?
-    return redirect("https://127.0.0.1:8080/allRoom")
+    return redirect("https://127.0.0.1:8080/manageRoom")
 
 
 @app.route("/logout")
@@ -276,19 +279,28 @@ def questionBank():
     pass
 
 
-@app.route('/start/<int:roomID>')
+@app.route('/start', methods=['POST'])
 @login_required
-def start(roomID):
+def start():
     """
     Client calls this function.
     Authenticated user sends the roomID of the room to be started.
     The room will become live. A room that is not live cannot be connected by a student, even if the roomID exists.
+    Store live rooms as a list within gameManagement
     A unique link is generated for clients to join via websocket
     Return the unique link to the client.
 
     This is just a simple function to make sure that the user is can only perform this when authenticated.
     """
-    return f"https://127.0.0.1:8080/playGame/{roomID}", 200 # this link is where users will connect to the room
+
+    # start the room
+    if request.method == 'POST':
+        response = requests.post('http://127.0.0.1:5001/live', data={'roomID': roomID})
+
+        if response.status == 200:
+            return f"https://127.0.0.1:8080/playGame/{roomID}", 200 # this link is where users will connect to the room
+
+    return "Bad request", 400
 
 
 if __name__ == '__main__':

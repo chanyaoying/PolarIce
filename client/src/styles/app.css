@@ -6,7 +6,7 @@
     color: #2c3e50;
 }
 
-#nav {
+/* #nav {
     padding: 30px;
 
     a {
@@ -17,4 +17,22 @@
             color: #42b983;
         }
     }
+} */
+
+
+#nav{
+    background-color: whitesmoke;
+    height:70px;
+    }
+
+b-nav-item{
+    padding: 0px 50px;
+    text-align: center;
+    }
+
+
+.navBarLogo {
+    height: 60px;
+    width: 60px;
+    margin: 5px;
 }
