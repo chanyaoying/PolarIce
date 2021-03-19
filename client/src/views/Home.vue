@@ -2,7 +2,7 @@
     <div class="home">
         <button @click="login()">Login</button> <br>
         <input type="number" placeholder="Room ID" v-model="roomID">
-        <button @click="joinRoom">Join Room</button>
+        <b-button variant="success" @click="joinRoom">Join Room</b-button>
     </div>
 </template>
 
