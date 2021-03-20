@@ -1,9 +1,9 @@
 <template>
     <div>
         <button @click="createRoom()">Create Room</button>
-        <h1>Welcome, {{ userData.name }}</h1> 
+        <!-- <h1>Welcome, {{ userData.name }}</h1> 
         <p>{{ userData.email }}</p>
-        <img :src="userData.profile_pic" alt="" />
+        <img :src="userData.profile_pic" alt="" /> -->
     </div>
     
 </template>

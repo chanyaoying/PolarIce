@@ -2,30 +2,74 @@
 <!-- If not connected, prompt user for name -->
 <template>
     <div>
+
         <div v-if="joined_nickname">
-            Current Players: {{ currentPlayers }}
             <h1>Room ID: {{ roomID }}</h1>
             <br />
+            
+            
             <ul>
                 <li v-for="(data, key) in chatHistory" :key="key">
                     {{ data }}
                 </li>
             </ul>
             Send a message to the room: <br />
+<!--             
             <input type="text" placeholder="Enter message" v-model="message" />
             <button @click="sendMessage">Send Message</button>
-            <button @click="leaveRoom">Leave Room</button>
+            <button @click="leaveRoom">Leave Room</button> -->
+
+            <b-input-group id="message" class="mt-3">
+                <b-form-input type="text" v-model="message" placeholder="Enter message" ></b-form-input>
+                    <b-input-group-append>
+                        <b-button @click="sendMessage" variant="dark">Send Message</b-button>
+                    </b-input-group-append>
+            </b-input-group>
+            <br><br>
+            <h2>Current Players: {{ currentPlayers }}</h2><br><br>
+            <b-button @click="leaveRoom" variant="primary">Leave Room</b-button>
+
         </div>
 
         <div v-else>
             <h1>Room ID: {{ roomID }}</h1>
             <br />
             Please enter your name to join the room: <br />
-            <input type="text" placeholder="Your nickname" v-model="nickname" />
-            <button @click="joinRoom(nickname)">Enter with Nickname</button>
+
+            <b-input-group id="name" class="mt-3">
+                <b-form-input type="text" v-model="nickname" placeholder="Your nickname" ></b-form-input>
+                <b-input-group-append>
+                <b-button @click="joinRoom(nickname)" variant="dark">Enter</b-button>
+                </b-input-group-append>
+            </b-input-group>
+         
         </div>
+
+        <b-button class="btn-lg" id="start" variant="success">Start</b-button>
+
     </div>
 </template>
+
+<style scoped>
+    h1{
+        margin-top: 10px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
+    }
+    #name{
+        width:400px;
+        margin:auto;
+    }
+    #message{
+        width:400px;
+        margin:auto;
+    }
+    #start{
+        position: fixed; 
+        bottom: 15px; 
+        right: 15px;
+    }
+</style>
 
 <script>
 import axios from "axios";
