@@ -74,7 +74,6 @@ class Question(db.Model):
     __tablename__ = 'question'
     questionid = db.Column(db.Integer, primary_key=True)
     question = db.Column(db.String(256), index=True)
-    # prof_id = db.Column(db.Integer, db.ForeignKey('rooms.profid')) # not sure about this
     choices = db.Column(db.String(256), index=True)    
     roomid = db.Column(db.Integer, ForeignKey('room.roomid'))
     
@@ -106,7 +105,6 @@ class Query(graphene.ObjectType):
 schema_query = graphene.Schema(query=Query)
 
 # Mutation Objects Schema
-
 class CreateRoom(graphene.Mutation):
     class Arguments:
         roomid = graphene.Int(required=True)
@@ -116,8 +114,6 @@ class CreateRoom(graphene.Mutation):
 
     def mutate(self, info, roomid, profid):
         room = Room(roomid=roomid, profid=profid)
-        # if room is not None:
-        #     post.author = user
         db.session.add(room)
         db.session.commit()
         return CreateRoom(room=room)
@@ -132,7 +128,6 @@ class CreateQuestion(graphene.Mutation):
     question = graphene.Field(lambda: QuestionObject)
 
     def mutate(self, info, questionid, question, choices, roomid):
-        # print('here')
         room = Room.query.filter_by(roomid=roomid).first() #lookup which room 
         question = Question(questionid=questionid, question=question, choices=choices, roomid=roomid)
         if room is not None:
