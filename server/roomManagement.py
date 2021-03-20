@@ -30,6 +30,9 @@ from flask_login import (
 )
 from dotenv import load_dotenv
 load_dotenv()
+import amqp_setup
+import pika
+import json
 
 app = Flask(__name__)
 
@@ -204,6 +207,8 @@ def index():
     if current_user.is_authenticated:  # determine if the current user interacting with app is logged in or not
         return jsonify({'name': current_user.name, 'email': current_user.email, 'profile_pic': current_user.profile_pic}), 200
     else:
+        message = json.dumps({ "Error" : "User not logged in", "Code" : 400 }) # python dict of error data -> json string
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="game.error", body=message) # publish to exchange
         print("not logged in")
         return "Bad request.", 400
 
@@ -271,7 +276,14 @@ def callback():
         users_email = userinfo_response.json()["email"]
         picture = userinfo_response.json()["picture"]
         users_name = userinfo_response.json()["given_name"]
+
+        # publish user acc details to rabbitmq (activity)
+        message = json.dumps( userinfo_response.json() ) # turn json object response into json string
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="game.activity", body=message)
+
     else:
+        message = json.dumps({ "Error" : "User email not available or not verified by Google.", "Code" : 400 })
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="game.error", body=message)
         return "User email not available or not verified by Google.", 400
 
     # Create a user in your db with the information provided
