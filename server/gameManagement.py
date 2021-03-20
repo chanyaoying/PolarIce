@@ -74,11 +74,13 @@ def startRoom():
 def on_join(data):
     global players_data
     username = data['username']
-    room = data['room']
+    room = data['roomID']
 
-    if room in players_data:
+    if room in players_data: # if room is live
         join_room(room)
-        send(username + ' has entered the room.', room=room)
+        players_data[room].append(username)
+        print(players_data[room], "added " + username)
+        emit('join', f"{username} has entered the room.", room=room)
     else:
         # return error
         # send message which includes error
@@ -88,9 +90,11 @@ def on_join(data):
 def on_leave(data):
     global players_data
     username = data['username']
-    room = data['room']
+    room = data['roomID']
     leave_room(room)
-    send(username + ' has left the room.', room=room)
+    players_data[room].remove(username)
+    print(players_data[room], "removed " + username)
+    emit("leave", username + ' has left the room.', room=room)
 
 
 
@@ -117,12 +121,23 @@ def test_connect():
     emit('disconnect', num_users, broadcast=True)
 
 
+
+####
+# Messaging Events
+####
+
+@socketio.on('getCurrentPlayers')
+def on_getCurrentPlayers(data):
+    room = data['roomID']
+    emit('receivePlayers', players_data[room], room=room)
+
 @socketio.on('sendMessage')
 def handle_sendMessage(data):
     print('message received: ', data)
     msg = data['msg']
-    roomID = data['roomID']
-    emit('receiveMessage', msg, broadcast=True)
+    username = data['nickname']
+    room = data['roomID']
+    emit('receiveMessage', f"{username}: {msg}", room=room)
 
 
 
