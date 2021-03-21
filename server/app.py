@@ -32,6 +32,15 @@ import amqp_setup
 import pika
 import json
 
+####################### FIREBASE ###########################
+
+from firebase import firebase
+fb_app = firebase.FirebaseApplication('https://polarice-95e3e-default-rtdb.firebaseio.com/', None)
+result = fb_app.get('/question', None)
+print(result)
+
+####################### FIREBASE ###########################
+
 app = Flask(__name__)
 # run_with_ngrok(app)  # Start ngrok when app is run
 
