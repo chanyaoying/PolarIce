@@ -32,14 +32,7 @@ import amqp_setup
 import pika
 import json
 
-####################### FIREBASE ###########################
-
-from firebase import firebase
-fb_app = firebase.FirebaseApplication('https://polarice-95e3e-default-rtdb.firebaseio.com/', None)
-result = fb_app.get('/question', None)
-print(result)
-
-####################### FIREBASE ###########################
+# import flask_compressor
 
 app = Flask(__name__)
 # run_with_ngrok(app)  # Start ngrok when app is run
@@ -65,9 +58,36 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 # Modules
 db = SQLAlchemy(app)
 
+################## Tweepy ####################
+import tweepy
+from tweepy import OAuthHandler
+consumer_key = os.environ.get("twitter_consumer_key", None)
+consumer_secret = os.environ.get("twitter_consumer_secret", None)
+access_token = os.environ.get("twitter_access_token", None)
+access_secret = os.environ.get("twitter_access_secret", None)
+# The following two lines create an authorization object with your above authentication info.
+auth = OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_secret)
+
+# This line finally calls Twitter's Rest API.
+# Create API object
+# api = tweepy.API(auth, wait_on_rate_limit=True,
+#     wait_on_rate_limit_notify=True)
+# api.update_status("Test tweet from Tweepy Python")
+################## Tweepy ####################
+
 ######################################################################################
 # Model layer
 ######################################################################################
+
+####################### FIREBASE ###########################
+
+# from firebase import firebase
+# fb_app = firebase.FirebaseApplication('https://polarice-95e3e-default-rtdb.firebaseio.com/', None)
+# result = fb_app.get('/question', None)
+# print(result)
+
+####################### FIREBASE ###########################
 
 # ---------------------- Database models ---------------
 
