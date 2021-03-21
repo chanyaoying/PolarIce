@@ -92,7 +92,10 @@ def on_leave(data):
     username = data['username']
     room = data['roomID']
     leave_room(room)
-    players_data[room].remove(username)
+    if username in players_data[room]:
+        players_data[room].remove(username)
+    else:
+        print(f"player: {username} is not in the room.")
     print(players_data[room], "removed " + username)
     emit("leave", username + ' has left the room.', room=room)
 
@@ -128,6 +131,7 @@ def test_connect():
 
 @socketio.on('getCurrentPlayers')
 def on_getCurrentPlayers(data):
+    print("trying to get all players now")
     room = data['roomID']
     emit('receivePlayers', players_data[room], room=room)
 

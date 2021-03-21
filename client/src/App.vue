@@ -80,7 +80,7 @@ export default {
             .get("https://127.0.0.1:5000/")
             .then((res) => {
                 console.log("result :>> ", res);
-                this.userData = false;
+                this.userData = "";
             })
         }
     }

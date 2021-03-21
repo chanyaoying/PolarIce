@@ -48,6 +48,7 @@ export default {
                 .then((res) => {
                     if (res.data.live) {
                         this.errorMessage = "";
+
                         this.$router.push("/playGame/" + this.roomID);
                     } else {
                         this.errorMessage = `${this.roomID} is not live. Try "testRoom".`;
