@@ -1,7 +1,7 @@
 <template>
     <div class="home">
 
-        <b-img src="../assets/PolarIcelogo.png"> </b-img><br>
+        <b-img :src="require('../assets/PolarIcelogo.png')"> </b-img><br>
 
         <h1 style="color: red">{{ errorMessage }}</h1>
         
