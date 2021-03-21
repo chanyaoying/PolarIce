@@ -19,7 +19,7 @@
                         <a class="nav-link current" href="#" style="padding:0px 20px;padding-bottom:unset;"><router-link to="/">Home</router-link></a>
                     </li>
                     <li class="b-nav-item">
-                        <a class="nav-link" href="#" style="padding:0px 20px; padding-bottom:unset;"><router-link to= "/createRoom">Create Room</router-link></a>
+                        <a class="nav-link" href="#" style="padding:0px 20px; padding-bottom:unset;"><router-link to= "/manageRoom">Manage Room</router-link></a>
                     </li>
                     <li class="b-nav-item">
                         <a class="nav-link" href="#" style="padding:0px 20px;padding-bottom:unset;"><router-link to= "/playGame">Play Game</router-link></a>
