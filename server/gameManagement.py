@@ -20,12 +20,24 @@ app.config['SECRET_KEY'] = 'mysecret'
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 
+####
+# Helper functions
+####
+
+
+def getRoomOfUser(sid):
+    global players_data
+    for room, players in players_data.items():
+        if sid in players:
+            return room
+    return False
+
 
 ####
 # Data
 ####
 
-players_data = {'testRoom': ['TestPlayer1', 'TestPlayer2']} # placeholder
+players_data = {'testRoom': {'testSid1': "TestPlayer1", 'testSid2': "TestPlayer2"}} # placeholder
 
 
 ####
@@ -78,7 +90,7 @@ def on_join(data):
 
     if room in players_data: # if room is live
         join_room(room)
-        players_data[room].append(username)
+        players_data[room][request.sid] = username
         print(players_data[room], "added " + username)
         emit('join', f"{username} has entered the room.", room=room)
     else:
@@ -92,8 +104,8 @@ def on_leave(data):
     username = data['username']
     room = data['roomID']
     leave_room(room)
-    if username in players_data[room]:
-        players_data[room].remove(username)
+    if request.sid in players_data[room]:
+        players_data[room].pop(request.sid)
     else:
         print(f"player: {username} is not in the room.")
     print(players_data[room], "removed " + username)
@@ -113,7 +125,7 @@ def test_connect():
     print("Client connected.")
     global num_users
     num_users += 1
-    emit('connect', num_users, broadcast=True)
+    emit('connect', f'User {request.sid} connected', broadcast=True)
 
 
 @socketio.on('disconnect')
@@ -121,7 +133,15 @@ def test_connect():
     print("Client disconnected.")
     global num_users
     num_users -= 1
-    emit('disconnect', num_users, broadcast=True)
+
+    room = getRoomOfUser(request.sid)
+
+    if room and request.sid in players_data[room]:
+        players_data[room].pop(request.sid)
+        print(f"Removed {request.sid} from all rooms.")
+    else:
+        print(f"player: {username} is not in the room.")
+    emit('disconnect', f'User {request.sid} disconnected', broadcast=True)
 
 
 

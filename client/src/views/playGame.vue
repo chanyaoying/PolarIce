@@ -73,6 +73,7 @@ export default {
         },
         disconnect(data) {
             console.log("Users: " + data);
+            this.getCurrentPlayers();
         },
         join(data) {
             this.chatHistory.push(data);
