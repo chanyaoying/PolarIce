@@ -65,7 +65,7 @@ db = SQLAlchemy(app)
 
 class Room(db.Model):
     __tablename__ = 'room'
-    roomid = db.Column(db.Integer, primary_key=True)
+    roomid = db.Column(db.Integer, primary_key=True, unique=True)
     profid = db.Column(db.Integer, index=True, unique=True)
 
     questions = db.relationship('Question', backref='room') # backeref establishes a .room attribute on Question, which will refer to the parent Room object 
@@ -75,7 +75,7 @@ class Room(db.Model):
 
 class Question(db.Model):
     __tablename__ = 'question'
-    questionid = db.Column(db.Integer, primary_key=True)
+    questionid = db.Column(db.Integer, primary_key=True, unique=True)
     question = db.Column(db.String(256), index=True)
     choices = db.Column(db.String(256), index=True)    
     roomid = db.Column(db.Integer, ForeignKey('room.roomid'))
@@ -154,13 +154,13 @@ app.add_url_rule(
         graphiql=True # for having the GraphiQL interface
     )
 )
-# /graphql-query
+# /endpoint for query
 app.add_url_rule('/graphql-query', view_func=GraphQLView.as_view(
     'graphql-query',
     schema=schema_query, graphiql=True
 ))
 
-# /graphql-mutation
+# /endpoint for mutation
 app.add_url_rule('/graphql-mutation', view_func=GraphQLView.as_view(
     'graphql-mutation',
     schema=schema, graphiql=True
