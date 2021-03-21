@@ -1,8 +1,5 @@
 <template>
     <div class="home">
-        <button @click="login()">Login</button> <br>
-        <input type="number" placeholder="Room ID" v-model="roomID">
-        <b-button variant="success" @click="joinRoom">Join Room</b-button>
 
         <b-img src="../assets/PolarIcelogo.png"> </b-img><br>
 
