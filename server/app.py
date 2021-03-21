@@ -1,7 +1,3 @@
-# TODO
-# dont hard code urls
-
-# Imports 
 from user import User
 from db import init_db_command
 from oauthlib.oauth2 import WebApplicationClient
@@ -9,11 +5,13 @@ from flask import Flask, jsonify, redirect, url_for, request, json
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_graphql import GraphQLView
+
 from sqlalchemy import *
+from flask_ngrok import run_with_ngrok
 from sqlalchemy.orm import (scoped_session, sessionmaker, relationship,
                             backref)
 from sqlalchemy.ext.declarative import declarative_base
-# from schema import schema
+
 import sqlite3
 import os
 import requests
@@ -35,6 +33,7 @@ import pika
 import json
 
 app = Flask(__name__)
+# run_with_ngrok(app)  # Start ngrok when app is run
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -364,3 +363,4 @@ def start():
 
 if __name__ == '__main__':
     app.run(ssl_context="adhoc", port=5000)
+    # app.run()
