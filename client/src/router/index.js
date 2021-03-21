@@ -38,7 +38,16 @@ const routes = [{
     name: 'playGame/roomID',
     component: () => import('../views/playGame.vue')
   },
-
+  {
+    path: '/question/:roomID',
+    name: 'question/roomID',
+    component: () => import('../views/question.vue')
+  },
+  {
+    path: '/matching/:roomID',
+    name: 'matching/roomID',
+    component: () => import('../views/matching.vue')
+  },
 ]
 
 const router = new VueRouter({

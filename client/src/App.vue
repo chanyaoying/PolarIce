@@ -13,25 +13,33 @@
             <!-- <p @click="test">test</p> -->
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
-            <b-collapse id="nav-collapse" is-nav>
-                <b-navbar-nav>
-                    <b-nav-item href="#" style="padding:0px 20px;"><router-link to="/">Home</router-link></b-nav-item>
-                    <b-nav-item href="#" style="padding:0px 20px;"><router-link to= "/createRoom">Create Room</router-link></b-nav-item>
-                    <b-nav-item href="#" style="padding:0px 20px;"><router-link to= "/playGame">Play Game</router-link></b-nav-item>
-                </b-navbar-nav>
+            <b-collapse class="collapse navbar-collapse " id="navbarNav">
+                <ul class="navbar-nav mr-auto" id="leftSideNav">
+                    <li class="b-nav-item">
+                        <a class="nav-link current" href="#" style="padding:0px 20px;padding-bottom:unset;"><router-link to="/">Home</router-link></a>
+                    </li>
+                    <li class="b-nav-item">
+                        <a class="nav-link" href="#" style="padding:0px 20px; padding-bottom:unset;"><router-link to= "/createRoom">Create Room</router-link></a>
+                    </li>
+                    <li class="b-nav-item">
+                        <a class="nav-link" href="#" style="padding:0px 20px;padding-bottom:unset;"><router-link to= "/playGame">Play Game</router-link></a>
+                        </li>
+                </ul>
             </b-collapse>
 
         <!-- Right side -->
         <div id="navbarNavRight">
             <ul class="navbar-nav flex-row ml-auto" id="registerProfile">
-              <li class="nav-item mt-2 mr-1" id="change">
-                <!-- Search bar -->
-                <search-component></search-component>
-             </li>
-             <div id="profilePic">
-                <!-- Replace me with Sign in or Profile -->
-                <!-- <b-img :src="userData.profile_pic" class="d-inline-block navBarLogo" > </b-img> -->
-             </div>
+                <li class="nav-item mt-1" >
+                    <div class="dropdown">
+                        <b-nav-item-dropdown :text= "userData.name" right>
+                            <b-dropdown-item href="#">{{ userData.email }}</b-dropdown-item>
+                            <b-dropdown-item @click="logout" href="#"><router-link to="/">Sign Out</router-link></b-dropdown-item>
+                        </b-nav-item-dropdown>
+                    </div>
+                </li>
+                 
+                <img id="profileImage" :src="userData.profile_pic" alt="" /> 
             </ul>
         </div>
         <!-- End of right side -->
@@ -41,9 +49,6 @@
         <transition name="fade" mode="out-in">
             <router-view />
         </transition>
-
-        
-        
         <!-- end of navbar -->
 
     </div>
@@ -51,7 +56,35 @@
 
 
 <script>
-export default {};
+import authAxios from './components/authAxios.js';
+export default {
+    name: "allRoom",
+    data: () => ({
+        userData: "",
+    }),
+    created() {
+        authAxios
+            .get("https://127.0.0.1:5000/")
+            .then((res) => {
+                console.log("result :>> ", res);
+                this.userData = res.data;
+            })
+            .catch((err) => {
+                console.log("err :>> ", err);
+            });
+    },
+    methods: {
+        // insert logic for method
+        logout(){
+           authAxios
+            .get("https://127.0.0.1:5000/")
+            .then((res) => {
+                console.log("result :>> ", res);
+                this.userData = false;
+            })
+        }
+    }
+};
 </script>
 
 <style scoped>

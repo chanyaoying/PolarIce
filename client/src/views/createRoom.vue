@@ -1,7 +1,5 @@
 <template>
 <div class="room">
-
-    <h1> Hello, Kenny! </h1>
     <!-- do v-if="roomID.length < 0", show modal button. 
     Generae random roomID, add to roomID, show create Question page-->
     <div v-if="roomID.length <= 0">
