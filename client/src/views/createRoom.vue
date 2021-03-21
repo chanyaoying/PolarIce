@@ -3,7 +3,7 @@
     <!-- do v-if="roomID.length < 0", show modal button. 
     Generae random roomID, add to roomID, show create Question page-->
     <div v-if="roomID.length <= 0">
-        <b-button variant="warning" v-b-modal.modal-1 @click="generateRoom()">Create New Room</b-button>
+        <b-button variant="dark" style="margin:50px; width:180px; height:50px;" @click="generateRoom()">Create New Room</b-button>
     </div>
 
     <div class="card" style="margin:20px auto; width:60%;" v-else>

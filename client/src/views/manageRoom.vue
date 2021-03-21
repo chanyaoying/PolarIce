@@ -10,11 +10,11 @@
                 <b-row>
                 <b-card id = "card">
                     <b-avatar :src="require('../assets/game.png')" size="6rem"></b-avatar>
-                    <b-button href="#" variant="dark" id="button">Play Game</b-button>
+                    <b-button  href="#" variant="dark" id="button"><router-link class="buttontext" to= "/playGame">Play Game</router-link></b-button>
                 </b-card>
                 <b-card id = "card">
                     <b-avatar :src="require('../assets/create.png')" size="6rem"></b-avatar>
-                    <b-button href="#" variant="dark" id="button">Create Room</b-button>
+                    <b-button href="#" variant="dark" id="button" ><router-link class="buttontext" to= "/createRoom">Create Room</router-link></b-button>
                 </b-card>
                 <b-card id = "card">
                     <b-avatar :src="require('../assets/edit.png')" size="6rem"></b-avatar>
@@ -76,6 +76,9 @@
     }
     #link{
         font-size:20px;
+    }
+    .buttontext{
+        color: white;
     }
 </style>
 
