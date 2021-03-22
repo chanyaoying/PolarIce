@@ -39,12 +39,6 @@ app = Flask(__name__)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-# app.add_url_rule('/graphql', view_func=GraphQLView.as_view( #add graphQL
-#     'graphql',
-#     schema=schema,
-#     graphiql=True,
-# ))
-
 CORS(app, supports_credentials=True)
 
 # Configs
