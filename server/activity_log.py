@@ -8,7 +8,6 @@ import json
 import os
 
 import amqp_setup
-
 from tele_log import *
 
 monitorBindingKey='*.activity'

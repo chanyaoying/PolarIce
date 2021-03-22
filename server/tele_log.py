@@ -1,7 +1,5 @@
 from telegram import *
-from telegram.ext import *
 import requests
-from telegram import ParseMode
 
 
 # Sends content of log message (python dictionary) to telegram bot
