@@ -32,6 +32,8 @@ import amqp_setup
 import pika
 import json
 
+from twitter import tweet
+
 # import flask_compressor
 
 app = Flask(__name__)
@@ -52,23 +54,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 # Modules
 db = SQLAlchemy(app)
 
-################## Tweepy ####################
-import tweepy
-from tweepy import OAuthHandler
-consumer_key = os.environ.get("twitter_consumer_key", None)
-consumer_secret = os.environ.get("twitter_consumer_secret", None)
-access_token = os.environ.get("twitter_access_token", None)
-access_secret = os.environ.get("twitter_access_secret", None)
-# The following two lines create an authorization object with your above authentication info.
-auth = OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_secret)
+# twitter
 
-# This line finally calls Twitter's Rest API.
-# Create API object
-# api = tweepy.API(auth, wait_on_rate_limit=True,
-#     wait_on_rate_limit_notify=True)
-# api.update_status("Test tweet from Tweepy Python")
-################## Tweepy ####################
+# status = tweet("hello!")
+# print(status)
 
 ######################################################################################
 # Model layer
