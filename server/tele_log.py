@@ -1,15 +1,19 @@
 from telegram import *
 from telegram.ext import *
 import requests
-
-
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # Sends content of log message (python dictionary) to telegram bot
 
 def tele_log(json_obj_content, log_type_str): # gets python object (dict) of logs content e.g. { "key" : "value" }
 
     # prepare to set up link to tele bot
-    bot = Bot("1569222163:AAG0_ajeXRNWghIyKQzkwDJ6HRjhKZBADRQ") # link to tele bot using bot token
+    token = os.environ.get("tele_bot_token")
+    print('tele_bot_token' in os.environ)
+    print(token)
+    bot = Bot(token) # link to tele bot using bot token
 
     # live chat_id = -441770919 ESD GROUP CHAT ID
     # chat_id = -1001315877981  TEST BOT GROUP CHAT ID 
