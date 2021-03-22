@@ -138,9 +138,6 @@ export default {
         },
     },
     created() {
-        window.addEventListener("beforeunload", function (event) {
-            event.preventDefault();
-        });
         // Check if room is live
         // While checking, the client will be briefly connected to the websocket before being redirected.
         // Huge security concern, but not within the scope of this course.
@@ -159,9 +156,6 @@ export default {
     },
     mounted() {
         
-    },
-    beforeDestroy() {
-        window.removeEventListener("beforeunload");
     },
 };
 </script>
