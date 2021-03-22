@@ -56,6 +56,22 @@ Then run the app.
 python roomManagement.py
 ```
 
+### Setting up RabbitMQ Docker and Tele Bot logging
+Ensure that your docker is up and running and that your containers created from Lab 6 / Lab 10 are either stopped or deleted
+
+Run this line of code in your terminal:
+```
+docker run -d --hostname esd-rabbit --name proj-rabbitmq-mgmt -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+```
+
+Then navigate into the server folder and run this file to set up exchanges and queues
+```
+cd server
+python amqp_setup.py
+```
+
+Finally, run the development server, app.py/roomManagement.py, activity_log.py, error_log.py on 4 different terminals in their respective directories.
+
 ## Installation: Front end
 ### Have node.js installed
 Make sure that you have node.js installed on your machine.
