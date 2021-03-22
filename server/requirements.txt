@@ -36,6 +36,7 @@ pyOpenSSL==19.0.0
 python-dotenv==0.15.0
 python-engineio==4.0.0
 python-socketio==5.0.4
+python-telegram-bot==13.3
 requests==2.21.0
 Rx==1.6.1
 singledispatch==3.6.1

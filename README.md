@@ -64,7 +64,7 @@ Run this line of code in your terminal:
 docker run -d --hostname esd-rabbit --name proj-rabbitmq-mgmt -p 5672:5672 -p 15672:15672 rabbitmq:3-management
 ```
 
-Then navigate into the server folder and run this file to set up exchanges and queues
+Then navigate into the server folder and run this file to set up exchange and queues:
 ```
 cd server
 python amqp_setup.py

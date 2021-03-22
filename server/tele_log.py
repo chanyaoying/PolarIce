@@ -1,5 +1,7 @@
 from telegram import *
+from telegram.ext import *
 import requests
+
 
 
 # Sends content of log message (python dictionary) to telegram bot
