@@ -30,8 +30,6 @@
 				</b-input-group-append>
 			</b-input-group>
 		</div>
-
-		<b-button class="btn-lg" id="start" variant="success">Start</b-button>
 	</div>
 </template>
 
@@ -69,10 +67,9 @@ export default {
 	},
 	data: () => ({
 		nameInput: "",
-		currentComponent: "gameLobby",
 	}),
 	methods: {
-        ...mapMutations(["setRoomID"]),
+		...mapMutations(["setRoomID"]),
 		...mapActions([
 			"socket_setNickname",
 			"socket_updateChat",
@@ -104,10 +101,10 @@ export default {
 		},
 	},
 	computed: {
-		...mapState(["nickname", "roomID"]),
+		...mapState(["nickname", "roomID", "currentComponent"]),
 	},
 	created() {
-        this.setRoomID(this.$route.params.roomID);
+		this.setRoomID(this.$route.params.roomID);
 		axios
 			.get("http://127.0.0.1:5001/live?roomID=" + this.roomID)
 			.then((res) => {

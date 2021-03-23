@@ -8,6 +8,7 @@ export default new Vuex.Store({
     state: {
         nickname: "",
         roomID: '',
+        currentComponent: 'gameLobby',
         currentQuestion: '', // changes as the prof clicks next
         loadedQuestions: {}, // the game
         users: [],

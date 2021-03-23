@@ -349,7 +349,7 @@ def questionBank():
     pass
 
 
-@app.route('/start', methods=['POST'])
+@app.route('/load', methods=['POST'])
 @login_required
 def start():
     """
@@ -357,18 +357,21 @@ def start():
     Authenticated user sends the roomID of the room to be started.
     The room will become live. A room that is not live cannot be connected by a student, even if the roomID exists.
     Store live rooms as a list within gameManagement
+    Create a Game Object in Game.py --> return questions
     A unique link is generated for clients to join via websocket
     Return the unique link to the client.
 
     This is just a simple function to make sure that the user is can only perform this when authenticated.
     """
 
-    # start the room
+    # start the room; make it live
     if request.method == 'POST':
         response = requests.post('http://127.0.0.1:5001/live', data={'roomID': roomID})
 
         if response.status == 200:
             return f"https://127.0.0.1:8080/playGame/{roomID}", 200 # this link is where users will connect to the room
+
+    # create Game object, return questions
 
     return "Bad request", 400
 

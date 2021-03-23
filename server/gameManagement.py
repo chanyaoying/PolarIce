@@ -8,6 +8,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, send, join_room, leave_room
+from invokes import invoke_http
 
 app = Flask(__name__)
 
@@ -117,6 +118,7 @@ def on_leave(data):
 ####
 # Connection Events
 ####
+
 # reset number of users when server restarts
 num_users = 0
 
@@ -166,6 +168,18 @@ def handle_sendMessage(data):
     room = data['roomID']
     emit('receiveMessage', {"roomID": room,
                             "message": f"{username}: {msg}"}, room=room)
+
+
+####
+# Game Events
+####
+
+@socketio.on('loadGame')
+def on_loadGame(data):
+    room = data['roomID']
+    print(f"sending game data of {room} to user {request.sid}")
+    # send question data from here
+    
 
 
 if __name__ == '__main__':
