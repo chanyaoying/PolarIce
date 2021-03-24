@@ -9,8 +9,8 @@ export default new Vuex.Store({
         nickname: "",
         roomID: '',
         currentComponent: 'gameLobby',
-        currentQuestion: '', // changes as the prof clicks next
-        loadedQuestions: {}, // the game
+        currentQuestion: 0, // changes as the prof clicks next
+        loadedQuestions: sampleQuestions, // the questions in the game
         users: [],
         chatHistory: {},
         selfQuestion: [],
@@ -51,6 +51,9 @@ export default new Vuex.Store({
         },
         changeComponent(state, payload) {
             state.currentComponent = payload
+        },
+        nextQuestion(state, data) {
+            state.currentQuestion = data
         }
     },
     actions: {
@@ -78,6 +81,9 @@ export default new Vuex.Store({
             commit
         }, data) {
             commit("changeComponent", data)
+        },
+        socket_nextQuestion({commit}, data) {
+            commit("nextQuestion", data)
         }
     },
     modules: {}

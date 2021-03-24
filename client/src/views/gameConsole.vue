@@ -3,7 +3,7 @@
 		<h1>Console: {{ roomID }}</h1>
 		<p>Control the game from the prof's point of view</p>
 		<div v-if="started">
-			<b-button class="btn-lg" id="next" variant="primary">Next</b-button>
+			<b-button class="btn-lg" id="next" variant="primary" @click="nextQuestion" v-if="!allQuestionsViewed">Next</b-button>
 			<b-button class="btn-lg" id="end" variant="danger" @click="endGame"
 				>End</b-button
 			>
@@ -37,7 +37,6 @@ export default {
 	components: { gameLobby, gameArea },
 	sockets: {
 		receivePlayers(data) {
-			console.log("data :>> ", data);
 			this.socket_receivePlayers(data);
 		},
 		changeComponent(data) {
@@ -65,9 +64,18 @@ export default {
 				roomID: this.roomID,
 			});
 		},
+		nextQuestion() {
+			this.$socket.client.emit("nextQuestion", {
+				roomID: this.roomID,
+				currentQuestionNumber: this.currentQuestion
+			})
+		},
 	},
 	computed: {
-		...mapState(["currentComponent", "users", "roomID"]),
+		...mapState(["currentComponent", "users", "roomID", "loadedQuestions", "currentQuestion"]),
+		allQuestionsViewed() {
+			return this.loadedQuestions.length === this.currentQuestion;
+		},
 	},
 	created() {
 		this.setRoomID(this.$route.params.roomID);
