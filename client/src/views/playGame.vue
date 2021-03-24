@@ -61,6 +61,9 @@ export default {
 		receivePlayers(data) {
 			this.socket_receivePlayers(data);
 		},
+		changeComponent(data) {
+			this.socket_changeComponent(data);
+		},
 	},
 	data: () => ({
 		nameInput: "",
@@ -72,6 +75,7 @@ export default {
 			"socket_updateChat",
 			"socket_receivePlayers",
 			"socket_updateChatNoRepeat",
+			"socket_changeComponent",
 		]),
 		joinRoom(nameInput) {
 			this.$socket.client.emit("join", {

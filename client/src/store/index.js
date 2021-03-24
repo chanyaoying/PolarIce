@@ -34,7 +34,10 @@ export default new Vuex.Store({
                 state.chatHistory[roomID].push(message) ? repeat : 0
             }
         },
-        updateChatNoRepeat(state, {roomID, message}) {
+        updateChatNoRepeat(state, {
+            roomID,
+            message
+        }) {
             if (typeof state.chatHistory[roomID] == "undefined") {
                 Vue.set(state.chatHistory, roomID, [message]);
             } else {
@@ -45,6 +48,9 @@ export default new Vuex.Store({
         },
         receivePlayers(state, payload) {
             state.users = payload
+        },
+        changeComponent(state, payload) {
+            state.currentComponent = payload
         }
     },
     actions: {
@@ -67,6 +73,11 @@ export default new Vuex.Store({
             commit
         }, data) {
             commit("receivePlayers", data)
+        },
+        socket_changeComponent({
+            commit
+        }, data) {
+            commit("changeComponent", data)
         }
     },
     modules: {}

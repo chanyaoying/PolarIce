@@ -104,7 +104,8 @@ def on_join(data):
             print(players_data[room], "added " + username)
             emit('join', {"roomID": room,
                           "message": f"{username} has entered the room."}, room=room)
-            emit('receivePlayers', players_data[room], room=room)
+        
+        emit('receivePlayers', players_data[room], room=room)
 
     else:
         # return error
@@ -201,7 +202,14 @@ def on_loadGame(data):
 def on_startGame(data):
     room = data['roomID']
     print(f"Starting game at {room}.")
-    emit("startGame", "gameArea", room=room)
+    emit("changeComponent", "gameArea", room=room)
+
+
+@socketio.on('endGame')
+def on_endGame(data):
+    room = data['roomID']
+    print(f"Ending game at {room}.")
+    emit("changeComponent", "gameLobby", room=room)
 
 
 if __name__ == '__main__':
