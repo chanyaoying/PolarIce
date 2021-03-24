@@ -143,7 +143,7 @@ def on_join(data):
         # bypass adding prof in player list
         if not gameMaster:
             players_data[room][request.sid] = username
-            print(players_data[room], "added " + username)
+            print(list(players_data[room].values()), ", added " + username)
             emit('join', {"roomID": room,
                           "message": f"{username} has entered the room."}, room=room)
 
@@ -275,6 +275,8 @@ def on_nextQuestion(data):
     nextQuestionNumber = (currentQuestionNumber +
                           1) % (len(questions_data[room]['questions']) + 1)
 
+    questions_data[room]['currentQuestionNumber'] = nextQuestionNumber
+
     print(f"Next question number: {nextQuestionNumber} at {room}.")
     emit("nextQuestion", nextQuestionNumber, room=room)
 
@@ -291,23 +293,3 @@ if __name__ == '__main__':
     socketio.run(app, port=5001)
 
 
-# @socketio.on('message')
-# def handle_message(msg):
-#     print('received message: ' + str(msg))
-#     send(str(msg), broadcast=True)
-
-
-# @socketio.on("my event")
-# def handle_custom_event(data):
-#     print(f"Custom event data: {data}")
-#     print(f"Custom event type: {type(data)}")
-
-
-# @socketio.on('testing')
-# def testing(msg):
-#     print(msg)
-#     emit('testing', "This message came from the server")
-
-# @socketio.on('join')
-# def on_join(join_arg):
-#     print(f'Room joined. join_arg: {join_arg}')
