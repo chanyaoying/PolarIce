@@ -25,17 +25,26 @@ export default {
 		nextQuestion(data) {
 			this.socket_nextQuestion(data);
 		},
+        getQuestions(data) {
+            this.socket_getQuestions(data);
+        }
 	},
 	data: () => ({}),
 	methods: {
-        ...mapActions(["socket_nextQuestion"])
+        ...mapActions(["socket_nextQuestion", "socket_getQuestions"])
     },
 	computed: {
-		...mapState(["loadedQuestions", "currentQuestion"]),
+		...mapState(["loadedQuestions", "currentQuestion", "roomID"]),
 		allQuestionsViewed() {
 			return this.loadedQuestions.length === this.currentQuestion;
 		},
 	},
+    created() {
+        // get game data
+        this.$socket.client.emit("getQuestions", {
+            roomID: this.roomID
+        });
+    }
 };
 </script>
 

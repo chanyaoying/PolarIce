@@ -9,7 +9,7 @@
 					<b-button
 						class="choice1 btn-lg"
 						variant="primary"
-						v-for="(choice, key) in choices"
+						v-for="(choice, key) in splitChoices"
 						:key="key"
 						>{{choice}}
 					</b-button>

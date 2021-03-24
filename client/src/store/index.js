@@ -10,7 +10,7 @@ export default new Vuex.Store({
         roomID: '',
         currentComponent: 'gameLobby',
         currentQuestion: 0, // changes as the prof clicks next
-        loadedQuestions: sampleQuestions, // the questions in the game
+        loadedQuestions: [], // the questions in the game
         users: [],
         chatHistory: {},
         selfQuestion: [],
@@ -54,7 +54,10 @@ export default new Vuex.Store({
         },
         nextQuestion(state, data) {
             state.currentQuestion = data
-        }
+        },
+        getQuestions(state, data) {
+            state.loadedQuestions = data
+        },
     },
     actions: {
         socket_updateChat({
@@ -84,6 +87,9 @@ export default new Vuex.Store({
         },
         socket_nextQuestion({commit}, data) {
             commit("nextQuestion", data)
+        },
+        socket_getQuestions({commit}, data) {
+            commit("getQuestions", data)
         }
     },
     modules: {}

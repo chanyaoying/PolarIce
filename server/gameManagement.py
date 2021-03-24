@@ -41,45 +41,45 @@ def getRoomOfUser(sid):
 players_data = {'testRoom': {'testSid1': "TestPlayer1",
                              'testSid2': "TestPlayer2"}}  # placeholder
 
-questions_data = {'testRoom': {'started': False,'currentQuestionNumber': 0, 'questions': [{
+questions_data = {'testRoom': {'started': False, 'currentQuestionNumber': 0, 'questions': [{
     "title": 'Are you a cat or dog person?',
-    "choices": ['Cat', 'Dog']
+    "choices": "Cat/Dog"
 },
     {
         "title": 'Are you a happy or sad person?',
-        "choices": ['Happy', 'Sad']
+        "choices": "Happy/Sad"
 },
     {
         "title": 'Are you a female or male person?',
-        "choices": ['Female', 'Male']
+        "choices": "Female/Male"
 },
     {
         "title": 'Are you a introvert or extrovert person?',
-        "choices": ['Introvert', 'Extrovert']
+        "choices": "Introvert/Extrovert"
 },
     {
         "title": 'Are you a tall or short person?',
-        "choices": ['Tall', 'Short']
+        "choices": "Tall/Short"
 },
     {
         "title": 'I think carefully before I say something.?',
-        "choices": ['YES', 'NO']
+        "choices": "YES/NO"
 },
     {
         "title": 'I’m a “Type A” go-getter. I’d rather die than quit.',
-        "choices": ['YES', 'NO']
+        "choices": "YES/NO"
 },
     {
         "title": 'I feel overwhelmed and I’m not sure what to change.',
-        "choices": ['YES', 'NO']
+        "choices": "YES/NO"
 },
     {
         "title": 'I make decisions based on logic.',
-        "choices": ['YES', 'NO']
+        "choices": "YES/NO"
 },
     {
         "title": 'I appreciate it when someone gives me their undivided attention.',
-        "choices": ['YES', 'NO']
+        "choices": "YES/NO"
 },
 ]}}
 
@@ -147,11 +147,13 @@ def on_join(data):
             emit('join', {"roomID": room,
                           "message": f"{username} has entered the room."}, room=room)
 
-        emit('receivePlayers', players_data[room], room=room) # get current players data
-        emit('nextQuestion', questions_data[room] 
-             ['currentQuestionNumber'], room=room) # get current question number if user rejoins halfway and the game has ended
+        # get current players data
+        emit('receivePlayers', players_data[room], room=room)
+        emit('nextQuestion', questions_data[room]
+             ['currentQuestionNumber'], room=room)  # get current question number if user rejoins halfway and the game has ended
         component = "gameArea" if questions_data[room]['started'] else "gameLobby"
-        emit('changeComponent', component, room=room) # get game status if when user joins (user can join a started game)
+        # get game status if when user joins (user can join a started game)
+        emit('changeComponent', component, room=room)
         # get questions data
         # emit("getQuestions", "test", room=room)
 
@@ -252,6 +254,7 @@ def on_startGame(data):
     questions_data[room]['started'] = True
     print(f"Starting game at {room}.")
     emit("changeComponent", "gameArea", room=room)
+    emit("nextQuestion", 0, room=room)
 
 
 @socketio.on('endGame')
@@ -261,6 +264,7 @@ def on_endGame(data):
     questions_data[room]['started'] = False
     print(f"Ending game at {room}.")
     emit("changeComponent", "gameLobby", room=room)
+    emit("nextQuestion", 0, room=room)
 
 
 @socketio.on('nextQuestion')
@@ -273,6 +277,14 @@ def on_nextQuestion(data):
 
     print(f"Next question number: {nextQuestionNumber} at {room}.")
     emit("nextQuestion", nextQuestionNumber, room=room)
+
+
+@socketio.on('getQuestions')
+def on_getQuestions(data):
+    room = data['roomID']
+    questions = questions_data[room]['questions']
+    print(f"Getting questions for {request.sid} at {room}.")
+    emit("getQuestions", questions, room=room)
 
 
 if __name__ == '__main__':
