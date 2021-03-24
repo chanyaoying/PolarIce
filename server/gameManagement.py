@@ -88,12 +88,24 @@ def on_join(data):
     username = data['username']
     room = data['roomID']
 
+    try:
+        gameMaster = data['gameMaster']
+    except:
+        gameMaster = False
+
     if room in players_data:  # if room is live
+
         join_room(room)
-        players_data[room][request.sid] = username
-        print(players_data[room], "added " + username)
-        emit('join', {"roomID": room,
-                      "message": f"{username} has entered the room."}, room=room)
+        print(f"{username} joined {room}.")
+
+        # bypass adding prof in player list
+        if not gameMaster:
+            players_data[room][request.sid] = username
+            print(players_data[room], "added " + username)
+            emit('join', {"roomID": room,
+                          "message": f"{username} has entered the room."}, room=room)
+            emit('receivePlayers', players_data[room], room=room)
+
     else:
         # return error
         # send message which includes error
@@ -113,6 +125,7 @@ def on_leave(data):
     print(players_data[room], "removed " + username)
     emit("leave", {"roomID": room,
                    "message": f"{username} has left the room."}, room=room)
+    emit('receivePlayers', players_data[room], room=room)
 
 
 ####
@@ -145,6 +158,7 @@ def test_connect():
         print(f"Removed {request.sid} from all rooms.")
         emit('disconnect', {
              "roomID": room, "message": f"{username} has disconnected."}, room=room)
+        emit('receivePlayers', players_data[room], room=room)
     else:
         print(f"player: {request.sid} is not in the room.")
 
@@ -174,12 +188,20 @@ def handle_sendMessage(data):
 # Game Events
 ####
 
+# as users join, send questions data to them
 @socketio.on('loadGame')
 def on_loadGame(data):
     room = data['roomID']
     print(f"sending game data of {room} to user {request.sid}")
     # send question data from here
-    
+
+
+# as prof clicks "Start", change component to "gameArea", which already displays the first question
+@socketio.on('startGame')
+def on_startGame(data):
+    room = data['roomID']
+    print(f"Starting game at {room}.")
+    emit("startGame", "gameArea", room=room)
 
 
 if __name__ == '__main__':

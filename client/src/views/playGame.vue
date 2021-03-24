@@ -51,15 +51,12 @@ export default {
 		},
 		disconnect(data) {
 			this.socket_updateChatNoRepeat(data);
-			this.getCurrentPlayers();
 		},
 		join(data) {
 			this.socket_updateChat(data);
-			this.getCurrentPlayers();
 		},
 		leave(data) {
 			this.socket_updateChat(data);
-			this.getCurrentPlayers();
 		},
 		receivePlayers(data) {
 			this.socket_receivePlayers(data);
@@ -82,9 +79,8 @@ export default {
 				username: nameInput,
 			});
 			console.log("you have joined the room!");
-			// set nickname in vuex, reset nameInput
+			// set nickname in vuex
 			this.socket_setNickname(nameInput);
-			// this.nameInput = "";
 		},
 		leaveRoom(nameInput) {
 			this.$socket.client.emit("leave", {
@@ -92,12 +88,6 @@ export default {
 				username: nameInput,
 			});
 			this.socket_setNickname("");
-		},
-		getCurrentPlayers() {
-			// send request to the server asking for all players
-			this.$socket.client.emit("getCurrentPlayers", {
-				roomID: this.roomID,
-			});
 		},
 	},
 	computed: {
