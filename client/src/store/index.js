@@ -6,7 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     roomID:'',
-    selfQuestion:[],
+    finalQuestion:[],
     questions:[{question:'Are you a cat or dog person?', choice:['Cat','Dog']},
                 {question:'Are you a happy or sad person?', choice:['Happy','Sad']},
                 {question:'Are you a female or male person?', choice:['Female','Male']},
