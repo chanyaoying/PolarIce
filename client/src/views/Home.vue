@@ -48,6 +48,7 @@ export default {
                 .then((res) => {
                     if (res.data.live) {
                         this.errorMessage = "";
+
                         this.$router.push("/playGame/" + this.roomID);
                     } else {
                         this.errorMessage = `${this.roomID} is not live. Try "testRoom".`;
@@ -61,6 +62,7 @@ export default {
         login() {
             axios
                 .get("https://127.0.0.1:5000/")
+                // .get("https://467fac702a80.ngrok.io") #replace with ngrok endpoint
                 .then((res) => {
                     console.log("we did it: ", res);
                 })

@@ -1,7 +1,3 @@
-# TODO
-# dont hard code urls
-
-# Imports 
 from user import User
 from db import init_db_command
 from oauthlib.oauth2 import WebApplicationClient
@@ -9,11 +5,13 @@ from flask import Flask, jsonify, redirect, url_for, request, json
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_graphql import GraphQLView
+
 from sqlalchemy import *
+from flask_ngrok import run_with_ngrok
 from sqlalchemy.orm import (scoped_session, sessionmaker, relationship,
                             backref)
 from sqlalchemy.ext.declarative import declarative_base
-# from schema import schema
+
 import sqlite3
 import os
 import requests
@@ -34,15 +32,14 @@ import amqp_setup
 import pika
 import json
 
+from twitter import tweet
+
+# import flask_compressor
+
 app = Flask(__name__)
+# run_with_ngrok(app)  # Start ngrok when app is run
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-
-# app.add_url_rule('/graphql', view_func=GraphQLView.as_view( #add graphQL
-#     'graphql',
-#     schema=schema,
-#     graphiql=True,
-# ))
 
 CORS(app, supports_credentials=True)
 
@@ -57,15 +54,29 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 # Modules
 db = SQLAlchemy(app)
 
+# twitter
+
+# status = tweet("hello!")
+# print(status)
+
 ######################################################################################
 # Model layer
 ######################################################################################
+
+####################### FIREBASE ###########################
+
+# from firebase import firebase
+# fb_app = firebase.FirebaseApplication('https://polarice-95e3e-default-rtdb.firebaseio.com/', None)
+# result = fb_app.get('/question', None)
+# print(result)
+
+####################### FIREBASE ###########################
 
 # ---------------------- Database models ---------------
 
 class Room(db.Model):
     __tablename__ = 'room'
-    roomid = db.Column(db.Integer, primary_key=True)
+    roomid = db.Column(db.Integer, primary_key=True, unique=True)
     profid = db.Column(db.Integer, index=True, unique=True)
 
     questions = db.relationship('Question', backref='room') # backeref establishes a .room attribute on Question, which will refer to the parent Room object 
@@ -75,7 +86,7 @@ class Room(db.Model):
 
 class Question(db.Model):
     __tablename__ = 'question'
-    questionid = db.Column(db.Integer, primary_key=True)
+    questionid = db.Column(db.Integer, primary_key=True, unique=True)
     question = db.Column(db.String(256), index=True)
     choices = db.Column(db.String(256), index=True)    
     roomid = db.Column(db.Integer, ForeignKey('room.roomid'))
@@ -154,13 +165,13 @@ app.add_url_rule(
         graphiql=True # for having the GraphiQL interface
     )
 )
-# /graphql-query
+# /endpoint for query
 app.add_url_rule('/graphql-query', view_func=GraphQLView.as_view(
     'graphql-query',
     schema=schema_query, graphiql=True
 ))
 
-# /graphql-mutation
+# /endpoint for mutation
 app.add_url_rule('/graphql-mutation', view_func=GraphQLView.as_view(
     'graphql-mutation',
     schema=schema, graphiql=True
@@ -338,7 +349,7 @@ def questionBank():
     pass
 
 
-@app.route('/start', methods=['POST'])
+@app.route('/load', methods=['POST'])
 @login_required
 def start():
     """
@@ -346,21 +357,25 @@ def start():
     Authenticated user sends the roomID of the room to be started.
     The room will become live. A room that is not live cannot be connected by a student, even if the roomID exists.
     Store live rooms as a list within gameManagement
+    Create a Game Object in Game.py --> return questions
     A unique link is generated for clients to join via websocket
     Return the unique link to the client.
 
     This is just a simple function to make sure that the user is can only perform this when authenticated.
     """
 
-    # start the room
+    # start the room; make it live
     if request.method == 'POST':
         response = requests.post('http://127.0.0.1:5001/live', data={'roomID': roomID})
 
         if response.status == 200:
             return f"https://127.0.0.1:8080/playGame/{roomID}", 200 # this link is where users will connect to the room
 
+    # create Game object, return questions
+
     return "Bad request", 400
 
 
 if __name__ == '__main__':
     app.run(ssl_context="adhoc", port=5000)
+    # app.run()

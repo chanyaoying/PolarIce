@@ -77,10 +77,10 @@ export default {
         // insert logic for method
         logout(){
            authAxios
-            .get("https://127.0.0.1:5000/")
+            .get("https://127.0.0.1:5000/logout")
             .then((res) => {
                 console.log("result :>> ", res);
-                this.userData = false;
+                this.userData = "";
             })
         }
     }

@@ -10,7 +10,6 @@ import os
 import amqp_setup
 
 from telegram import *
-from telegram.ext import *
 import requests
 
 from tele_log import *

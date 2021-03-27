@@ -25,9 +25,7 @@ exchangetype="topic"
 channel.exchange_declare(exchange=exchangename, exchange_type=exchangetype, durable=True)
     # 'durable' makes the exchange survive broker restarts
 
-# Here can be a place to set up all queues needed by the microservices,
-# - instead of setting up the queues using RabbitMQ UI.
-
+# set up all queues needed by the microservices instead of setting up the queues using RabbitMQ UI.
 ############   Error queue   #############
 #delcare Error queue
 queue_name = 'Error'
