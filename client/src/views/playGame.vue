@@ -2,11 +2,24 @@
 <!-- If not connected, prompt user for name -->
 <template>
 	<div>
+		<audio autoplay controls loop id="music">
+			<source src="../assets/AreYouLost.mp3" type="audio/mpeg">
+			Your browser does not support the audio element.
+		</audio>
+
 		<div v-if="nickname">
-			<component :is="currentComponent"></component>
-			<br />
-			<chatBox />
-			<b-button @click="leaveRoom(nameInput)" variant="primary"
+			<h1>Room ID: {{ roomID }}</h1>
+			<b-container class="bv-example-row">
+				<b-row>
+					<b-col>
+						<component :is="currentComponent"></component>
+					</b-col>
+					<b-col>
+						<chatBox />
+					</b-col>
+				</b-row>
+			</b-container>
+			<b-button @click="leaveRoom(nameInput)" variant="primary mt-3 mb-3"
 				>Leave Room</b-button
 			>
 		</div>
@@ -36,6 +49,12 @@
 
 
 <script>
+
+document.addEventListener('click', musicPlay);
+function musicPlay() {
+    document.getElementById('music').play();
+    document.removeEventListener('click', musicPlay);
+}
 import axios from "axios";
 import { mapState, mapMutations, mapActions } from "vuex";
 import chatBox from "../components/gameComponents/chatBox";
@@ -124,13 +143,16 @@ h1 {
 	width: 400px;
 	margin: auto;
 }
-#message {
-	width: 400px;
-	margin: auto;
-}
+
 #start {
 	position: fixed;
 	bottom: 15px;
 	right: 15px;
 }
+#music{
+	width: 20%;
+	margin-top: 10px;
+	margin-left: 75%;
+}
+
 </style>
