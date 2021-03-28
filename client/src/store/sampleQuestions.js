@@ -2,43 +2,51 @@
 
 const sampleQuestions = [{
         question: 'Are you a cat or dog person?',
-        choice: "Cat/Dog"
+        choice: ['Cat','Dog'],
+        dbsrc:'firebase'
     },
     {
         question: 'Are you a happy or sad person?',
-        choice: "Happy/Sad"
+        choice: ['Happy','Sad'],
+        dbsrc:'firebase'
     },
     {
         question: 'Are you a female or male person?',
-        choice: "Female/Male"
+        choice: "Female/Male",
+        dbsrc:'firebase'
     },
     {
         question: 'Are you a introvert or extrovert person?',
-        choice: "Introvert/Extrovert"
+        choice: ['Introvert','Extrovert'],
+        dbsrc:'firebase'
     },
     {
         question: 'Are you a tall or short person?',
-        choice: "Tall/Short"
+        choice: ['YES','NO'],
+        dbsrc:'firebase'
     },
     {
         question: 'I think carefully before I say something.?',
-        choice: "YES/NO"
+        choice: ['YES','NO'],
+        dbsrc:'firebase'
     },
     {
         question: 'I’m a “Type A” go-getter. I’d rather die than quit.',
-        choice: "YES/NO"
+        choice: ['YES','NO'],
+        dbsrc:'firebase'
     },
     {
         question: 'I feel overwhelmed and I’m not sure what to change.',
-        choice: "YES/NO"
+        choice: ['YES','NO'],
+        dbsrc:'firebase'
     },
     {
         question: 'I make decisions based on logic.',
-        choice: "YES/NO"
+        choice: ['YES','NO']
     },
     {
         question: 'I appreciate it when someone gives me their undivided attention.',
-        choice: "YES/NO"
+        choice: ['YES','NO']
     },
 ];
 

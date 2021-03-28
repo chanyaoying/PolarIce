@@ -57,7 +57,9 @@ export default new Vuex.Store({
         },
         getQuestions(state, data) {
             state.loadedQuestions = data
-        }
+        },
+        
+        
     },
     actions: {
         socket_updateChat({
@@ -90,6 +92,11 @@ export default new Vuex.Store({
         },
         socket_getQuestions({commit}, data) {
             commit("getQuestions", data)
+        }
+    },
+    getters:{
+        getFireBase(state){
+            return state.questions; 
         }
     },
     modules: {}

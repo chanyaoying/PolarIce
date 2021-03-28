@@ -2,11 +2,10 @@
 <div class="room">
     <!-- do v-if="roomID.length < 0", show modal button. 
     Generae random roomID, add to roomID, show create Question page-->
-    <div v-if="roomID.length <= 0">
+    <div v-if="!createdRoomID">
         <b-form>
-            <h1 class="mt-5">Room ID:</h1>
-            <b-form-input style="margin:20px auto; width:300px; height:50px;" v-model="createdRoomID" placeholder="Create Room ID" required></b-form-input>
-            <b-button variant="dark" style="margin:10px; width:180px; height:50px;" @click="generateRoom">Create</b-button>
+            <h1 class="mt-5">Click the button to create New Room.</h1>
+            <b-button variant="dark" style="margin:10px; width:180px; height:50px;" @click="generateRoom()">Create</b-button>
         </b-form>
     </div>
 
@@ -90,7 +89,11 @@
 export default {
     // name: 'room',
     data: () => ({
-        createdRoomID:'',
+        createdRoomID:false,
+        roomID:'',
+        userCreated:[],
+        fireBase:[],
+        final: [],
         question_list:[],
         newQ:{
             question: "",
@@ -100,12 +103,14 @@ export default {
     }),
     methods: {
         generateRoom(){
-            return this.$store.state.roomID = this.createdRoomID;
+            this.roomID = (Math.floor(Math.random()*1000000));
+            this.createdRoomID = true; 
         },
         onSubmit(){
             this.question_list.push({
                 question:this.newQ.question,
-                choice:[this.newQ.choice1,this.newQ.choice2]
+                choice:[this.newQ.choice1,this.newQ.choice2],
+                dbsrc:'user'
             });
             this.newQ.question = '';
             this.newQ.choice1 = '';
@@ -123,21 +128,31 @@ export default {
             this.question_list.splice(addedQuestion, 1);
         },
         done(){
-            this.$store.state.finalQuestion = this.question_list;
-            // console.log(this.$store.state.finalQuestion);
+            for(var question in this.question_list)
+                if (question.dbsrc == 'user'){
+                    this.userCreated.push(question)
+                }else if (question.dbsrc == 'firebase'){
+                    this.fireBase.push(question)
+                }
+            this.final.push(
+                {usercreated:this.userCreated, 
+                firebase:this.fireBase,
+                testBank:this.question_list
+                }
+            )
+
+            this.$store.state.finalQuestion = this.final;
         }
     },
     
     computed:{
-        roomID(){
-            return this.$store.state.roomID;
-        },
         questions(){
-            return this.$store.state.questions;
+            return this.$store.getters.getFireBase;
         },
-        finalQuestion(){
-            return this.$store.state.finalQuestion;
-        }
+        // setNewRoomQuestions(finalQuestion){
+        //     return this.$store.mutation.setNewRoomQuestions;
+        // },
+
         
     }
 
