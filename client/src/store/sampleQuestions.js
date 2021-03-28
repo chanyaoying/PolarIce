@@ -1,44 +1,44 @@
 // This is a temporary file that will mimic the "Questions API"
 
 const sampleQuestions = [{
-        title: 'Are you a cat or dog person?',
-        choices: "Cat/Dog"
+        question: 'Are you a cat or dog person?',
+        choice: "Cat/Dog"
     },
     {
-        title: 'Are you a happy or sad person?',
-        choices: "Happy/Sad"
+        question: 'Are you a happy or sad person?',
+        choice: "Happy/Sad"
     },
     {
-        title: 'Are you a female or male person?',
-        choices: "Female/Male"
+        question: 'Are you a female or male person?',
+        choice: "Female/Male"
     },
     {
-        title: 'Are you a introvert or extrovert person?',
-        choices: "Introvert/Extrovert"
+        question: 'Are you a introvert or extrovert person?',
+        choice: "Introvert/Extrovert"
     },
     {
-        title: 'Are you a tall or short person?',
-        choices: "Tall/Short"
+        question: 'Are you a tall or short person?',
+        choice: "Tall/Short"
     },
     {
-        title: 'I think carefully before I say something.?',
-        choices: "YES/NO"
+        question: 'I think carefully before I say something.?',
+        choice: "YES/NO"
     },
     {
-        title: 'I’m a “Type A” go-getter. I’d rather die than quit.',
-        choices: "YES/NO"
+        question: 'I’m a “Type A” go-getter. I’d rather die than quit.',
+        choice: "YES/NO"
     },
     {
-        title: 'I feel overwhelmed and I’m not sure what to change.',
-        choices: "YES/NO"
+        question: 'I feel overwhelmed and I’m not sure what to change.',
+        choice: "YES/NO"
     },
     {
-        title: 'I make decisions based on logic.',
-        choices: "YES/NO"
+        question: 'I make decisions based on logic.',
+        choice: "YES/NO"
     },
     {
-        title: 'I appreciate it when someone gives me their undivided attention.',
-        choices: "YES/NO"
+        question: 'I appreciate it when someone gives me their undivided attention.',
+        choice: "YES/NO"
     },
 ];
 

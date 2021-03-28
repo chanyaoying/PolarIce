@@ -3,50 +3,83 @@
     <!-- do v-if="roomID.length < 0", show modal button. 
     Generae random roomID, add to roomID, show create Question page-->
     <div v-if="roomID.length <= 0">
-        <b-button variant="dark" style="margin:50px; width:180px; height:50px;" @click="generateRoom()">Create New Room</b-button>
+        <b-form>
+            <h1 class="mt-5">Room ID:</h1>
+            <b-form-input style="margin:20px auto; width:300px; height:50px;" v-model="createdRoomID" placeholder="Create Room ID" required></b-form-input>
+            <b-button variant="dark" style="margin:10px; width:180px; height:50px;" @click="generateRoom">Create</b-button>
+        </b-form>
     </div>
 
-    <div class="card" style="margin:20px auto; width:60%;" v-else>
+    <div class="card" style="margin:20px auto; width:90%;" v-else>
         <div class="card-body">
-            <h1>RoomID: {{roomID}}</h1>
-            <b-button style="margin:20px;" variant="success" @click="createQuestion()">Create My Own Question</b-button>
-            <b-button style="margin:20px;" variant="warning" @click="randomQuestion()">Generate Random Question</b-button>
-            
-            <!-- Random questions -->
-            <div v-if="!createQ && randomQ">
-                <ol>
-                    <li style="text-align:left;" v-for="selfquestion in questions" :key="selfquestion">
-                        <span><b>Question:</b> {{selfquestion.question}}</span><br>
-                        <span><b>Choices:</b> {{selfquestion.choice}}</span><hr>
-                    </li>
-                
-                </ol>
-            </div>
-            
+            <b-row>
+                <b-col cols="10"> <h1>Room ID: {{roomID}}</h1> </b-col>
+                <b-col><b-button variant="success" @click="done()">Done</b-button></b-col>
+            </b-row>
 
-            <!-- Create own question -->
-            <div v-if="createQ && !randomQ">
-                <b-form>
-                <b-form-group id="input-group-1" label="Add New Question:" label-for="input-1">
-                    <b-form-input id="input-1" v-model="newQ.question" placeholder="Enter your question." required></b-form-input>
-                    <b-form-input id="input-1" v-model="newQ.choice1" placeholder="Enter choice 1" required></b-form-input>
-                    <b-form-input id="input-1" v-model="newQ.choice2" placeholder="Enter choice 2" required></b-form-input>
-                </b-form-group>
+            <b-container id="fluid">
+                <b-row>
+                    <b-col col="6">
+                        <b-row>
+                            <!-- create own question -->
+                            <div>
+                                <b-card class="mt-3" header="Create your own Question:" style="width:208%;">
+                                    <b-form>
+                                        <b-form-group id="input-group-1">
+                                            <b-form-input v-model="newQ.question" placeholder="Enter your question." required></b-form-input>
+                                            <b-form-input v-model="newQ.choice1" placeholder="Enter choice 1" required></b-form-input>
+                                            <b-form-input v-model="newQ.choice2" placeholder="Enter choice 2" required></b-form-input>
+                                        </b-form-group>
 
-                <b-button variant="primary" @click="onSubmit">Submit</b-button>
-                <b-button variant="danger" @click="onReset">Reset</b-button>
-                </b-form>
+                                        <b-button variant="primary" @click="onSubmit" class="mr-4">Submit</b-button>
+                                        <b-button variant="danger" @click="onReset">Reset</b-button>
+                                    </b-form>
+                                </b-card>
+                            </div>
+                        </b-row>
 
-                <b-card class="mt-3" header="Question">
-                    <ol>
-                        <li style="text-align:left;" v-for="question in selfQuestion" :key="question">
-                            <span><b>Question:</b> {{question.question}}</span><br>
-                            <span><b>Choices:</b> {{question.choice}}</span><hr>
-                        </li>
-                    </ol>
-                </b-card>
-            </div>
-
+                        <b-row>
+                            <!-- Random questions -->
+                            <b-card class="mt-3" header="You can choose to use the following questions (optional):">
+                                <div class="ml-4">
+                                    <ol>
+                                        <li style="text-align:left;" v-for="dbQuestion in questions" :key="dbQuestion">
+                                            <b-row>
+                                                <b-col cols="10">
+                                                    <span><b>Question:</b> {{dbQuestion.question}}</span><br>
+                                                    <span><b>Choices:</b> {{dbQuestion.choice}}</span>
+                                                </b-col>
+                                                <b-col>
+                                                    <b-button variant="warning" @click="add(dbQuestion)">Add</b-button> 
+                                                </b-col>
+                                            </b-row>
+                                            <hr>
+                                        </li>  
+                                    </ol>
+                                </div>
+                            </b-card>
+                        </b-row>
+                    </b-col>
+                    <b-col col="6">
+                        <b-card class="mt-3" header="Added Question">
+                            <ol class="ml-3">
+                                <li style="text-align:left;" v-for="addedQuestion in question_list" :key="addedQuestion">
+                                    <b-row>
+                                        <b-col cols="9">
+                                            <span><b>Question:</b> {{addedQuestion.question}}</span><br>
+                                            <span><b>Choices:</b> {{addedQuestion.choice}}</span>
+                                        </b-col>
+                                        <b-col>
+                                            <b-button variant="danger" @click="remove(addedQuestion)">Remove</b-button> 
+                                        </b-col>
+                                    </b-row>
+                                    <hr>
+                                </li>
+                            </ol>
+                        </b-card>
+                    </b-col>
+                </b-row>
+            </b-container>
         </div>
     </div>
 </div>
@@ -57,23 +90,23 @@
 export default {
     // name: 'room',
     data: () => ({
+        createdRoomID:'',
+        question_list:[],
         newQ:{
             question: "",
             choice1: "",
             choice2:""
-        },
-        randomQ: true,
-        createQ: false
+        }
     }),
     methods: {
         generateRoom(){
-            return this.$store.state.roomID = (Math.floor(Math.random()*1000000));
+            return this.$store.state.roomID = this.createdRoomID;
         },
         onSubmit(){
-            this.$store.state.selfQuestion.push({
+            this.question_list.push({
                 question:this.newQ.question,
                 choice:[this.newQ.choice1,this.newQ.choice2]
-                });
+            });
             this.newQ.question = '';
             this.newQ.choice1 = '';
             this.newQ.choice2 = '';
@@ -83,13 +116,15 @@ export default {
             this.newQ.choice1 = '';
             this.newQ.choice2 = '';
         },
-        randomQuestion(){
-            this.randomQ = true;
-            this.createQ = false;
+        add(dbQuestion){
+            this.question_list.push(dbQuestion);
         },
-        createQuestion(){
-            this.createQ = true;
-            this.randomQ = false;
+        remove(addedQuestion){
+            this.question_list.splice(addedQuestion, 1);
+        },
+        done(){
+            this.$store.state.finalQuestion = this.question_list;
+            // console.log(this.$store.state.finalQuestion);
         }
     },
     
@@ -100,8 +135,8 @@ export default {
         questions(){
             return this.$store.state.questions;
         },
-        selfQuestion(){
-            return this.$store.state.selfQuestion;
+        finalQuestion(){
+            return this.$store.state.finalQuestion;
         }
         
     }

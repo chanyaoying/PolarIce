@@ -5,7 +5,8 @@ import sampleQuestions from "./sampleQuestions"
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-    state: {
+  state: {
+        finalQuestion:[],
         nickname: "",
         roomID: '',
         currentComponent: 'gameLobby',
@@ -13,7 +14,6 @@ export default new Vuex.Store({
         loadedQuestions: [], // the questions in the game
         users: [],
         chatHistory: {},
-        selfQuestion: [],
         questions: sampleQuestions,
     },
     mutations: {
@@ -57,7 +57,7 @@ export default new Vuex.Store({
         },
         getQuestions(state, data) {
             state.loadedQuestions = data
-        },
+        }
     },
     actions: {
         socket_updateChat({
