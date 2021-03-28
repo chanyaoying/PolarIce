@@ -49,4 +49,9 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+	margin-top: 10px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+}
 </style>

@@ -1,10 +1,9 @@
 <template>
-	<div>
+	<div id="right">
 		<hr />
-		<hr />
-		<h1>Room ID (chat): {{ roomID }}</h1>
+		<h2>Message</h2>
 		<br />
-		<ul>
+		<ul style="list-style-type:none;">
 			<li v-for="(data, key) in chatHistory[roomID]" :key="key">
 				{{ data }}
 			</li>
@@ -25,7 +24,7 @@
 			</b-input-group-append>
 		</b-input-group>
 		<br /><br />
-		<p>Current Players (chat): {{ users }}</p>
+		<!-- <p>Current Players (chat): {{ users }}</p> -->
 		<br /><br />
 	</div>
 </template>
@@ -59,4 +58,22 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+	margin-top: 10px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+}
+h2{
+	margin-top: 10px;
+	font-family: Arial, Helvetica, sans-serif;
+	/* font-weight: bold; */
+}
+#right{
+	background-color:white;
+	/* height:500px; */
+}
+#message {
+	width: 400px;
+	margin: auto;
+}
 </style>

@@ -1,14 +1,17 @@
 <template>
-	<div>
-		<h1>Game Lobby</h1>
-        <h5>Waiting for game to start...</h5>
+	<div id="left">
+		<hr />
+		<h2>Game Lobby</h2>
+        <h6>Waiting for game to start...</h6>
         <br>
 		<b>Players:</b>
-		<ul>
+		<ul style="list-style-type:none;">
 			<li v-for="(user, key) in users" :key="key">
 				{{ user }}
 			</li>
 		</ul>
+
+		<br>
 	</div>
 </template>
 
@@ -26,4 +29,18 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+	margin-top: 10px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+}
+h2{
+	margin-top: 10px;
+	font-family: Arial, Helvetica, sans-serif;
+
+}
+#left{
+	background-color:white;
+	/* height:500px; */
+}
 </style>

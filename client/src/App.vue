@@ -1,11 +1,29 @@
 <template>
     <div id="app">
         <!-- start of navbar -->
+        
         <b-navbar id="nav" toggleable="lg" type="dark" variant="">
-            <b-img src="./assets/PolarIcelogo.png" class="d-inline-block navBarLogo" > </b-img>
-            <b-navbar-brand href="#" style="color:black; font-weight:bold; font-size:30px;">
-                PolarIce
-            </b-navbar-brand>
+            <div>
+                <span @mouseover="hover = true" 
+                      @mouseleave="hover = false">
+                    
+                    <b-img id ="logo" src="./assets/PolarIcelogo.png" class="d-inline-block navBarLogo" > </b-img> 
+                    <b-navbar-brand href="#" style="color:black; font-weight:bold; font-size:30px;">
+                        PolarIce
+                    </b-navbar-brand>
+
+                </span>
+                <span v-if="hover">
+                    <!-- <animation /> -->
+                    
+                    <img id ="animation" src="../src/assets/animation.gif" />
+                </span>
+            </div>
+            
+         
+                
+         
+            <!-- <img id ="animation" src="../src/assets/animation.gif"> -->
             <!-- <router-link to="/">Home</router-link> | 
             <router-link to="/play">About</router-link> | 
             <router-link to= "/createRoom">createRoom</router-link> | 
@@ -54,13 +72,16 @@
     </div>
 </template>
 
-
 <script>
 import authAxios from './components/authAxios.js';
+// import animation from "../src/components/animation";
+
 export default {
+    // components: { animation}, 
     name: "allRoom",
     data: () => ({
         userData: "",
+        hover: false,
     }),
     created() {
         authAxios
@@ -77,12 +98,13 @@ export default {
         // insert logic for method
         logout(){
            authAxios
-            .get("https://127.0.0.1:5000/logout")
+            .get("https://127.0.0.1:5000")
             .then((res) => {
                 console.log("result :>> ", res);
                 this.userData = "";
             })
-        }
+        },
+
     }
 };
 </script>
