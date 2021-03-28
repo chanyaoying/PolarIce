@@ -45,8 +45,8 @@
                                         <li style="text-align:left;" v-for="dbQuestion in questions" :key="dbQuestion">
                                             <b-row>
                                                 <b-col cols="10">
-                                                    <span><b>Question:</b> {{dbQuestion.question}}</span><br>
-                                                    <span><b>Choices:</b> {{dbQuestion.choice}}</span>
+                                                    <span><b>Question:</b> {{dbQuestion.title}}</span><br>
+                                                    <span><b>Choices:</b> {{dbQuestion.choices}}</span>
                                                 </b-col>
                                                 <b-col>
                                                     <b-button variant="warning" @click="add(dbQuestion)">Add</b-button> 
@@ -107,9 +107,10 @@ export default {
             this.createdRoomID = true; 
         },
         onSubmit(){
+            
             this.question_list.push({
-                question:this.newQ.question,
-                choice:[this.newQ.choice1,this.newQ.choice2],
+                title:this.newQ.question,
+                choices:[this.newQ.choice1,this.newQ.choice2],
                 dbsrc:'user'
             });
             this.newQ.question = '';
@@ -142,7 +143,10 @@ export default {
             )
 
             this.$store.state.finalQuestion = this.final;
-        }
+        },
+        // pushFinalQuestion(final){
+        //     this.$store.
+        // }
     },
     
     computed:{

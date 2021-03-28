@@ -57,7 +57,7 @@ export default new Vuex.Store({
         },
         getQuestions(state, data) {
             state.loadedQuestions = data
-        },
+        }
         
         
     },
