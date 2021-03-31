@@ -331,6 +331,7 @@ def logout():
 @login_required #decorater (wrapper for function) deifined by flask-login. using google oauth, check if works. 
 def createRoom():
     """
+    Redirect to stripe payment page first
     Authenticated user  with all the details of the room/questions.
     A unique RoomID is generated.
     Parse this json and send the room state to the database.
