@@ -65,8 +65,8 @@
                                 <li style="text-align:left;" v-for="addedQuestion in question_list" :key="addedQuestion">
                                     <b-row>
                                         <b-col cols="9">
-                                            <span><b>Question:</b> {{addedQuestion.question}}</span><br>
-                                            <span><b>Choices:</b> {{addedQuestion.choice}}</span>
+                                            <span><b>Question:</b> {{addedQuestion.title}}</span><br>
+                                            <span><b>Choices:</b> {{addedQuestion.choices}}</span>
                                         </b-col>
                                         <b-col>
                                             <b-button variant="danger" @click="remove(addedQuestion)">Remove</b-button> 
@@ -86,6 +86,7 @@
 </template>
 
 <script>
+
 export default {
     // name: 'room',
     data: () => ({
@@ -102,15 +103,15 @@ export default {
         }
     }),
     methods: {
+        
         generateRoom(){
             this.roomID = (Math.floor(Math.random()*1000000));
             this.createdRoomID = true; 
         },
         onSubmit(){
-            
             this.question_list.push({
                 title:this.newQ.question,
-                choices:[this.newQ.choice1,this.newQ.choice2],
+                choices:this.newQ.choice1.concat('/').concat(this.newQ.choice2),
                 dbsrc:'user'
             });
             this.newQ.question = '';
@@ -144,20 +145,12 @@ export default {
 
             this.$store.state.finalQuestion = this.final;
         },
-        // pushFinalQuestion(final){
-        //     this.$store.
-        // }
     },
     
     computed:{
         questions(){
-            return this.$store.getters.getFireBase;
-        },
-        // setNewRoomQuestions(finalQuestion){
-        //     return this.$store.mutation.setNewRoomQuestions;
-        // },
-
-        
+            return this.$store.getters.GetFireBase;
+        },        
     }
 
 }

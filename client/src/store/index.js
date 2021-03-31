@@ -95,8 +95,11 @@ export default new Vuex.Store({
         }
     },
     getters:{
-        getFireBase(state){
-            return state.questions; 
+        GetCurrentQuestion(state){
+            return state.currentQuestion;
+        },
+        GetFireBase(state){
+            return state.questions;
         }
     },
     modules: {}
