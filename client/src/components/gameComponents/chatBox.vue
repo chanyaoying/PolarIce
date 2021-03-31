@@ -3,13 +3,22 @@
 		<hr />
 		<h2>Message</h2>
 		<br />
-		<ul style="list-style-type:none;">
-			<li v-for="(data, key) in chatHistory[roomID]" :key="key">
-				{{ data }}
-			</li>
-		</ul>
+		<div class="scroll">
+			<ul style="list-style-type:none;">
+				<li v-for="(data, key) in chatHistory[roomID]" :key="key" >
+					<div class="profword" v-if="data[0] == ':'">
+						{{ data }}
+					</div>
+					<div v-else>
+						{{ data }}
+					</div>
+					<!-- {{key}} -->
+				</li>
+			</ul>
+		</div>
 		Send a message to the room: <br />
-
+		{{chatHistory}} <br>
+		{{username}}
 		<b-input-group id="message" class="mt-3">
 			<b-form-input
 				type="text"
@@ -23,7 +32,7 @@
 				>
 			</b-input-group-append>
 		</b-input-group>
-		<br /><br />
+		
 		<!-- <p>Current Players (chat): {{ users }}</p> -->
 		<br /><br />
 	</div>
@@ -50,6 +59,17 @@ export default {
 			}); // by who
 			this.message = "";
 		},
+		scrollToEnd(){
+			var container = document.querySelector(".scroll");
+			var scrollHeight = container.scrollHeight;
+			container.scrollTop = scrollHeight;
+		}
+	},
+	mounted(){
+		this.scrollToEnd();
+	},
+	updated(){
+		this.scrollToEnd();
 	},
 	computed: {
 		...mapState(["chatHistory", "users", "roomID", "nickname"]),
@@ -70,10 +90,22 @@ h2{
 }
 #right{
 	background-color:white;
+	/* height : 300px; */
 	/* height:500px; */
 }
 #message {
 	width: 400px;
 	margin: auto;
+}
+.scroll{
+	margin:auto;
+	width:90%;
+	max-height:150px;
+	overflow:scroll;
+	margin-bottom: 20px;
+	
+}
+.profword{
+	color:red;
 }
 </style>

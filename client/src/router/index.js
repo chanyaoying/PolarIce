@@ -43,11 +43,7 @@ const routes = [{
     name: 'playGame/console/roomID',
     component: () => import('../views/gameConsole.vue')
   },
-  // {
-  //   path: '/question/:roomID',
-  //   name: 'question/roomID',
-  //   component: () => import('../views/question.vue')
-  // },
+
   // {
   //   path: '/matching/:roomID',
   //   name: 'matching/roomID',

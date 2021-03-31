@@ -9,19 +9,26 @@
 
 		<div v-if="nickname">
 			<h1>Room ID: {{ roomID }}</h1>
-			<b-container class="bv-example-row">
-				<b-row>
-					<b-col>
-						<component :is="currentComponent"></component>
-					</b-col>
-					<b-col>
-						<chatBox />
-					</b-col>
-				</b-row>
-			</b-container>
-			<b-button @click="leaveRoom(nameInput)" variant="primary mt-3 mb-3"
-				>Leave Room</b-button
-			>
+			<div v-if="currentQuestion == 0">
+				{{currentQuestion}}
+				<b-container class="bv-example-row">
+					<b-row>
+						<b-col>
+							<component :is="currentComponent"></component>
+						</b-col>
+						<b-col>
+							<chatBox />
+						</b-col>
+					</b-row>
+				</b-container>
+
+				<b-button @click="leaveRoom(nameInput)" variant="primary mt-3 mb-3">
+					Leave Room
+				</b-button>
+			</div>
+			<div v-else>
+				<component :is="currentComponent"></component>
+			</div>
 		</div>
 
 		<div v-else>
@@ -115,6 +122,9 @@ export default {
 	},
 	computed: {
 		...mapState(["nickname", "roomID", "currentComponent"]),
+		currentQuestion(){
+			return this.$store.getters.GetCurrentQuestion;
+		}
 	},
 	created() {
 		this.setRoomID(this.$route.params.roomID);

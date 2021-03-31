@@ -1,40 +1,60 @@
 <template>
 	<div>
+		<audio autoplay controls loop id="music">
+			<source src="../assets/AreYouLost.mp3" type="audio/mpeg">
+			Your browser does not support the audio element.
+		</audio>
 		<h1>Console: {{ roomID }}</h1>
 		<p>Control the game from the prof's point of view</p>
 		<div v-if="started">
 			<b-button class="btn-lg" id="next" variant="primary" @click="nextQuestion" v-if="!allQuestionsViewed">Next</b-button>
 			<b-button class="btn-lg" id="end" variant="danger" @click="endGame"
-				>End</b-button
-			>
+				>End</b-button>
+			<component :is="currentComponent"></component>
 		</div>
 
-		<b-button
-			class="btn-lg"
-			id="start"
-			variant="success"
-			@click="startGame"
-			v-else
-			>Start</b-button
-		>
+		<div v-else>		
+			<b-button class="btn-lg" id="start" variant="success" @click="startGame">
+				Start
+			</b-button>
 
+			<b-container id = "container" class="bv-example-row">
+			<b-row>
+				<b-col>
+					<component :is="currentComponent"></component>
+				</b-col>
+				<b-col>
+					<chatBox />
+				</b-col>
+			</b-row>
+		</b-container>
+
+		</div>
 		<br />
-		<component :is="currentComponent"></component>
+		
+
+		
 	</div>
 </template>
 
 <script>
+document.addEventListener('click', musicPlay);
+function musicPlay() {
+    document.getElementById('music').play();
+    document.removeEventListener('click', musicPlay);
+}
 // TODO:
 // Make sure that this page can only be accessed when authenticated. i.e. the prof OWNS the room.
 
 import { mapState, mapMutations, mapActions } from "vuex";
 import gameLobby from "../components/gameComponents/gameLobby";
 import gameArea from "../components/gameComponents/gameArea";
+import chatBox from "../components/gameComponents/chatBox";
 import axios from "axios";
 
 export default {
 	name: "gameConsole",
-	components: { gameLobby, gameArea },
+	components: { gameLobby, gameArea ,chatBox},
 	sockets: {
 		receivePlayers(data) {
 			this.socket_receivePlayers(data);
@@ -51,6 +71,7 @@ export default {
 		...mapActions(["socket_receivePlayers", "socket_changeComponent"]),
 		startGame() {
 			this.started = true;
+			
 			// send authenticated socket emit to start game
 			// for now, just a normal socket emit to start game
 			this.$socket.client.emit("startGame", {
@@ -102,4 +123,15 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+	margin-top: 10px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+}
+#music{
+	width: 20%;
+	margin-top: 10px;
+	margin-left: 75%;
+}
+
 </style>
