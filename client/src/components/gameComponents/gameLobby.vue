@@ -1,6 +1,6 @@
 <template>
 	<div id="left">
-		<hr />
+		<b-card>
 		<h2>Game Lobby</h2>
         <h6>Waiting for game to start...</h6>
         <br>
@@ -12,6 +12,7 @@
 		</ul>
 
 		<br>
+		</b-card>
 	</div>
 </template>
 
@@ -40,7 +41,7 @@ h2{
 
 }
 #left{
-	background-color:white;
+	/* background-color:white; */
 	/* height:500px; */
 }
 </style>

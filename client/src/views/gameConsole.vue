@@ -7,7 +7,7 @@
 		<h1>Console: {{ roomID }}</h1>
 		<p>Control the game from the prof's point of view</p>
 		<div v-if="started">
-			<b-button class="btn-lg" id="next" variant="primary" @click="nextQuestion" v-if="!allQuestionsViewed">Next</b-button>
+			<b-button class="btn-lg" id="next" variant="success" @click="nextQuestion" v-if="!allQuestionsViewed">Next</b-button>
 			<b-button class="btn-lg" id="end" variant="danger" @click="endGame"
 				>End</b-button>
 			<component :is="currentComponent"></component>
@@ -20,10 +20,12 @@
 
 			<b-container id = "container" class="bv-example-row">
 			<b-row>
-				<b-col>
-					<component :is="currentComponent"></component>
+				<b-col><br>
+
+						<component :is="currentComponent"></component>
+
 				</b-col>
-				<b-col>
+				<b-col><br>
 					<chatBox />
 				</b-col>
 			</b-row>
@@ -133,5 +135,7 @@ h1 {
 	margin-top: 10px;
 	margin-left: 75%;
 }
-
+#next{
+	margin-right:10px;
+}
 </style>

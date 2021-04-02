@@ -44,11 +44,11 @@ const routes = [{
     component: () => import('../views/gameConsole.vue')
   },
 
-  // {
-  //   path: '/matching/:roomID',
-  //   name: 'matching/roomID',
-  //   component: () => import('../views/matching.vue')
-  // },
+  {
+    path: '/matching/:roomID',
+    name: 'matching/roomID',
+    component: () => import('../views/matching.vue')
+  },
 ]
 
 const router = new VueRouter({

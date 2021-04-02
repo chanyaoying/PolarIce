@@ -2,15 +2,16 @@
 <!-- If not connected, prompt user for name -->
 <template>
     <div>
-        <h1>Room ID: {{ roomID }}</h1>
+        <h1>Room ID: {{ roomID }}</h1><br>
+        <b-container style="width:70%">
+            <b-card>
+                <h2>Your best friends are: </h2>
 
-        <h2>Your best friends are: </h2>
-        <!-- <ul>
-            <li v-for="chat in chatHistory" :key="chat">
-                {{ chat }}
-            </li>
-        </ul> -->
-    
+
+
+                <br>
+            </b-card>
+        </b-container>
     </div>
 </template>
 

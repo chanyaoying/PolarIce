@@ -1,6 +1,6 @@
 <template>
 	<div id="right">
-		<hr />
+		<b-card>
 		<h2>Message</h2>
 		<br />
 		<div class="scroll">
@@ -12,13 +12,12 @@
 					<div v-else>
 						{{ data }}
 					</div>
-					<!-- {{key}} -->
 				</li>
 			</ul>
 		</div>
 		Send a message to the room: <br />
-		{{chatHistory}} <br>
-		{{username}}
+		<!-- {{chatHistory}} <br> -->
+	
 		<b-input-group id="message" class="mt-3">
 			<b-form-input
 				type="text"
@@ -34,7 +33,8 @@
 		</b-input-group>
 		
 		<!-- <p>Current Players (chat): {{ users }}</p> -->
-		<br /><br />
+		<br />
+		</b-card>
 	</div>
 </template>
 
@@ -89,7 +89,7 @@ h2{
 	/* font-weight: bold; */
 }
 #right{
-	background-color:white;
+	/* background-color:white; */
 	/* height : 300px; */
 	/* height:500px; */
 }
