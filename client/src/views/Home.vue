@@ -62,6 +62,7 @@ export default {
         login() {
             axios
                 .get("https://127.0.0.1:5000/")
+                // .get(process.env.VUE_APP_app_endpoint)
                 // .get("https://467fac702a80.ngrok.io") #replace with ngrok endpoint
                 .then((res) => {
                     console.log("we did it: ", res);
@@ -73,6 +74,8 @@ export default {
                             console.log("Redirecting to login page.");
                             window.location.href =
                                 "https://127.0.0.1:5000/login";
+                                // console.log("here" + process.env.VUE_APP_app_endpoint + "/login")
+                                process.env.VUE_APP_app_endpoint + "/login";
                         }
                     } catch (error) {
                         console.log("error :>> ", error);

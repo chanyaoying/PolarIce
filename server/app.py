@@ -54,8 +54,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 # Modules
 db = SQLAlchemy(app)
 
-# twitter
-
+## to call twitter service
 # status = tweet("hello!")
 # print(status)
 
@@ -63,7 +62,7 @@ db = SQLAlchemy(app)
 # Model layer
 ######################################################################################
 
-####################### FIREBASE ###########################
+##################  ##### FIREBASE ###########################
 
 # from firebase import firebase
 # fb_app = firebase.FirebaseApplication('https://polarice-95e3e-default-rtdb.firebaseio.com/', None)
@@ -324,9 +323,6 @@ def logout():
 # ROOM CREATION (LOGIN REQUIRED)
 ######################################################################################
 
-# TODO
-
-
 @app.route('/create')
 @login_required #decorater (wrapper for function) deifined by flask-login. using google oauth, check if works. 
 def createRoom():
@@ -348,7 +344,6 @@ def questionBank():
     Retrieve the questions and return it as a json to the client.
     """
     pass
-
 
 @app.route('/load', methods=['POST'])
 @login_required
