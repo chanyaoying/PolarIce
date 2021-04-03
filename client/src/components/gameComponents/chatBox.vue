@@ -18,9 +18,9 @@
 				placeholder="Enter message"
 			></b-form-input>
 			<b-input-group-append>
-				<b-button @click="sendMessage" variant="dark"
-					>Send Message</b-button
-				>
+				<b-button @click="sendMessage" variant="dark">
+					Send Message
+				</b-button>
 			</b-input-group-append>
 		</b-input-group>
 		<br /><br />

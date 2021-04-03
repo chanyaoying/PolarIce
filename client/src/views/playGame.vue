@@ -10,7 +10,7 @@
 		<div v-if="nickname">
 			<h1>Room ID: {{ roomID }}</h1>
 			<b-container class="bv-example-row">
-				<b-row>
+				<b-row> 
 					<b-col>
 						<component :is="currentComponent"></component>
 					</b-col>
@@ -60,6 +60,7 @@ import { mapState, mapMutations, mapActions } from "vuex";
 import chatBox from "../components/gameComponents/chatBox";
 import gameArea from "../components/gameComponents/gameArea";
 import gameLobby from "../components/gameComponents/gameLobby";
+
 
 export default {
 	name: "playGame",
@@ -115,6 +116,7 @@ export default {
 	},
 	computed: {
 		...mapState(["nickname", "roomID", "currentComponent"]),
+		
 	},
 	created() {
 		this.setRoomID(this.$route.params.roomID);

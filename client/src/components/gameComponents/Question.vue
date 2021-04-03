@@ -11,7 +11,6 @@
 						variant="primary"
 						v-for="(choice, key) in splitChoices"
 						:key="key"
-						:value = "choice"
 						@click="onSelect(choice)"
 						>{{choice}}
 					</b-button>
@@ -39,6 +38,12 @@ export default {
 		onSelect(choice){
 			this.select.push(choice);
 			this.clicked += 1;
+			console.log(this.select);
+			if (this.clicked === this.$store.getters.getLoadedQLength){
+				console.log("last question, pushing to state.");
+				this.$store.commit('addCollectedResult',this.select);
+				// console.log(this.$store.state.collectedResult);
+			}
 		}
 	},
 	computed: {
@@ -47,7 +52,7 @@ export default {
 		},
 		currentQuestion(){
 			return this.$store.getters.GetCurrentQuestion; 
-		}
+		},
 	},
 };
 </script>

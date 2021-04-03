@@ -50,7 +50,7 @@ export default {
 		...mapMutations(["setRoomID"]),
 		...mapActions(["socket_receivePlayers", "socket_changeComponent"]),
 		startGame() {
-			this.started = true;
+			this.started = true; 
 			// send authenticated socket emit to start game
 			// for now, just a normal socket emit to start game
 			this.$socket.client.emit("startGame", {
