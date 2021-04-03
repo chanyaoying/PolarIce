@@ -1,4 +1,6 @@
 <template>
+	<b-container>
+	<b-card id="ques">
 	<div v-if="currentQuestion == clicked">
 		<div id="question">
 			<h2>{{ title }}</h2>
@@ -17,11 +19,13 @@
 				</b-form>
 			</div>
 		</div>
+		
 	</div>
 	<div id="question" v-else>
 		<h2>Answer Submited! Please wait for the next question.</h2>
 	</div>
-	
+	</b-card>
+	</b-container>
 </template>
 
 <script>
@@ -64,7 +68,7 @@ h1 {
 	font-weight: bold;
 }
 #question {
-	margin-top: 50px;
+	/* margin-top: 10px; */
 	font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
 		sans-serif;
 }
@@ -75,7 +79,11 @@ h1 {
 	margin-right: 2%;
 }
 .choice1 {
-	margin: 100px 50px 0px 50px;
-	width: 400px;
+	margin: 70px 50px 20px 50px;
+	/* width:400px; */
+	width: 40%;
+}
+#ques{
+	height:350px;
 }
 </style>
