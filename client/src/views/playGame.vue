@@ -11,7 +11,7 @@
 		<div v-if="nickname">
 			<h1>Room ID: {{ roomID }}</h1>
 			<br>
-			<div v-if="currentQuestion == 0">
+			<div v-if="currentComponent != 'gameArea'">
 				<!-- {{currentQuestion}} -->
 				
 				<b-container class="bv-example-row">

@@ -6,11 +6,12 @@
 		</audio>
 		<h1>Console: {{ roomID }}</h1>
 		<p>Control the game from the prof's point of view</p>
+	
 		<div v-if="started">
 			<b-button class="btn-lg" id="next" variant="success" @click="nextQuestion" v-if="!allQuestionsViewed">Next</b-button>
-			<b-button class="btn-lg" id="end" variant="danger" @click="endGame"
-				>End</b-button>
-			<component :is="currentComponent"></component>
+			<b-button class="btn-lg" id="end" variant="danger" @click="endGame">End</b-button>
+				<br><br>
+				<component :is="currentComponent"></component>
 		</div>
 
 		<div v-else>		
@@ -21,9 +22,7 @@
 			<b-container id = "container" class="bv-example-row">
 			<b-row>
 				<b-col><br>
-
-						<component :is="currentComponent"></component>
-
+					<component :is="currentComponent"></component>
 				</b-col>
 				<b-col><br>
 					<chatBox />
@@ -33,9 +32,7 @@
 
 		</div>
 		<br />
-		
 
-		
 	</div>
 </template>
 
