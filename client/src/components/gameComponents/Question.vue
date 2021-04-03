@@ -80,6 +80,6 @@ h1 {
 	width: 40%;
 }
 #ques{
-	height:350px;
+	height: 400px;
 }
 </style>
