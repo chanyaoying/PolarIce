@@ -1,8 +1,8 @@
 <template>
 	<div>
-		<p>game has started</p>
+		<!-- <p>game has started</p>
 		<h1>Question will appear here</h1>
-		<p>the choices will be here</p>
+		<p>the choices will be here</p> -->
 		<div v-if="allQuestionsViewed">
 			<h1>All questions answered.</h1>
 		</div>

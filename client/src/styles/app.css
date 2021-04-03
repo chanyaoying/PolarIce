@@ -7,19 +7,17 @@
 }
 
 #animation{
-    width: 60%;
+    width: 30%;
     /* margin-right: 400px; */
-    margin-top: 100px;
-    
+    margin-top: 20px;
+    position:absolute;
 }
-
 
 #profileImage{
     width: 50px;
     margin:2%;
     margin-left:5px;
 }
-
 
 #nav{
     background-color: whitesmoke;
@@ -47,15 +45,20 @@ b-nav-item{
     padding: 0;
   }
 
+
+#navbarNav{ 
+    /* margin-left: 250px;  */
+    position: relative; 
+    top:3px;
+    /* right: 40%; */
+}
+
 #navbarNav ul li {
 list-style: none;
 }
 #navbarNav ul li a {
 position: relative;
 display: block;
-/* text-transform: uppercase; */
-/* margin: 20px 0; */
-/* padding: 10px 20px; */
 padding-left: 20px;
 padding-right: 20px;
 color: #262626;
@@ -102,6 +105,11 @@ opacity: 1;
 }
 
 /* Consistent */
+#navbarNavRight{
+    position:absolute;
+    top:5px;
+    right: 30px;
+}
 
 #navbarNavRight ul li {
     list-style: none;

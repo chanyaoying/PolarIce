@@ -2,26 +2,36 @@
 <!-- If not connected, prompt user for name -->
 <template>
 	<div>
-		<audio autoplay controls loop id="music">
+		<!-- student dont need to play music, only prof play-->
+		<!-- <audio autoplay controls loop id="music">
 			<source src="../assets/AreYouLost.mp3" type="audio/mpeg">
 			Your browser does not support the audio element.
-		</audio>
+		</audio> -->
 
 		<div v-if="nickname">
 			<h1>Room ID: {{ roomID }}</h1>
-			<b-container class="bv-example-row">
-				<b-row> 
-					<b-col>
-						<component :is="currentComponent"></component>
-					</b-col>
-					<b-col>
-						<chatBox />
-					</b-col>
-				</b-row>
-			</b-container>
-			<b-button @click="leaveRoom(nameInput)" variant="primary mt-3 mb-3"
-				>Leave Room</b-button
-			>
+			<br>
+			<div v-if="currentQuestion == 0">
+				<!-- {{currentQuestion}} -->
+				
+				<b-container class="bv-example-row">
+					<b-row>
+						<b-col>
+							<component :is="currentComponent"></component>
+						</b-col>
+						<b-col>
+							<chatBox />
+						</b-col>
+					</b-row>
+				</b-container>
+
+				<b-button @click="leaveRoom(nameInput)" variant="primary mt-3 mb-3">
+					Leave Room
+				</b-button>
+			</div>
+			<div v-else>
+				<component :is="currentComponent"></component>
+			</div>
 		</div>
 
 		<div v-else>
@@ -50,11 +60,11 @@
 
 <script>
 
-document.addEventListener('click', musicPlay);
-function musicPlay() {
-    document.getElementById('music').play();
-    document.removeEventListener('click', musicPlay);
-}
+// document.addEventListener('click', musicPlay);
+// function musicPlay() {
+//     document.getElementById('music').play();
+//     document.removeEventListener('click', musicPlay);
+// }
 import axios from "axios";
 import { mapState, mapMutations, mapActions } from "vuex";
 import chatBox from "../components/gameComponents/chatBox";
@@ -117,6 +127,9 @@ export default {
 	computed: {
 		...mapState(["nickname", "roomID", "currentComponent"]),
 		
+		currentQuestion(){
+			return this.$store.getters.GetCurrentQuestion;
+		}
 	},
 	created() {
 		this.setRoomID(this.$route.params.roomID);
