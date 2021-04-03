@@ -26,7 +26,7 @@
         font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     }
     #bear{
-        width:20%;
+        width:30%;
     }
 </style>
 
