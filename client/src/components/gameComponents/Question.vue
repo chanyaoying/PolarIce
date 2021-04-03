@@ -19,7 +19,7 @@
 		</div>
 	</div>
 	<div id="question" v-else>
-		<h2>{{title}}</h2>
+		<h2>Answer Submited! Please wait for the next question.</h2>
 	</div>
 	
 </template>

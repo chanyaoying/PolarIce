@@ -11,7 +11,7 @@
 		<div v-if="nickname">
 			<h1>Room ID: {{ roomID }}</h1>
 			<br>
-			<div v-if="currentQuestion == 0">
+			<div>
 				<!-- {{currentQuestion}} -->
 				
 				<b-container class="bv-example-row">
@@ -28,9 +28,6 @@
 				<b-button @click="leaveRoom(nameInput)" variant="primary mt-3 mb-3">
 					Leave Room
 				</b-button>
-			</div>
-			<div v-else>
-				<component :is="currentComponent"></component>
 			</div>
 		</div>
 
