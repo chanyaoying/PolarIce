@@ -93,8 +93,8 @@ export default {
         createdRoomID:false,
         roomID:'',
         userCreated:[],
-        fireBase:[],
-        final: [],
+        firebase:[],
+        testBank: [],
         question_list:[],
         newQ:{
             question: "",
@@ -130,20 +130,8 @@ export default {
             this.question_list.splice(addedQuestion, 1);
         },
         done(){
-            for(var question in this.question_list)
-                if (question.dbsrc == 'user'){
-                    this.userCreated.push(question)
-                }else if (question.dbsrc == 'firebase'){
-                    this.fireBase.push(question)
-                }
-            this.final.push(
-                {usercreated:this.userCreated, 
-                firebase:this.fireBase,
-                testBank:this.question_list
-                }
-            )
-
-            this.$store.state.finalQuestion = this.final;
+            this.$store.commit('addFinalQuestion', this.question_list);
+            console.log(this.$store.state.finalQuestion);
         },
     },
     

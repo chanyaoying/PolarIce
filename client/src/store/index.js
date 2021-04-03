@@ -15,6 +15,7 @@ export default new Vuex.Store({
         users: [],
         chatHistory: {},
         questions: sampleQuestions,
+        collectedResult: [],
     },
     mutations: {
         setNickname(state, nickname) {
@@ -57,6 +58,34 @@ export default new Vuex.Store({
         },
         getQuestions(state, data) {
             state.loadedQuestions = data
+        },
+        addCollectedResult(state, select){
+            state.collectedResult.push({   
+                name:state.nickname,
+                data:select})
+        },
+        addFinalQuestion(state, question_list){
+            var userCreated = []
+            var firebase = []
+            var testBank = []
+            for(var question in question_list)
+                if (question_list[question].dbsrc === 'user'){
+                    userCreated.push(question_list[question])
+
+                }else if (question_list[question].dbsrc === 'firebase'){
+                    firebase.push(question_list[question])
+
+                }else{
+                    testBank.push(question_list[question])
+                }
+            
+            state.finalQuestion.push(
+                    {usercreated:userCreated, 
+                    firebase:firebase,
+                    testBank:testBank
+                    }
+            );
+            
         }
         
         
@@ -92,7 +121,8 @@ export default new Vuex.Store({
         },
         socket_getQuestions({commit}, data) {
             commit("getQuestions", data)
-        }
+        },
+        
     },
     getters:{
         GetCurrentQuestion(state){
@@ -100,6 +130,9 @@ export default new Vuex.Store({
         },
         GetFireBase(state){
             return state.questions;
+        },
+        getLoadedQLength(state){
+            return state.loadedQuestions.length;
         }
     },
     modules: {}

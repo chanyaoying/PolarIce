@@ -71,6 +71,7 @@ import chatBox from "../components/gameComponents/chatBox";
 import gameArea from "../components/gameComponents/gameArea";
 import gameLobby from "../components/gameComponents/gameLobby";
 
+
 export default {
 	name: "playGame",
 	components: { chatBox, gameArea, gameLobby },
@@ -125,6 +126,7 @@ export default {
 	},
 	computed: {
 		...mapState(["nickname", "roomID", "currentComponent"]),
+		
 		currentQuestion(){
 			return this.$store.getters.GetCurrentQuestion;
 		}
