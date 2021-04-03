@@ -22,7 +22,7 @@
                         <b-row>
                             <!-- create own question -->
                             <div>
-                                <b-card class="mt-3" header="Create your own Question:" style="width:208%;">
+                                <b-card id="selfquestion" class="mt-3" header="Create your own Question:">
                                     <b-form>
                                         <b-form-group id="input-group-1">
                                             <b-form-input v-model="newQ.question" placeholder="Enter your question." required></b-form-input>
@@ -148,6 +148,18 @@ export default {
 <style>
 b-button{
     padding:20px;
+}
+
+#selfquestion{
+    width:560px;
+}
+
+@media screen and (max-width:710px){
+    #selfquestion{
+        width:260px;
+    }
+    
+    
 }
 </style>
 
