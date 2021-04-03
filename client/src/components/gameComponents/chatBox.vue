@@ -88,11 +88,11 @@ h2{
 	font-family: Arial, Helvetica, sans-serif;
 	/* font-weight: bold; */
 }
-#right{
-	/* background-color:white; */
-	/* height : 300px; */
-	/* height:500px; */
-}
+/* #right{
+	background-color:white; 
+	height : 300px;
+	height:500px; 
+} */
 #message {
 	width: 400px;
 	margin: auto;

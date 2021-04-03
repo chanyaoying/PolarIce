@@ -35,6 +35,7 @@
                                     </b-form>
                                 </b-card>
                             </div>
+                            
                         </b-row>
 
                         <b-row>
@@ -86,9 +87,8 @@
 </template>
 
 <script>
-
 export default {
-    // name: 'room',
+    name: 'room',
     data: () => ({
         createdRoomID:false,
         roomID:'',
@@ -99,7 +99,7 @@ export default {
         newQ:{
             question: "",
             choice1: "",
-            choice2:""
+            choice2: ""
         }
     }),
     methods: {
@@ -131,7 +131,7 @@ export default {
         },
         done(){
             this.$store.commit('addFinalQuestion', this.question_list);
-            console.log(this.$store.state.finalQuestion);
+            this.question_list = [];
         },
     },
     
