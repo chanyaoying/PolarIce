@@ -29,6 +29,9 @@
 					Leave Room
 				</b-button>
 			</div>
+			<div v-else>
+				<component :is="currentComponent"></component>
+			</div>
 		</div>
 
 		<div v-else>
