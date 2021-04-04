@@ -33,6 +33,7 @@ import pika
 import json
 
 from twitter import tweet
+from firebase import firebase
 
 # import flask_compressor
 
@@ -62,14 +63,6 @@ db = SQLAlchemy(app)
 # Model layer
 ######################################################################################
 
-##################  ##### FIREBASE ###########################
-
-# from firebase import firebase
-# fb_app = firebase.FirebaseApplication('https://polarice-95e3e-default-rtdb.firebaseio.com/', None)
-# result = fb_app.get('/question', None)
-# print(result)
-
-####################### FIREBASE ###########################
 
 ######################################################################################
 # AUTHENTICATION
@@ -245,6 +238,12 @@ def questionBank():
     Authenticated user will request for question from the question bank.
     Retrieve the questions and return it as a json to the client.
     """
+    fb_app = firebase.FirebaseApplication('https://polarice-95e3e-default-rtdb.firebaseio.com/', None)
+    try: 
+        result = fb_app.get('/question', None)
+        return result, 200
+    except:
+        return "Error connecting to firebase", 400
     pass
 
 @app.route('/load', methods=['POST'])
