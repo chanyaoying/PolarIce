@@ -80,14 +80,12 @@ export default new Vuex.Store({
                 }
             
             state.finalQuestion.push(
-                    {usercreated:userCreated, 
-                    firebase:firebase,
-                    testBank:testBank
-                    }
+                    {usercreated:userCreated}, 
+                    {firebase:firebase},
+                    {testBank:testBank}
             );
             
-        }
-        
+        },       
         
     },
     actions: {

@@ -132,6 +132,7 @@ export default {
         done(){
             this.$store.commit('addFinalQuestion', this.question_list);
             this.question_list = [];
+            console.log(this.$store.state.finalQuestion);
         },
     },
     
