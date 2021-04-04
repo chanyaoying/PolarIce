@@ -73,13 +73,14 @@
 									class="mt-3"
 									header="You can choose to use the following questions (optional):"
 								>
+                                <button @click="getDataFromFirebase()">click me</button>
 									<div class="ml-4">
 										<ol>
 											<li
 												style="text-align: left"
 												v-for="(
 													dbQuestion, i
-												) in questions"
+												) in firebase"
 												:key="i"
 											>
 												<b-row>
@@ -171,9 +172,7 @@ export default {
 	data: () => ({
 		createdRoomID: false,
 		// roomID:'',
-		userCreated: [],
-		firebase: [],
-		testBank: [],
+        firebase: [],
 		question_list: [],
 		newQ: {
 			question: "",
@@ -232,6 +231,7 @@ export default {
             authAxios   
                 .get("https://127.0.0.1:5000/getQuestionBank")
                 .then((res) => {
+                    this.firebase.push(res.data) 
                     console.log("firebase results", res.data)
                 })
                 .catch((err) => {
@@ -239,7 +239,7 @@ export default {
                         console.log("Failed in fetching firebase db",err)
                     } 
                 }) 
-
+            // return this.firebase;
         }
 	},
 
