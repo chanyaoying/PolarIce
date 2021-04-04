@@ -73,7 +73,9 @@
 									class="mt-3"
 									header="You can choose to use the following questions (optional):"
 								>
-                                <button @click="getDataFromFirebase()">click me</button>
+									<button @click="getDataFromFirebase()">
+										click me
+									</button>
 									<div class="ml-4">
 										<ol>
 											<li
@@ -164,15 +166,14 @@
 
 <script>
 import authAxios from "../components/authAxios";
-import sampleQuestion from "../store/sampleQuestions";
-import { mapState } from 'vuex';
+import { mapState } from "vuex";
 
 export default {
 	name: "room",
 	data: () => ({
 		createdRoomID: false,
 		// roomID:'',
-        firebase: [],
+		firebase: [],
 		question_list: [],
 		newQ: {
 			question: "",
@@ -211,40 +212,29 @@ export default {
 		done() {
 			this.$store.commit("addFinalQuestion", this.question_list); // what is this for?
 			console.log("this.question_list :>> ", this.question_list);
+
+			// invoke roomController/create
+			window.location.href = `https://127.0.0.1:5000/create?pid=${this.userData.pid}&questions=${JSON.stringify(this.question_list)}`;
 			this.question_list = [];
-
-			
-            
-            // temp
-			let questions = sampleQuestion[0];
-
-			// invoke roomManagement/create
-			authAxios.get("https://127.0.0.1:5000/create", {
-                pid: this.userData.pid,
-                questions: questions,
-            }).then((res) => {
-				// send question info
-                console.log('res :>> ', res);
-			});
 		},
-        getDataFromFirebase(){
-            authAxios   
-                .get("https://127.0.0.1:5000/getQuestionBank")
-                .then((res) => {
-                    this.firebase.push(res.data) 
-                    console.log("firebase results", res.data)
-                })
-                .catch((err) => {
-                    if (status == 400) {
-                        console.log("Failed in fetching firebase db",err)
-                    } 
-                }) 
-            // return this.firebase;
-        }
+		getDataFromFirebase() {
+			authAxios
+				.get("https://127.0.0.1:5000/getQuestionBank")
+				.then((res) => {
+					this.firebase.push(res.data);
+					console.log("firebase results", res.data);
+				})
+				.catch((err) => {
+					if (status == 400) {
+						console.log("Failed in fetching firebase db", err);
+					}
+				});
+			// return this.firebase;
+		},
 	},
 
 	computed: {
-        ...mapState(['userData']),
+		...mapState(["userData"]),
 		questions() {
 			return this.$store.getters.GetFireBase;
 		},

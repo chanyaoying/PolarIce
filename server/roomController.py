@@ -234,6 +234,15 @@ def createRoomCallback():
     Parse this json and send the room state to the database.
     Return a success message to the client.
     """
+
+    # get GET params
+    pid = request.args.get("pid")
+    questions = request.args.get('questions')
+
+    # business logic
+    print(questions)
+    print("redirecting to manageRoom now")
+
     return redirect("https://127.0.0.1:8080/manageRoom")   
 
 
