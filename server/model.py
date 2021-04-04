@@ -17,13 +17,32 @@ import requests
 import random
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
-from flask_graphql import GraphQLView
-import json
+
 
 app = Flask(__name__)
+    
+# Configs
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['ENV'] = 'development'
+app.config['DEBUG'] = True
+app.config['SECRET_KEY'] = 'mysecret'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' +    os.path.join(basedir, 'data.sqlite')
+app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
+Base = declarative_base()
+# We will need this for querying
+# Base.query = db_session.query_property()
 
 # Modules
 db = SQLAlchemy(app)
+# Naive database setup
+try:
+    init_db_command()
+    db.create_all()
+except sqlite3.OperationalError:
+    # Assume it's already been created
+    pass
 
 class Room(db.Model):
     __tablename__ = 'room'
@@ -64,7 +83,7 @@ class RoomObject(SQLAlchemyObjectType):
 class Query(graphene.ObjectType):
     node = graphene.relay.Node.Field()
     all_questions = SQLAlchemyConnectionField(QuestionObject)
-    all_roooms = SQLAlchemyConnectionField(RoomObject)
+    all_rooms = SQLAlchemyConnectionField(RoomObject)
 
 # noinspection PyTypeChecker
 schema_query = graphene.Schema(query=Query)
