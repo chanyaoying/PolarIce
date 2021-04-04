@@ -32,11 +32,10 @@ import amqp_setup
 import pika
 import json
 
-from twitter import tweet
-
-# import flask_compressor
-
 app = Flask(__name__)
+from twitter import tweet
+# import flask_compressor
+from firebase import firebase
 # run_with_ngrok(app)  # Start ngrok when app is run
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -62,14 +61,6 @@ db = SQLAlchemy(app)
 # Model layer
 ######################################################################################
 
-##################  ##### FIREBASE ###########################
-
-# from firebase import firebase
-# fb_app = firebase.FirebaseApplication('https://polarice-95e3e-default-rtdb.firebaseio.com/', None)
-# result = fb_app.get('/question', None)
-# print(result)
-
-####################### FIREBASE ###########################
 
 ######################################################################################
 # AUTHENTICATION
@@ -217,7 +208,7 @@ def logout():
 # ROOM CREATION (LOGIN REQUIRED)
 ######################################################################################
 
-@app.route('/create')
+@app.route('/create', methods=['POST'])
 @login_required #decorater (wrapper for function) deifined by flask-login. using google oauth, check if works. 
 def createRoom():
     """
@@ -227,8 +218,14 @@ def createRoom():
     Parse this json and send the room state to the database.
     Return a success message to the client.
     """
-    pass
+    # get POST body
+    pid = requests.form["pid"]
+    questions = requests.form['questions']
 
+    # redirect to stripe
+    # TODO
+
+    # store 
 
 @app.route('/getQuestionBank')
 @login_required
@@ -237,6 +234,12 @@ def questionBank():
     Authenticated user will request for question from the question bank.
     Retrieve the questions and return it as a json to the client.
     """
+    fb_app = firebase.FirebaseApplication('https://polarice-95e3e-default-rtdb.firebaseio.com/', None)
+    try: 
+        result = fb_app.get('/question', None)
+        return result, 200
+    except Exception as e:
+        return e, 400
     pass
 
 @app.route('/load', methods=['POST'])
@@ -246,7 +249,7 @@ def start():
     Client calls this function.
     Authenticated user sends the roomID of the room to be started.
     The room will become live. A room that is not live cannot be connected by a student, even if the roomID exists.
-    Store live rooms as a list within gameManagement
+    Store live rooms as a list within gameManagement, with 7 digit room code
     Create a Game Object in Game.py --> return questions
     A unique link is generated for clients to join via websocket
     Return the unique link to the client.

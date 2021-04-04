@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import sampleQuestions from "./sampleQuestions"
 
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -77,18 +78,20 @@ export default new Vuex.Store({
                 } else if (question_list[question].dbsrc === 'firebase') {
                 firebase.push(question_list[question])
 
-                }else{
-                    testBank.push(question_list[question])
-                }
-            
-            state.finalQuestion.push(
-                    {usercreated:userCreated}, 
-                    {firebase:firebase},
-                    {testBank:testBank}
-            );
-            
-        },       
-        
+            } else {
+                testBank.push(question_list[question])
+            }
+
+            state.finalQuestion.push({
+                usercreated: userCreated,
+                firebase: firebase,
+                testBank: testBank
+            });
+
+        },
+        setUserData(state, payload) {
+            state.userData = payload
+        }
     },
     actions: {
         socket_updateChat({
