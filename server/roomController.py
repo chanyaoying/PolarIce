@@ -32,12 +32,10 @@ import amqp_setup
 import pika
 import json
 
-from twitter import tweet
-from firebase import firebase
-
-# import flask_compressor
-
 app = Flask(__name__)
+from twitter import tweet
+# import flask_compressor
+from firebase import firebase
 # run_with_ngrok(app)  # Start ngrok when app is run
 
 basedir = os.path.abspath(os.path.dirname(__file__))
