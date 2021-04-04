@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import sampleQuestions from "./sampleQuestions"
 
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -90,7 +91,7 @@ export default new Vuex.Store({
         },
         setUserData(state, payload) {
             state.userData = payload
-        },
+        }
     },
     actions: {
         socket_updateChat({
