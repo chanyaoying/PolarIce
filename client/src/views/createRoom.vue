@@ -244,7 +244,14 @@ export default {
         ...mapState(['userData']),
 		
 	},
-	
+
+	created() {
+		// redirect user if not logged in
+		if (this.userData) {
+			// not logged in
+			this.$router.push("/404_notLoggedIn")
+		}	
+	},
 };
 </script>
 

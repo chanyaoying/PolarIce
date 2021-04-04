@@ -49,6 +49,11 @@ const routes = [{
     name: 'matching/roomID',
     component: () => import('../views/matching.vue')
   },
+  {
+    path: '/404_notLoggedIn',
+    name: '404_notLoggedIn',
+    component: () => import('../views/404_notLoggedIn.vue')
+  },
 ]
 
 const router = new VueRouter({

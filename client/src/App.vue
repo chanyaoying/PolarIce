@@ -99,6 +99,7 @@ export default {
             .then((res) => {
                 console.log("result :>> ", res);
                 this.async_setUserData({});
+                this.$router.push("/");
             })
         },
 
