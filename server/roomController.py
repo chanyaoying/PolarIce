@@ -208,6 +208,9 @@ def logout():
 # ROOM CREATION (LOGIN REQUIRED)
 ######################################################################################
 
+room_creation_params = {"pid": "", "q": ""}
+
+
 @app.route('/create', methods=['GET'])
 @login_required #decorater (wrapper for function) deifined by flask-login. using google oauth, check if works. 
 def createRoom():
@@ -215,18 +218,21 @@ def createRoom():
     Redirect to stripe payment page first
     Authenticated user  with all the details of the room/questions.
     """
+
+    global room_creation_params
+
     # get POST body
     pid = request.args.get("pid")
-    questions = request.args.get('questions')
+    q = request.args.get('q')
 
-    # redirect("google.com")
-
-    print(pid, questions)
+    # keep params for callback
+    room_creation_params["pid"] = pid
+    room_creation_params["q"] = q
 
     return redirect("http://127.0.0.1:5011/") # redirect to stripe payment confirmation page
 
 
-@app.route('/create/callback', methods=['GET'])
+@app.route('/create/callback')
 @login_required
 def createRoomCallback():
     """
@@ -236,11 +242,12 @@ def createRoomCallback():
     """
 
     # get GET params
-    pid = request.args.get("pid")
-    questions = request.args.get('questions')
+    global room_creation_params
+    pid = room_creation_params["pid"]
+    q = room_creation_params["q"]
 
     # business logic
-    print(questions)
+    print(pid, q)
     print("redirecting to manageRoom now")
 
     return redirect("https://127.0.0.1:8080/manageRoom")   
@@ -290,4 +297,3 @@ def start():
 
 if __name__ == '__main__':
     app.run(ssl_context="adhoc", port=5000)
-    # app.run()

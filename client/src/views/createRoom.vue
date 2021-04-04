@@ -214,7 +214,7 @@ export default {
 			console.log("this.question_list :>> ", this.question_list);
 
 			// invoke roomController/create
-			window.location.href = `https://127.0.0.1:5000/create?pid=${this.userData.pid}&questions=${JSON.stringify(this.question_list)}`;
+			window.location.href = `https://127.0.0.1:5000/create?pid=${this.userData.pid}&q=${JSON.stringify(this.question_list)}`;
 			this.question_list = [];
 		},
 		getDataFromFirebase() {
