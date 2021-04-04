@@ -229,8 +229,6 @@ def createRoom():
 
     # store 
 
-
-
 @app.route('/getQuestionBank')
 @login_required
 def questionBank():
@@ -242,8 +240,8 @@ def questionBank():
     try: 
         result = fb_app.get('/question', None)
         return result, 200
-    except:
-        return "Error connecting to firebase", 400
+    except Exception as e:
+        return e, 400
     pass
 
 @app.route('/load', methods=['POST'])
