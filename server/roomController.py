@@ -262,7 +262,7 @@ def questionBank():
     """
     fb_app = firebase.FirebaseApplication('https://polarice-95e3e-default-rtdb.firebaseio.com/', None)
     try: 
-        result = fb_app.get('/question', None)
+        result = fb_app.get('/question', None).values()
         return result, 200
     except Exception as e:
         return e, 400
