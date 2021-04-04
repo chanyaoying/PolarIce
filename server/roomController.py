@@ -50,8 +50,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' +    os.path.join(basedir, 
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
-# Modules
-db = SQLAlchemy(app)
+
 
 ## to call twitter service
 # status = tweet("hello!")
@@ -208,24 +207,34 @@ def logout():
 # ROOM CREATION (LOGIN REQUIRED)
 ######################################################################################
 
-@app.route('/create', methods=['POST'])
+@app.route('/create', methods=['GET'])
 @login_required #decorater (wrapper for function) deifined by flask-login. using google oauth, check if works. 
 def createRoom():
     """
     Redirect to stripe payment page first
     Authenticated user  with all the details of the room/questions.
+    """
+    # get POST body
+    pid = request.args.get("pid")
+    questions = request.args.get('questions')
+
+    # redirect("google.com")
+
+    print(pid, questions)
+
+    return redirect("http://127.0.0.1:5011/")
+
+
+@app.route('/create/callback', methods=['GET'])
+@login_required #decorater (wrapper for function) deifined by flask-login. using google oauth, check if works. 
+def createRoomCallback():
+    """
     A unique RID is generated.
     Parse this json and send the room state to the database.
     Return a success message to the client.
     """
-    # get POST body
-    pid = requests.form["pid"]
-    questions = requests.form['questions']
+    
 
-    # redirect to stripe
-    # TODO
-
-    # store 
 
 @app.route('/getQuestionBank')
 @login_required
