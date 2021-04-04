@@ -6,6 +6,7 @@
         <b-form>
             <h1 class="mt-5">Click the button to create New Room.</h1>
             <b-button variant="dark" style="margin:10px; width:180px; height:50px;" @click="generateRoom()">Create</b-button>
+            <b-button variant="dark" style="margin:10px; width:180px; height:50px;" @click="getDataFromFirebase()">Get firebase data</b-button>
         </b-form>
     </div>
 
@@ -87,6 +88,7 @@
 </template>
 
 <script>
+import authAxios from "../components/authAxios";
 export default {
     name: 'room',
     data: () => ({
@@ -133,6 +135,19 @@ export default {
             this.$store.commit('addFinalQuestion', this.question_list);
             this.question_list = [];
         },
+        getDataFromFirebase(){
+            authAxios   
+                .get("https://127.0.0.1:5000/getQuestionBank")
+                .then((res) => {
+                    console.log("firebase results", res.data)
+                })
+                .catch((err) => {
+                    if (status == 400) {
+                        console.log("Failed in fetching firebase db",err)
+                    } 
+                }) 
+
+        }
     },
     
     computed:{
