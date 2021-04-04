@@ -22,6 +22,9 @@ import json
 
 app = Flask(__name__)
 
+# Modules
+db = SQLAlchemy(app)
+
 class Room(db.Model):
     __tablename__ = 'room'
     roomid = db.Column(db.Integer, primary_key=True, unique=True)
@@ -126,4 +129,4 @@ app.add_url_rule('/graphql-mutation', view_func=GraphQLView.as_view(
 ))
 
 if __name__ == '__main__':
-    app.run(ssl_context="adhoc", port=5003)
+    app.run(port=5003)
