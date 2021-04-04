@@ -217,7 +217,7 @@ def logout():
 # ROOM CREATION (LOGIN REQUIRED)
 ######################################################################################
 
-@app.route('/create')
+@app.route('/create', methods=['POST'])
 @login_required #decorater (wrapper for function) deifined by flask-login. using google oauth, check if works. 
 def createRoom():
     """
@@ -227,7 +227,15 @@ def createRoom():
     Parse this json and send the room state to the database.
     Return a success message to the client.
     """
-    pass
+    # get POST body
+    pid = requests.form["pid"]
+    questions = requests.form['questions']
+
+    # redirect to stripe
+    # TODO
+
+    # store 
+
 
 
 @app.route('/getQuestionBank')
@@ -246,7 +254,7 @@ def start():
     Client calls this function.
     Authenticated user sends the roomID of the room to be started.
     The room will become live. A room that is not live cannot be connected by a student, even if the roomID exists.
-    Store live rooms as a list within gameManagement
+    Store live rooms as a list within gameManagement, with 7 digit room code
     Create a Game Object in Game.py --> return questions
     A unique link is generated for clients to join via websocket
     Return the unique link to the client.
