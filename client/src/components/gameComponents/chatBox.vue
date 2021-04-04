@@ -1,15 +1,23 @@
 <template>
 	<div id="right">
-		<hr />
+		<b-card>
 		<h2>Message</h2>
 		<br />
-		<ul style="list-style-type:none;">
-			<li v-for="(data, key) in chatHistory[roomID]" :key="key">
-				{{ data }}
-			</li>
-		</ul>
+		<div class="scroll">
+			<ul style="list-style-type:none;">
+				<li v-for="(data, key) in chatHistory[roomID]" :key="key" >
+					<div class="profword" v-if="data[0] == ':'">
+						{{ data }}
+					</div>
+					<div v-else>
+						{{ data }}
+					</div>
+				</li>
+			</ul>
+		</div>
 		Send a message to the room: <br />
-
+		<!-- {{chatHistory}} <br> -->
+	
 		<b-input-group id="message" class="mt-3">
 			<b-form-input
 				type="text"
@@ -18,14 +26,15 @@
 				placeholder="Enter message"
 			></b-form-input>
 			<b-input-group-append>
-				<b-button @click="sendMessage" variant="dark"
-					>Send Message</b-button
-				>
+				<b-button @click="sendMessage" variant="dark">
+					Send Message
+				</b-button>
 			</b-input-group-append>
 		</b-input-group>
-		<br /><br />
+		
 		<!-- <p>Current Players (chat): {{ users }}</p> -->
-		<br /><br />
+		<br />
+		</b-card>
 	</div>
 </template>
 
@@ -50,6 +59,17 @@ export default {
 			}); // by who
 			this.message = "";
 		},
+		scrollToEnd(){
+			var container = document.querySelector(".scroll");
+			var scrollHeight = container.scrollHeight;
+			container.scrollTop = scrollHeight;
+		}
+	},
+	mounted(){
+		this.scrollToEnd();
+	},
+	updated(){
+		this.scrollToEnd();
 	},
 	computed: {
 		...mapState(["chatHistory", "users", "roomID", "nickname"]),
@@ -68,12 +88,24 @@ h2{
 	font-family: Arial, Helvetica, sans-serif;
 	/* font-weight: bold; */
 }
-#right{
-	background-color:white;
-	/* height:500px; */
-}
+/* #right{
+	background-color:white; 
+	height : 300px;
+	height:500px; 
+} */
 #message {
 	width: 400px;
 	margin: auto;
+}
+.scroll{
+	margin:auto;
+	width:90%;
+	max-height:150px;
+	overflow:scroll;
+	margin-bottom: 20px;
+	
+}
+.profword{
+	color:red;
 }
 </style>

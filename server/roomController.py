@@ -54,8 +54,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 # Modules
 db = SQLAlchemy(app)
 
-# twitter
-
+## to call twitter service
 # status = tweet("hello!")
 # print(status)
 
@@ -63,7 +62,7 @@ db = SQLAlchemy(app)
 # Model layer
 ######################################################################################
 
-####################### FIREBASE ###########################
+##################  ##### FIREBASE ###########################
 
 # from firebase import firebase
 # fb_app = firebase.FirebaseApplication('https://polarice-95e3e-default-rtdb.firebaseio.com/', None)
@@ -71,112 +70,6 @@ db = SQLAlchemy(app)
 # print(result)
 
 ####################### FIREBASE ###########################
-
-# ---------------------- Database models ---------------
-
-class Room(db.Model):
-    __tablename__ = 'room'
-    roomid = db.Column(db.Integer, primary_key=True, unique=True)
-    profid = db.Column(db.Integer, index=True, unique=True)
-
-    questions = db.relationship('Question', backref='room') # backeref establishes a .room attribute on Question, which will refer to the parent Room object 
-    
-    def __repr__(self):
-        return '< %r>' % self.profid
-
-class Question(db.Model):
-    __tablename__ = 'question'
-    questionid = db.Column(db.Integer, primary_key=True, unique=True)
-    question = db.Column(db.String(256), index=True)
-    choices = db.Column(db.String(256), index=True)    
-    roomid = db.Column(db.Integer, ForeignKey('room.roomid'))
-    
-    def __repr__(self):
-        return '<Question %r>' % self.question
-
-# Schema Objects 
-''' 
-show what kind of type of object will be shown in the graph. 
-'''
-
-# -------------------- GQL Schemas ------------------
-class QuestionObject(SQLAlchemyObjectType):
-    class Meta:
-        model = Question
-        interfaces = (graphene.relay.Node,)
-
-class RoomObject(SQLAlchemyObjectType):
-    class Meta:
-        model = Room 
-        interfaces = (graphene.relay.Node,)
-
-class Query(graphene.ObjectType):
-    node = graphene.relay.Node.Field()
-    all_questions = SQLAlchemyConnectionField(QuestionObject)
-    all_roooms = SQLAlchemyConnectionField(RoomObject)
-
-# noinspection PyTypeChecker
-schema_query = graphene.Schema(query=Query)
-
-# Mutation Objects Schema
-class CreateRoom(graphene.Mutation):
-    class Arguments:
-        roomid = graphene.Int(required=True)
-        profid = graphene.Int(required=True) 
-
-    room = graphene.Field(lambda: RoomObject)
-
-    def mutate(self, info, roomid, profid):
-        room = Room(roomid=roomid, profid=profid)
-        db.session.add(room)
-        db.session.commit()
-        return CreateRoom(room=room)
-
-class CreateQuestion(graphene.Mutation):
-    class Arguments:
-        questionid = graphene.Int(required=True)
-        question = graphene.String(required=True)
-        choices = graphene.String(required=True)
-        roomid = graphene.Int(required=True)
-    
-    question = graphene.Field(lambda: QuestionObject)
-
-    def mutate(self, info, questionid, question, choices, roomid):
-        room = Room.query.filter_by(roomid=roomid).first() #lookup which room 
-        question = Question(questionid=questionid, question=question, choices=choices, roomid=roomid)
-        if room is not None:
-            question.room = room
-        db.session.add(question)
-        db.session.commit()
-        return CreateQuestion(question=question)
-
-class Mutation(graphene.ObjectType):
-    create_room = CreateRoom.Field()
-    create_question = CreateQuestion.Field()
-
-schema = graphene.Schema(query=Query, mutation=Mutation)
-
-# Routes 
-app.add_url_rule(
-    '/graphql',
-    view_func=GraphQLView.as_view(
-        'graphql',
-        schema=schema,
-        graphiql=True # for having the GraphiQL interface
-    )
-)
-# /endpoint for query
-app.add_url_rule('/graphql-query', view_func=GraphQLView.as_view(
-    'graphql-query',
-    schema=schema_query, graphiql=True
-))
-
-# /endpoint for mutation
-app.add_url_rule('/graphql-mutation', view_func=GraphQLView.as_view(
-    'graphql-mutation',
-    schema=schema, graphiql=True
-))
-
 
 ######################################################################################
 # AUTHENTICATION
@@ -216,7 +109,7 @@ def load_user(user_id):
 @app.route('/')  # should change to /manage
 def index():
     if current_user.is_authenticated:  # determine if the current user interacting with app is logged in or not
-        return jsonify({'name': current_user.name, 'email': current_user.email, 'profile_pic': current_user.profile_pic}), 200
+        return jsonify({'pid': current_user.id, 'name': current_user.name, 'email': current_user.email, 'profile_pic': current_user.profile_pic}), 200
     else:
         message = json.dumps({ "Error" : "User not logged in", "Code" : 400 }) # python dict of error data -> json string
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="game.error", body=message) # publish to exchange
@@ -324,19 +217,25 @@ def logout():
 # ROOM CREATION (LOGIN REQUIRED)
 ######################################################################################
 
-# TODO
-
-
-@app.route('/create')
+@app.route('/create', methods=['POST'])
 @login_required #decorater (wrapper for function) deifined by flask-login. using google oauth, check if works. 
 def createRoom():
     """
+    Redirect to stripe payment page first
     Authenticated user  with all the details of the room/questions.
-    A unique RoomID is generated.
+    A unique RID is generated.
     Parse this json and send the room state to the database.
     Return a success message to the client.
     """
-    pass
+    # get POST body
+    pid = requests.form["pid"]
+    questions = requests.form['questions']
+
+    # redirect to stripe
+    # TODO
+
+    # store 
+
 
 
 @app.route('/getQuestionBank')
@@ -348,7 +247,6 @@ def questionBank():
     """
     pass
 
-
 @app.route('/load', methods=['POST'])
 @login_required
 def start():
@@ -356,7 +254,7 @@ def start():
     Client calls this function.
     Authenticated user sends the roomID of the room to be started.
     The room will become live. A room that is not live cannot be connected by a student, even if the roomID exists.
-    Store live rooms as a list within gameManagement
+    Store live rooms as a list within gameManagement, with 7 digit room code
     Create a Game Object in Game.py --> return questions
     A unique link is generated for clients to join via websocket
     Return the unique link to the client.
@@ -369,7 +267,7 @@ def start():
         response = requests.post('http://127.0.0.1:5001/live', data={'roomID': roomID})
 
         if response.status == 200:
-            return f"https://127.0.0.1:8080/playGame/{roomID}", 200 # this link is where users will connect to the room
+            return f"https://127.0.0.1:8080/playGame/console/{roomID}", 200 # this link is where the prof will use to control the game; redirect?
 
     # create Game object, return questions
 

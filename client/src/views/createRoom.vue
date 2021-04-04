@@ -22,7 +22,7 @@
                         <b-row>
                             <!-- create own question -->
                             <div>
-                                <b-card class="mt-3" header="Create your own Question:" style="width:208%;">
+                                <b-card id="selfquestion" class="mt-3" header="Create your own Question:">
                                     <b-form>
                                         <b-form-group id="input-group-1">
                                             <b-form-input v-model="newQ.question" placeholder="Enter your question." required></b-form-input>
@@ -35,6 +35,7 @@
                                     </b-form>
                                 </b-card>
                             </div>
+                            
                         </b-row>
 
                         <b-row>
@@ -65,8 +66,8 @@
                                 <li style="text-align:left;" v-for="addedQuestion in question_list" :key="addedQuestion">
                                     <b-row>
                                         <b-col cols="9">
-                                            <span><b>Question:</b> {{addedQuestion.question}}</span><br>
-                                            <span><b>Choices:</b> {{addedQuestion.choice}}</span>
+                                            <span><b>Question:</b> {{addedQuestion.title}}</span><br>
+                                            <span><b>Choices:</b> {{addedQuestion.choices}}</span>
                                         </b-col>
                                         <b-col>
                                             <b-button variant="danger" @click="remove(addedQuestion)">Remove</b-button> 
@@ -87,30 +88,30 @@
 
 <script>
 export default {
-    // name: 'room',
+    name: 'room',
     data: () => ({
         createdRoomID:false,
         roomID:'',
         userCreated:[],
-        fireBase:[],
-        final: [],
+        firebase:[],
+        testBank: [],
         question_list:[],
         newQ:{
             question: "",
             choice1: "",
-            choice2:""
+            choice2: ""
         }
     }),
     methods: {
+        
         generateRoom(){
             this.roomID = (Math.floor(Math.random()*1000000));
             this.createdRoomID = true; 
         },
         onSubmit(){
-            
             this.question_list.push({
                 title:this.newQ.question,
-                choices:[this.newQ.choice1,this.newQ.choice2],
+                choices:this.newQ.choice1.concat('/').concat(this.newQ.choice2),
                 dbsrc:'user'
             });
             this.newQ.question = '';
@@ -129,35 +130,15 @@ export default {
             this.question_list.splice(addedQuestion, 1);
         },
         done(){
-            for(var question in this.question_list)
-                if (question.dbsrc == 'user'){
-                    this.userCreated.push(question)
-                }else if (question.dbsrc == 'firebase'){
-                    this.fireBase.push(question)
-                }
-            this.final.push(
-                {usercreated:this.userCreated, 
-                firebase:this.fireBase,
-                testBank:this.question_list
-                }
-            )
-
-            this.$store.state.finalQuestion = this.final;
+            this.$store.commit('addFinalQuestion', this.question_list);
+            this.question_list = [];
         },
-        // pushFinalQuestion(final){
-        //     this.$store.
-        // }
     },
     
     computed:{
         questions(){
-            return this.$store.getters.getFireBase;
-        },
-        // setNewRoomQuestions(finalQuestion){
-        //     return this.$store.mutation.setNewRoomQuestions;
-        // },
-
-        
+            return this.$store.getters.GetFireBase;
+        },        
     }
 
 }
@@ -167,6 +148,18 @@ export default {
 <style>
 b-button{
     padding:20px;
+}
+
+#selfquestion{
+    width:560px;
+}
+
+@media screen and (max-width:710px){
+    #selfquestion{
+        width:260px;
+    }
+    
+    
 }
 </style>
 

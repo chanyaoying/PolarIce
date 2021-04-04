@@ -1,5 +1,7 @@
 <template>
-	<div>
+	<b-container>
+	<b-card id="ques">
+	<div v-if="currentQuestion == clicked">
 		<div id="question">
 			<h2>{{ title }}</h2>
 		</div>
@@ -11,25 +13,50 @@
 						variant="primary"
 						v-for="(choice, key) in splitChoices"
 						:key="key"
+						@click="onSelect(choice)"
 						>{{choice}}
 					</b-button>
 				</b-form>
 			</div>
 		</div>
+		
 	</div>
+	<div id="question" v-else>
+		<h2>Answer Submited! Please wait for the next question.</h2>
+	</div>
+	</b-card>
+	</b-container>
 </template>
 
 <script>
+
 export default {
 	name: "question",
 	props: ["title", "choices"],
 	sockets: {},
-	data: () => ({}),
-	methods: {},
+	data: () => ({
+		select: [],
+		clicked:0
+	}),
+	methods: {
+		onSelect(choice){
+			this.select.push(choice);
+			this.clicked += 1;
+			console.log(this.select);
+			if (this.clicked === this.$store.getters.getLoadedQLength){
+				console.log("last question, pushing to state.");
+				this.$store.commit('addCollectedResult',this.select);
+				// console.log(this.$store.state.collectedResult);
+			}
+		}
+	},
 	computed: {
 		splitChoices() {
 			return this.choices.split("/")
-		}
+		},
+		currentQuestion(){
+			return this.$store.getters.GetCurrentQuestion; 
+		},
 	},
 };
 </script>
@@ -41,7 +68,7 @@ h1 {
 	font-weight: bold;
 }
 #question {
-	margin-top: 50px;
+	/* margin-top: 10px; */
 	font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
 		sans-serif;
 }
@@ -52,7 +79,11 @@ h1 {
 	margin-right: 2%;
 }
 .choice1 {
-	margin: 100px 50px 0px 50px;
-	width: 400px;
+	margin: 70px 50px 20px 50px;
+	/* width:400px; */
+	width: 40%;
+}
+#ques{
+	height: 400px;
 }
 </style>

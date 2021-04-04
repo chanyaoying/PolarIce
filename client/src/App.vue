@@ -20,19 +20,12 @@
                 </span>
             </div>
             
-         
-                
-         
-            <!-- <img id ="animation" src="../src/assets/animation.gif"> -->
-            <!-- <router-link to="/">Home</router-link> | 
-            <router-link to="/play">About</router-link> | 
-            <router-link to= "/createRoom">createRoom</router-link> | 
-            <router-link to= "/playGame">Play Game</router-link> -->
-            <!-- <p @click="test">test</p> -->
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
-            <b-collapse class="collapse navbar-collapse " id="navbarNav">
+            <b-collapse class="navbar-collapse " id="navbarNav" is-nav>
+                <b-navbar-nav>
                 <ul class="navbar-nav mr-auto" id="leftSideNav">
+                    
                     <li class="b-nav-item">
                         <a class="nav-link current" href="#" style="padding:0px 20px;padding-bottom:unset;"><router-link to="/">Home</router-link></a>
                     </li>
@@ -41,8 +34,9 @@
                     </li>
                     <li class="b-nav-item">
                         <a class="nav-link" href="#" style="padding:0px 20px;padding-bottom:unset;"><router-link to= "/playGame">Play Game</router-link></a>
-                        </li>
+                    </li>
                 </ul>
+                </b-navbar-nav>
             </b-collapse>
 
         <!-- Right side -->
@@ -51,6 +45,7 @@
                 <li class="nav-item mt-1" >
                     <div class="dropdown">
                         <b-nav-item-dropdown :text= "userData.name" right>
+                            <b-dropdown-item href="#">pid: {{ userData.pid }}</b-dropdown-item>
                             <b-dropdown-item href="#">{{ userData.email }}</b-dropdown-item>
                             <b-dropdown-item @click="logout" href="#"><router-link to="/">Sign Out</router-link></b-dropdown-item>
                         </b-nav-item-dropdown>
@@ -74,13 +69,14 @@
 
 <script>
 import authAxios from './components/authAxios.js';
+import { mapState, mapActions } from 'vuex';
 // import animation from "../src/components/animation";
 
 export default {
     // components: { animation}, 
     name: "allRoom",
     data: () => ({
-        userData: "",
+        // userData: "",
         hover: false,
     }),
     created() {
@@ -88,24 +84,28 @@ export default {
             .get("https://127.0.0.1:5000/")
             .then((res) => {
                 console.log("result :>> ", res);
-                this.userData = res.data;
+                this.async_setUserData(res.data);
             })
             .catch((err) => {
                 console.log("err :>> ", err);
             });
     },
     methods: {
+        ...mapActions(['async_setUserData']),
         // insert logic for method
         logout(){
            authAxios
             .get("https://127.0.0.1:5000")
             .then((res) => {
                 console.log("result :>> ", res);
-                this.userData = "";
+                this.async_setUserData({});
             })
         },
 
-    }
+    },
+    computed: {
+        ...mapState(['userData']),
+    },
 };
 </script>
 

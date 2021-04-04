@@ -154,8 +154,6 @@ def on_join(data):
         component = "gameArea" if questions_data[room]['started'] else "gameLobby"
         # get game status if when user joins (user can join a started game)
         emit('changeComponent', component, room=room)
-        # get questions data
-        # emit("getQuestions", "test", room=room)
 
     else:
         # return error
@@ -291,5 +289,3 @@ def on_getQuestions(data):
 
 if __name__ == '__main__':
     socketio.run(app, port=5001)
-
-

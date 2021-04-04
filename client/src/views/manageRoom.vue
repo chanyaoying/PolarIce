@@ -18,7 +18,16 @@
                 </b-card>
                 <b-card id = "card">
                     <b-avatar :src="require('../assets/edit.png')" size="6rem"></b-avatar>
-                    <b-button href="#" variant="dark" id="button">Edit Room</b-button>
+                    <b-button variant="dark" id="button" @click="$bvModal.show('bv-modal')">Edit Room</b-button>
+
+                    <b-modal id="bv-modal" hide-footer>
+                        <template #modal-title>
+                        Sorry. We are still working on this function.
+                        </template>
+                        <b-img id="us" class="my-2" src="../assets/us.jpg"></b-img>
+                        <b-button class="mt-3" block @click="$bvModal.hide('bv-modal')">Close Me</b-button>
+                    </b-modal>
+
                 </b-card>
                 </b-row>
                 </b-card>
@@ -79,6 +88,12 @@
     }
     .buttontext{
         color: white;
+    }
+    #us{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width:80%;
     }
 </style>
 
