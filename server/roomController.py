@@ -34,8 +34,8 @@ import json
 
 app = Flask(__name__)
 from twitter import tweet
-# import flask_compressor
-# from firebase import firebase
+ 
+from firebase import firebase
 # run_with_ngrok(app)  # Start ngrok when app is run
 
 
