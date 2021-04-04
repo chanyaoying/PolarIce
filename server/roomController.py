@@ -38,7 +38,6 @@ from twitter import tweet
 # from firebase import firebase
 # run_with_ngrok(app)  # Start ngrok when app is run
 
-from Naked.toolshed.shell import execute_js, muterun_js
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -223,14 +222,8 @@ def createRoom():
     # redirect("google.com")
 
     print(pid, questions)
-    # data to be passed to process payment with stripe_pay
-    # run js script to redirect to room (lazy + messy to implement here)
-    # response = muterun_js('flask_stripe/static/script-ajax.js')
-    # if response.exitcode == 0:
-    #     print(response.stdout)
-    # else:
-    #     sys.stderr.write(response.stderr)
-    return redirect("http://127.0.0.1:5011/")
+
+    return redirect("http://127.0.0.1:5011/") # redirect to stripe payment confirmation page
 
 
 @app.route('/create/callback', methods=['GET'])
