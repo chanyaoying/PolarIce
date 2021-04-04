@@ -87,10 +87,10 @@ class Query(graphene.ObjectType):
     all_questions = SQLAlchemyConnectionField(QuestionObject)
     all_rooms = SQLAlchemyConnectionField(RoomObject)
     
-    room_by_roomid = graphene.Field(Room, roomid=graphene.String()) # find room by id
-    def resolve_room_by_roomid(self,root,info,roomid):
-        room = Room.objects.get(pk=roomid) #lookup which room 
-        return room
+    # room_by_roomid = Field(Room, roomid=graphene.Int()) # find room by id
+    # def resolve_room_by_roomid(self,root,info,roomid):
+    #     room = Room(roomid=roomid) #lookup which room 
+    #     return room
 
 # noinspection PyTypeChecker
 schema_query = graphene.Schema(query=Query)
