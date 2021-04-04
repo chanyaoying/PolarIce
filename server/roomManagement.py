@@ -109,7 +109,7 @@ def load_user(user_id):
 @app.route('/')  # should change to /manage
 def index():
     if current_user.is_authenticated:  # determine if the current user interacting with app is logged in or not
-        return jsonify({'name': current_user.name, 'email': current_user.email, 'profile_pic': current_user.profile_pic}), 200
+        return jsonify({'pid': current_user.id, 'name': current_user.name, 'email': current_user.email, 'profile_pic': current_user.profile_pic}), 200
     else:
         message = json.dumps({ "Error" : "User not logged in", "Code" : 400 }) # python dict of error data -> json string
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="game.error", body=message) # publish to exchange
@@ -223,7 +223,7 @@ def createRoom():
     """
     Redirect to stripe payment page first
     Authenticated user  with all the details of the room/questions.
-    A unique RoomID is generated.
+    A unique RID is generated.
     Parse this json and send the room state to the database.
     Return a success message to the client.
     """
@@ -259,7 +259,7 @@ def start():
         response = requests.post('http://127.0.0.1:5001/live', data={'roomID': roomID})
 
         if response.status == 200:
-            return f"https://127.0.0.1:8080/playGame/{roomID}", 200 # this link is where users will connect to the room
+            return f"https://127.0.0.1:8080/playGame/console/{roomID}", 200 # this link is where the prof will use to control the game; redirect?
 
     # create Game object, return questions
 

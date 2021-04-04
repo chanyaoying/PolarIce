@@ -5,10 +5,11 @@ import sampleQuestions from "./sampleQuestions"
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {
-        finalQuestion:[],
+    state: {
+        userData: {},
+        finalQuestion: [],
         nickname: "",
-        roomID: '',
+        roomID: '', // this room ID is the ID of the room that the user is currently in. e.g. Test Room
         currentComponent: 'gameLobby',
         currentQuestion: 0, // changes as the prof clicks next
         loadedQuestions: [], // the questions in the game
@@ -59,36 +60,37 @@ export default new Vuex.Store({
         getQuestions(state, data) {
             state.loadedQuestions = data
         },
-        addCollectedResult(state, select){
-            state.collectedResult.push({   
-                name:state.nickname,
-                data:select})
+        addCollectedResult(state, select) {
+            state.collectedResult.push({
+                name: state.nickname,
+                data: select
+            })
         },
-        addFinalQuestion(state, question_list){
+        addFinalQuestion(state, question_list) {
             var userCreated = []
             var firebase = []
             var testBank = []
-            for(var question in question_list)
-                if (question_list[question].dbsrc === 'user'){
+            for (var question in question_list)
+                if (question_list[question].dbsrc === 'user') {
                     userCreated.push(question_list[question])
 
-                }else if (question_list[question].dbsrc === 'firebase'){
-                    firebase.push(question_list[question])
+                } else if (question_list[question].dbsrc === 'firebase') {
+                firebase.push(question_list[question])
 
-                }else{
-                    testBank.push(question_list[question])
-                }
-            
-            state.finalQuestion.push(
-                    {usercreated:userCreated, 
-                    firebase:firebase,
-                    testBank:testBank
-                    }
-            );
-            
-        }
-        
-        
+            } else {
+                testBank.push(question_list[question])
+            }
+
+            state.finalQuestion.push({
+                usercreated: userCreated,
+                firebase: firebase,
+                testBank: testBank
+            });
+
+        },
+        setUserData(state, payload) {
+            state.userData = payload
+        },
     },
     actions: {
         socket_updateChat({
@@ -116,22 +118,31 @@ export default new Vuex.Store({
         }, data) {
             commit("changeComponent", data)
         },
-        socket_nextQuestion({commit}, data) {
+        socket_nextQuestion({
+            commit
+        }, data) {
             commit("nextQuestion", data)
         },
-        socket_getQuestions({commit}, data) {
+        socket_getQuestions({
+            commit
+        }, data) {
             commit("getQuestions", data)
         },
-        
+        async_setUserData({
+            commit
+        }, data) {
+            commit("setUserData", data)
+        }
+
     },
-    getters:{
-        GetCurrentQuestion(state){
+    getters: {
+        GetCurrentQuestion(state) {
             return state.currentQuestion;
         },
-        GetFireBase(state){
+        GetFireBase(state) {
             return state.questions;
         },
-        getLoadedQLength(state){
+        getLoadedQLength(state) {
             return state.loadedQuestions.length;
         }
     },
