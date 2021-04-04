@@ -23,7 +23,7 @@
 
 				<b-container id="fluid">
 					<b-row>
-						<b-col col="6">
+						<b-col>
 							<b-row>
 								<!-- create own question -->
 								<div>
@@ -71,32 +71,31 @@
 								<!-- Random questions -->
 								<b-card
 									class="mt-3"
+									id="selfquestion"
 									header="You can choose to use the following questions (optional):"
 								>
-									<button @click="getDataFromFirebase()">
-										click me
-									</button>
 									<div class="ml-4">
 										<ol>
 											<li
 												style="text-align: left"
 												v-for="(
-													dbQuestion, i
+													firebasedb, i
 												) in firebase"
 												:key="i"
 											>
 												<b-row>
 													<b-col cols="10">
+														
 														<span
 															><b>Question:</b>
 															{{
-																dbQuestion.title
+																firebasedb.title
 															}}</span
 														><br />
 														<span
 															><b>Choices:</b>
 															{{
-																dbQuestion.choices
+																firebasedb.choices
 															}}</span
 														>
 													</b-col>
@@ -104,7 +103,7 @@
 														<b-button
 															variant="warning"
 															@click="
-																add(dbQuestion)
+																add(firebasedb)
 															"
 															>Add</b-button
 														>
@@ -117,7 +116,7 @@
 								</b-card>
 							</b-row>
 						</b-col>
-						<b-col col="6">
+						<b-col>
 							<b-card class="mt-3" header="Added Question">
 								<ol class="ml-3">
 									<li
@@ -181,6 +180,9 @@ export default {
 			choice2: "",
 		},
 	}),
+	mounted:function(){
+		this.getDataFromFirebase();
+	},
 	methods: {
 		// generateRoom(){
 		//     this.roomID = (Math.floor(Math.random()*1000000));
@@ -203,11 +205,16 @@ export default {
 			this.newQ.choice1 = "";
 			this.newQ.choice2 = "";
 		},
-		add(dbQuestion) {
-			this.question_list.push(dbQuestion);
+		add(firebasedb) {
+			this.question_list.push(firebasedb);
+			this.firebase.splice(firebasedb,1)
 		},
 		remove(addedQuestion) {
 			this.question_list.splice(addedQuestion, 1);
+			if (addedQuestion.dbsrc == "firebase"){
+				this.firebase.push(addedQuestion)
+			}
+			
 		},
 		done() {
 			this.$store.commit("addFinalQuestion", this.question_list); // what is this for?
@@ -217,28 +224,27 @@ export default {
 			window.location.href = `https://127.0.0.1:5000/create?pid=${this.userData.pid}&q=${JSON.stringify(this.question_list)}`;
 			this.question_list = [];
 		},
-		getDataFromFirebase() {
-			authAxios
-				.get("https://127.0.0.1:5000/getQuestionBank")
-				.then((res) => {
-					this.firebase.push(res.data);
-					console.log("firebase results", res.data);
-				})
-				.catch((err) => {
-					if (status == 400) {
-						console.log("Failed in fetching firebase db", err);
-					}
-				});
-			// return this.firebase;
-		},
+		
+        getDataFromFirebase(){
+            authAxios   
+                .get("https://127.0.0.1:5000/getQuestionBank")
+                .then((res) => {
+                    this.firebase = res.data;
+                    console.log("firebase results", res.data)
+                })
+                .catch((err) => {
+                    if (status == 400) {
+                        console.log("Failed in fetching firebase db",err)
+                    } 
+                }) 
+        },
 	},
 
 	computed: {
-		...mapState(["userData"]),
-		questions() {
-			return this.$store.getters.GetFireBase;
-		},
+        ...mapState(['userData']),
+		
 	},
+	
 };
 </script>
 

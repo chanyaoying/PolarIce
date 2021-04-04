@@ -35,7 +35,7 @@ import json
 app = Flask(__name__)
 from twitter import tweet
 # import flask_compressor
-# from firebase import firebase
+from firebase import firebase
 # run_with_ngrok(app)  # Start ngrok when app is run
 
 
@@ -262,11 +262,10 @@ def questionBank():
     """
     fb_app = firebase.FirebaseApplication('https://polarice-95e3e-default-rtdb.firebaseio.com/', None)
     try: 
-        result = fb_app.get('/question', None).values()
+        result = jsonify(list(fb_app.get('/question', None).values()))
         return result, 200
     except Exception as e:
         return e, 400
-    pass
 
 @app.route('/load', methods=['POST'])
 @login_required
