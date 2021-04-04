@@ -226,14 +226,14 @@ def createRoom():
 
 
 @app.route('/create/callback', methods=['GET'])
-@login_required #decorater (wrapper for function) deifined by flask-login. using google oauth, check if works. 
+@login_required
 def createRoomCallback():
     """
     A unique RID is generated.
     Parse this json and send the room state to the database.
     Return a success message to the client.
     """
-    
+    return redirect("https://127.0.0.1:8080/manageRoom")   
 
 
 @app.route('/getQuestionBank')
