@@ -8,7 +8,7 @@ import stripe
 app = Flask(__name__)
 CORS(app)
 app.config['ENV'] = 'development'
-app.config['DEBUG'] = True
+app.config['DEBUG'] = False
 
 
 
