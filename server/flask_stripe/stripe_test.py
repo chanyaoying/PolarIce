@@ -1,3 +1,4 @@
+from logging import FATAL
 from flask import Flask, render_template, url_for, request, abort, jsonify, redirect, json
 from flask_cors import CORS
 import os
@@ -8,7 +9,7 @@ import stripe
 app = Flask(__name__)
 CORS(app)
 app.config['ENV'] = 'development'
-app.config['DEBUG'] = True
+app.config['DEBUG'] = False
 
 
 
