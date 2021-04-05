@@ -9,35 +9,35 @@
     <title>Store</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
+    <link href="../static/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="{{ url_for('static', filename='narrow-jumbotron.css') }}" rel="stylesheet">
+    <link href="../static/narrow-jumbotron.css" rel="stylesheet">
   </head>
 
   <body>
-
     <div class="container">
       <div class="header clearfix">
         <nav>
           <ul class="nav nav-pills float-right">
             <li class="nav-item">
-              <a class="nav-link active" href="{{ url_for('index') }}">Home <span class="sr-only">(current)</span></a>
-              <a href="https://127.0.0.1:5000/">complete payment shortcut (will invoke roomManagement)</a>
+              <a class="nav-link active" href="https://127.0.0.1:8080/manageRoom">Cancel Payment <span class="sr-only"></span></a>
             </li>
           </ul>
         </nav>
-        <h3 class="text-muted">Store</h3>
+        
+        <h3 style="font-weight: bold;">PolarIce</h3>
       </div>
 
       <div class="jumbotron">
-        <h1 class="display-3">The Product</h1>
-        <p class="lead">Purchase a Room for only $1.</p>
-        <a href="#" id="buy_now_btn" class="btn btn-primary">Buy Now</a>
+        <h1 class="display-5 fw-bold">Welcome</h1>
+        <h4 class="lead">Purchase a Room for only $1.</h4>
+        <br><br>
+        <a href="#" id="buy_now_btn" class="btn-lg btn-primary">Buy Now</a>
       </div>
 
       <footer class="footer">
-        <p>&copy; Store 2017</p>
+        <p>&copy; PolarIce 2021</p>
       </footer>
       <script src="https://js.stripe.com/v3/"></script>
       {#
@@ -48,6 +48,6 @@
       #}
       <script src="{{ url_for('static', filename='script-ajax.js') }}"></script>
 
-    </div> <!-- /container -->
+    </div> 
   </body>
 </html>

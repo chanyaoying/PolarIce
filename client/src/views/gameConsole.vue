@@ -132,7 +132,7 @@ export default {
 				console.log("err :>> ", err);
 			});
 		// check if user is authenticated
-		if (this.userData) {
+		if (!this.userData) {
 			// not logged in
 			this.$router.push("/404_notLoggedIn");
 		} else {

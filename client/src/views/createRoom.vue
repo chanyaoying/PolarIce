@@ -251,9 +251,6 @@ export default {
 			// not logged in
 			this.$router.push("/404_notLoggedIn")
 		}
-		else {
-			console.log(this.userData)
-		}
 	},
 };
 </script>

@@ -16,6 +16,7 @@ import os
 import requests
 import random
 import graphene
+from graphene import Field,String,Int
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
 
 
@@ -80,13 +81,20 @@ class RoomObject(SQLAlchemyObjectType):
         model = Room 
         interfaces = (graphene.relay.Node,)
 
+
 class Query(graphene.ObjectType):
     node = graphene.relay.Node.Field()
     all_questions = SQLAlchemyConnectionField(QuestionObject)
     all_rooms = SQLAlchemyConnectionField(RoomObject)
+    
+    # room_by_roomid = Field(Room, roomid=graphene.Int()) # find room by id
+    # def resolve_room_by_roomid(self,root,info,roomid):
+    #     room = Room(roomid=roomid) #lookup which room 
+    #     return room
 
 # noinspection PyTypeChecker
 schema_query = graphene.Schema(query=Query)
+
 
 # Mutation Objects Schema
 class CreateRoom(graphene.Mutation):

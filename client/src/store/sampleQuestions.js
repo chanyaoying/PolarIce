@@ -6,13 +6,8 @@ const sampleQuestions = [{
         dbsrc:'firebase'
     },
     {
-        title: 'Are you a happy or sad person?',
-        choices: 'Happy/Sad',
-        dbsrc:'firebase'
-    },
-    {
-        title: 'Are you a female or male person?',
-        choices: "Female/Male",
+        title: 'Well-planned or last-minute?',
+        choices: 'Well-planned/Last-minute',
         dbsrc:'firebase'
     },
     {
@@ -21,12 +16,12 @@ const sampleQuestions = [{
         dbsrc:'firebase'
     },
     {
-        title: 'Are you a tall or short person?',
-        choices: 'YES/NO',
+        title: 'Are you a leader or follower?',
+        choices: 'Leader/Follower',
         dbsrc:'firebase'
     },
     {
-        title: 'I think carefully before I say something.?',
+        title: 'I think carefully before I say something.',
         choices: 'YES/NO',
         dbsrc:'firebase'
     },
@@ -48,6 +43,11 @@ const sampleQuestions = [{
     {
         title: 'I appreciate it when someone gives me their undivided attention.',
         choices: 'YES/NO',
+        dbsrc:'firebase'
+    },
+    {
+        title: 'Concerts or movies?',
+        choices: "Concerts/Movies",
         dbsrc:'firebase'
     },
 ];
