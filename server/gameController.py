@@ -147,7 +147,7 @@ def on_leave(data):
     else:
         print(f"player: {username} is not in the room.")
 
-    print(players_data[roomCode], "removed " + username)
+    print(f"players: {live_data[roomCode]}; removed {username}")
     emit("leave", {"roomID": roomCode,
                    "message": f"{username} has left the room."}, room=roomCode)
     emit('receivePlayers', live_data[roomCode], room=roomCode)
@@ -176,9 +176,9 @@ def test_connect():
     global num_users, live_data
     num_users -= 1
 
-    room = getRoomOfUser(request.sid)
+    roomCode = getRoomOfUser(request.sid)
 
-    if room and request.sid in live_data[roomCode]:
+    if roomCode and request.sid in live_data[roomCode]:
         username = live_data[roomCode][request.sid]
         live_data[roomCode].pop(request.sid)
         print(f"Removed {request.sid} from all rooms.")

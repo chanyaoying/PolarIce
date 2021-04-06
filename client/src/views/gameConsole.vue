@@ -75,13 +75,30 @@ export default {
 		changeComponent(data) {
 			this.socket_changeComponent(data);
 		},
+		join(data) {
+			this.socket_updateChat(data);
+		},
+		leave(data) {
+			this.socket_updateChat(data);
+		},
+		connect(data) {
+			console.log("Users: " + data);
+		},
+		disconnect(data) {
+			this.socket_updateChatNoRepeat(data);
+		},
 	},
 	data: () => ({
 		started: false,
 	}),
 	methods: {
 		...mapMutations(["setRoomID"]),
-		...mapActions(["socket_receivePlayers", "socket_changeComponent"]),
+		...mapActions([
+			"socket_receivePlayers",
+			"socket_changeComponent",
+			"socket_updateChat",
+			"socket_updateChatNoRepeat",
+		]),
 		startGame() {
 			this.started = true;
 
@@ -121,7 +138,7 @@ export default {
 	created() {
 		this.setRoomID(this.$route.params.roomID);
 		axios
-			.get("http://127.0.0.1:5001/live?roomID=" + this.roomID)
+			.get("http://127.0.0.1:5001/live?roomID=" + this.roomID) // calls gameController to check if the game is live
 			.then((res) => {
 				if (!res.data.live) {
 					// room is not live
@@ -129,13 +146,15 @@ export default {
 				}
 			})
 			.catch((err) => {
-				console.log("err :>> ", err);
+				console.log("Error wih ", err);
 			});
+
 		// check if user is authenticated
-		if (!this.userData) {
+		if (this.userData === {}) {
 			// not logged in
 			this.$router.push("/404_notLoggedIn");
 		} else {
+			console.log("this.userData :>> ", this.userData);
 			// if user is authenticated, prof joins room
 			this.$socket.client.emit("join", {
 				roomID: this.roomID,
