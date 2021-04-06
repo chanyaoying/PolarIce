@@ -31,6 +31,9 @@
 			</div>
 			<div v-else>
 				<component :is="currentComponent"></component>
+				<b-button @click="leaveRoom(nameInput)" variant="primary mt-3 mb-3">
+					Leave Room
+				</b-button>
 			</div>
 		</div>
 
@@ -94,6 +97,9 @@ export default {
 		changeComponent(data) {
 			this.socket_changeComponent(data);
 		},
+		getQuestions(data) {
+			this.socket_getQuestions(data);
+		},
 	},
 	data: () => ({
 		nameInput: "",
@@ -106,6 +112,7 @@ export default {
 			"socket_receivePlayers",
 			"socket_updateChatNoRepeat",
 			"socket_changeComponent",
+			"socket_getQuestions",
 		]),
 		joinRoom(nameInput) {
 			this.$socket.client.emit("join", {
@@ -127,9 +134,9 @@ export default {
 	computed: {
 		...mapState(["nickname", "roomID", "currentComponent"]),
 		
-		currentQuestion(){
-			return this.$store.getters.GetCurrentQuestion;
-		}
+		// currentQuestion(){
+		// 	return this.$store.getters.GetCurrentQuestion;
+		// }
 	},
 	created() {
 		this.setRoomID(this.$route.params.roomID);

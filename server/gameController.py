@@ -44,10 +44,13 @@ live_data = {'testRoom': {'testSid1': "TestPlayer1",
                              'testSid2': "TestPlayer2"}}
 
 # current question number in the game
-questions_data = {'testRoom': 0}
+current_question = {'testRoom': 0}
 
 # whether the live game has started or not
 started = {'testRoom': False}
+
+# questions data
+questions_list = {'testRoom': {}}
 
 ####
 # Room creation Event
@@ -82,11 +85,15 @@ def startRoom():
         # questions as well as the room code should be returned
         response = requests.post("http://127.0.0.1:5002/create", data={'roomID': roomID, 'players': players}).json()
         code = response['code']
+        questions = response['questions']
 
         # initiate caching
         live_data[code] = {}
-        questions_data[code] = 0
+        current_question[code] = 0
         started[code] = False
+        questions_list[code] = questions
+
+        print(questions_list[code])
 
         return jsonify(response), 200
 
@@ -124,11 +131,15 @@ def on_join(data):
         emit('receivePlayers', live_data[roomCode], room=roomCode)
         
         # get current question number if user rejoins halfway and the game has ended
-        emit('nextQuestion', questions_data[roomCode], room=roomCode)
+        emit('nextQuestion', current_question[roomCode], room=roomCode)
+
+        # get cached question_list
+        emit('getQuestions', questions_list[roomCode], room=roomCode)
 
         # show gameArea if the game has started
         component = "gameArea" if started[roomCode] else "gameLobby"
         emit('changeComponent', component, room=roomCode)
+
 
     else:
         # return error
@@ -241,7 +252,7 @@ def on_startGame(data):
 @socketio.on('endGame')
 def on_endGame(data):
     roomCode = data['roomID']
-    questions_data[roomCode] = 0
+    current_question[roomCode] = 0
     started[roomCode] = False
     print(f"Ending game at {roomCode}.")
     emit("changeComponent", "gameLobby", room=roomCode)
@@ -254,9 +265,9 @@ def on_nextQuestion(data):
     currentQuestionNumber = data['currentQuestionNumber']
 
     nextQuestionNumber = (currentQuestionNumber +
-                          1) % (len(questions_data[roomCode]) + 1)
+                          1) % (len(questions_list[roomCode]) + 1)
 
-    questions_data[roomCode] = nextQuestionNumber
+    current_question[roomCode] = nextQuestionNumber
 
     print(f"Next question number: {nextQuestionNumber} at {roomCode}.")
     emit("nextQuestion", nextQuestionNumber, room=roomCode)
@@ -265,7 +276,7 @@ def on_nextQuestion(data):
 @socketio.on('getQuestions')
 def on_getQuestions(data):
     roomCode = data['roomID']
-    questions = questions_data[roomCode]
+    questions = current_question[roomCode]
     print(f"Getting questions for {request.sid} at {roomCode}.")
     emit("getQuestions", questions, room=roomCode)
 

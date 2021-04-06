@@ -13,7 +13,7 @@ export default new Vuex.Store({
         roomID: '', // this room ID is the ID of the room that the user is currently in. e.g. Test Room
         currentComponent: 'gameLobby',
         currentQuestion: 0, // changes as the prof clicks next
-        loadedQuestions: [], // the questions in the game
+        cachedQuestions: [], // the questions in the game
         users: [],
         chatHistory: {},
         questions: sampleQuestions,
@@ -59,7 +59,7 @@ export default new Vuex.Store({
             state.currentQuestion = data
         },
         getQuestions(state, data) {
-            state.loadedQuestions = data
+            state.cachedQuestions = data
         },
         addCollectedResult(state, select) {
             state.collectedResult.push({
@@ -137,14 +137,14 @@ export default new Vuex.Store({
 
     },
     getters: {
-        GetCurrentQuestion(state) {
-            return state.currentQuestion;
-        },
+        // GetCurrentQuestion(state) {
+        //     return state.currentQuestion;
+        // },
         GetFireBase(state) {
             return state.questions;
         },
         getLoadedQLength(state) {
-            return state.loadedQuestions.length;
+            return state.cachedQuestions.length;
         }
     },
     modules: {}

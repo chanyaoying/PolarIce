@@ -1,7 +1,7 @@
 <template>
 	<b-container>
 	<b-card id="ques">
-	<div v-if="currentQuestion == clicked">
+	<div v-if="!clicked">
 		<div id="question">
 			<h2>{{ title }}</h2>
 		</div>
@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 
 export default {
 	name: "question",
@@ -36,28 +37,31 @@ export default {
 	sockets: {},
 	data: () => ({
 		select: [],
-		clicked:0
+		clicked: false
 	}),
 	methods: {
 		onSelect(choice){
 			this.select.push(choice);
-			this.clicked += 1;
+			this.clicked = true
 			console.log(this.select);
 			if (this.clicked === this.$store.getters.getLoadedQLength){
 				console.log("last question, pushing to state.");
 				this.$store.commit('addCollectedResult',this.select);
-				// console.log(this.$store.state.collectedResult);
+				console.log(this.$store.state.collectedResult);
 			}
 		}
 	},
 	computed: {
+		...mapState(["currentQuestion"]),
 		splitChoices() {
 			return this.choices.split("/")
 		},
-		currentQuestion(){
-			return this.$store.getters.GetCurrentQuestion; 
-		},
 	},
+	watch: {
+		currentQuestion: function () {
+			this.clicked = false
+		}
+	}
 };
 </script>
 

@@ -87,6 +87,9 @@ export default {
 		disconnect(data) {
 			this.socket_updateChatNoRepeat(data);
 		},
+		getQuestions(data) {
+			this.socket_getQuestions(data);
+		},
 	},
 	data: () => ({
 		started: false,
@@ -98,6 +101,7 @@ export default {
 			"socket_changeComponent",
 			"socket_updateChat",
 			"socket_updateChatNoRepeat",
+			"socket_getQuestions",
 		]),
 		startGame() {
 			this.started = true;
@@ -127,12 +131,12 @@ export default {
 			"currentComponent",
 			"users",
 			"roomID",
-			"loadedQuestions",
+			"cachedQuestions",
 			"currentQuestion",
 			"userData",
 		]),
 		allQuestionsViewed() {
-			return this.loadedQuestions.length === this.currentQuestion;
+			return this.cachedQuestions.length === this.currentQuestion;
 		},
 	},
 	created() {

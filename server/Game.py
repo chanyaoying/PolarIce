@@ -77,15 +77,8 @@ def createGame():
     players = json.loads(request.form['players'])
 
     # query from GQL
-    question_query_result = {"1":  {"title": "Are you a cat or dog person?",
-                                    "choice": "True/False"}, "2": {"title": "Yes or no?", "choice": "Yes/No"}}  # placeholder
-
-    # split choices by "/"
-    questions = {qid: {"title": q["title"], "choice": q['choice'].split(
-        "/")} for qid, q in question_query_result.items()}
-
-    # prevent memory leak
-    del question_query_result
+    questions = [{"title": "Are you a cat or dog person?",
+                  "choices": "True/False"}, {"title": "Yes or no?", "choices": "Yes/No"}]  # placeholder
 
     # instantiate Game object
     newGame = Game(roomID, questions)
@@ -111,7 +104,7 @@ def getGame(roomCode):
 # PLACEHOLDER
 
 testGame = Game('testRoom', {"1":  {
-                "title": "Are you a cat or dog person?", "choice": "True/False"}, "2": {"title": "Yes or no?", "choice": "Yes/No"}}, )
+                "title": "Are you a cat or dog person?", "choices": "True/False"}, "2": {"title": "Yes or no?", "choices": "Yes/No"}}, )
 Games[testGame.getCode()] = testGame
 
 if __name__ == '__main__':
