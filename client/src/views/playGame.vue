@@ -54,6 +54,8 @@
 					v-model="nameInput"
 					@keyup.enter="joinRoom(nameInput)"
 					placeholder="Your nickname"
+					:state="nameInput !== ''"
+					aria-describedby="input-live-feedback"
 				></b-form-input>
 				<b-input-group-append>
 					<b-button @click="joinRoom(nameInput)" variant="dark"
@@ -61,6 +63,10 @@
 					>
 				</b-input-group-append>
 			</b-input-group>
+
+			<b-form-invalid-feedback id="input-live-feedback">
+				Please enter something!
+			</b-form-invalid-feedback>
 		</div>
 	</div>
 </template>
@@ -107,7 +113,7 @@ export default {
 		endGame(data) {
 			if (data) {
 				// send data up to the server
-				console.log('this.playerChoices :>> ', this.playerChoices);
+				console.log("this.playerChoices :>> ", this.playerChoices);
 				this.$socket.client.emit("sendResult", {
 					roomID: this.roomID,
 					nickname: this.nickname,
@@ -118,6 +124,7 @@ export default {
 	},
 	data: () => ({
 		nameInput: "",
+		state: null,
 	}),
 	methods: {
 		...mapMutations(["setRoomID"]),
@@ -130,13 +137,16 @@ export default {
 			"socket_getQuestions",
 		]),
 		joinRoom(nameInput) {
-			this.$socket.client.emit("join", {
-				roomID: this.roomID,
-				username: nameInput,
-			});
-			console.log("you have joined the room!");
-			// set nickname in vuex
-			this.socket_setNickname(nameInput);
+			if (nameInput === "") {
+				alert("Please enter something!");
+			} else {
+				this.$socket.client.emit("join", {
+					roomID: this.roomID,
+					username: nameInput,
+				});
+				// set nickname in vuex
+				this.socket_setNickname(nameInput);
+			}
 		},
 		leaveRoom(nameInput) {
 			this.$socket.client.emit("leave", {
