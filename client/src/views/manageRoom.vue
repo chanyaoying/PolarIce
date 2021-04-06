@@ -70,7 +70,12 @@
 				footer-tag="footer"
 			>
 				<b-col>
-					<b-link id="link" href="#foo">Room: ESD Room 1</b-link>
+					<b-link
+						id="link"
+						href="#foo"
+						@click="testLoadRoom('testRoom2')"
+						>Room: ESD Room 1</b-link
+					>
 				</b-col>
 				<b-col>
 					<b-link id="link" href="#foo">Room: ESD Room 2</b-link>
@@ -134,10 +139,20 @@ export default {
 	data: () => ({}),
 	methods: {
 		...mapActions(["async_setUserData"]),
+		testLoadRoom(rID) {
+			authAxios
+				.get(`https://127.0.0.1:5000/load?roomID=${rID}`)
+				.then((res) => {
+					this.$router.push(res.data)
+				})
+				.catch((err) => {
+					console.log("err :>> ", err);
+				});
+		},
 	},
-    computed: {
-        ...mapState(["userData"]),
-    },
+	computed: {
+		...mapState(["userData"]),
+	},
 	created() {
 		authAxios
 			.get("https://127.0.0.1:5000/")
