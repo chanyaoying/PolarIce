@@ -41,6 +41,7 @@ firebase==3.0.1
 gcloud==0.18.3
 sseclient==0.0.27
 # pycrypto==2.6.1
+pycryptodome==3.10.1
 requests-toolbelt==0.9.1
 python-jwt==3.3.0
 python-socketio==5.0.4
