@@ -1,3 +1,4 @@
+from logging import FATAL
 from flask import Flask, render_template, url_for, request, abort, jsonify, redirect, json
 from flask_cors import CORS
 import os
