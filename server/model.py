@@ -52,8 +52,8 @@ except sqlite3.OperationalError:
 
 class Room(db.Model):
     __tablename__ = 'room'
-    roomid = db.Column(db.Integer, primary_key=True, unique=True)
-    profid = db.Column(db.String, index=True, unique=True)
+    roomid = db.Column(db.String(256), primary_key=True, unique=True)
+    profid = db.Column(db.String(256), index=True, unique=True)
 
     questions = db.relationship('Question', backref='room') # backeref establishes a .room attribute on Question, which will refer to the parent Room object 
     
@@ -62,10 +62,10 @@ class Room(db.Model):
 
 class Question(db.Model):
     __tablename__ = 'question'
-    questionid = db.Column(db.Integer, primary_key=True, unique=True)
+    questionid = db.Column(db.String(256), primary_key=True, unique=True)
     question = db.Column(db.String(256), index=True)
     choices = db.Column(db.String(256), index=True)    
-    roomid = db.Column(db.Integer, ForeignKey('room.roomid'))
+    roomid = db.Column(db.String(256), ForeignKey('room.roomid'))
     
     def __repr__(self):
         return '<Question %r>' % self.question
@@ -91,8 +91,8 @@ class Query(graphene.ObjectType):
     all_questions = SQLAlchemyConnectionField(QuestionObject)
     all_rooms = SQLAlchemyConnectionField(RoomObject)
 
-    roomid = graphene.Field(RoomObject, rid=graphene.Int()) # find room by id
-    profid = graphene.Field(RoomObject, pid=graphene.Int()) # find prof by id
+    roomid = graphene.Field(RoomObject, rid=graphene.String(256)) # find room by id
+    profid = graphene.Field(RoomObject, pid=graphene.String(256)) # find prof by id
 
     # sortroom = graphene.Field(RoomObject)
 
@@ -116,8 +116,8 @@ schema_query = graphene.Schema(query=Query)
 # Mutation Objects Schema
 class CreateRoom(graphene.Mutation):
     class Arguments:
-        roomid = graphene.Int(required=True)
-        profid = graphene.Int(required=True) 
+        roomid = graphene.String(required=True)
+        profid = graphene.String(required=True) 
 
     room = graphene.Field(lambda: RoomObject)
 
@@ -129,10 +129,10 @@ class CreateRoom(graphene.Mutation):
 
 class CreateQuestion(graphene.Mutation):
     class Arguments:
-        questionid = graphene.Int(required=True)
+        questionid = graphene.String(required=True)
         question = graphene.String(required=True)
         choices = graphene.String(required=True)
-        roomid = graphene.Int(required=True)
+        roomid = graphene.String(required=True)
     
     question = graphene.Field(lambda: QuestionObject)
 
