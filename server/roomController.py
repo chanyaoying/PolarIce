@@ -34,7 +34,7 @@ import json
 
 app = Flask(__name__)
 from twitter import tweet
- 
+# import flask_compressor
 from firebase import firebase
 # run_with_ngrok(app)  # Start ngrok when app is run
 
@@ -208,7 +208,7 @@ def logout():
 # ROOM CREATION (LOGIN REQUIRED)
 ######################################################################################
 
-room_creation_params = {"pid": "", "q": ""}
+room_creation_params = {"profid": "", "questions": ""}
 
 
 @app.route('/create', methods=['GET'])
@@ -222,12 +222,12 @@ def createRoom():
     global room_creation_params
 
     # get POST body
-    pid = request.args.get("pid")
-    q = request.args.get('q')
+    profid = request.args.get("pid")
+    questions = request.args.get('q')
 
     # keep params for callback
-    room_creation_params["pid"] = pid
-    room_creation_params["q"] = q
+    room_creation_params["profid"] = profid
+    room_creation_params["questions"] = questions
 
     return redirect("http://127.0.0.1:5011/") # redirect to stripe payment confirmation page
 
@@ -240,16 +240,35 @@ def createRoomCallback():
     Parse this json and send the room state to the database.
     Return a success message to the client.
     """
+    request_data = {}
 
     # get GET params
     global room_creation_params
-    pid = room_creation_params["pid"]
-    q = room_creation_params["q"]
+    pid = room_creation_params["profid"] # value: id integer
+    q = room_creation_params["questions"] # value: list of question obj -> title, choices, dbsrc
 
     # business logic
-    print(pid, q)
-    print("redirecting to manageRoom now")
+    # print(pid)
+    # print(json.loads(q))
+    # translate data to format in model.py tables -> profid, questionid, roomid, question, choices -> qid and rid to be generated in Room.py
+    # request_data = {"profid": "", "question X":{"":""}, } 
+    request_data["profid"] = pid
+    question_list = []
+    for question_obj in json.loads(q):
+        translated_qn = {} # create temp question object that stores formatted questions to be added to data to be requested
+        translated_qn["question"] = question_obj["title"]
+        translated_qn["choices"] = question_obj["choices"]
+        question_list.append(translated_qn)
+    
+    request_data["questions"] = question_list
+    print(request_data)
+    # send request to Room.py with data to be mutated in graphql
+    response = requests.post( "http://127.0.0.1:5004/create", data=json.dumps(request_data) ) 
+    
+    # print response code, get all rooms (to check + to log)
 
+    # redirect to manageRoom
+    print("redirecting to manageRoom now")
     return redirect("https://127.0.0.1:8080/manageRoom")   
 
 
@@ -266,6 +285,7 @@ def questionBank():
         return result, 200
     except Exception as e:
         return e, 400
+    
 
 @app.route('/load', methods=['POST'])
 @login_required
