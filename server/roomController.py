@@ -307,8 +307,7 @@ def start():
     # start the room; make it live
     roomID = request.args.get('roomID')
     response = requests.post('http://127.0.0.1:5001/live', data={'roomID': roomID})
-    data = response.json()
-    roomCode = data['code']
+    roomCode = response.json()
 
     if response.status_code == 200:
         return f"/playGame/console/{roomCode}", 200 # this link is where the prof will use to control the game; redirect?

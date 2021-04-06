@@ -1,5 +1,6 @@
 # Handles the Game object based on inputs from gameManagement
 # the game object is mutated here
+# This microservice can be used for any Quiz-type game
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -100,6 +101,30 @@ def getGame(roomCode):
     except KeyError as err:
         GameInstance = False
     return (repr(GameInstance), 200) if GameInstance else ("Game not instantiated.", 400)
+
+
+@app.route("/addPlayers/<roomCode>")
+def addPlayers(roomCode):
+    """
+    Params:
+    - roomCode <int>: the identifier
+    
+    GET:
+    players (json): list of new players
+    """
+    global Games
+
+    targetGame = Games.get(roomCode, False)
+
+    if targetGame:
+        players = json.loads(request.args.get('players'))
+        # get players who are not in the Game object
+        newPlayers = [player for player in players if player not in targetGame.players]
+        targetGame.addPlayers(newPlayers)
+        print(targetGame.players)
+        return "Players added.", 200
+    return "Game not found.", 400
+    
 
 
 # PLACEHOLDER

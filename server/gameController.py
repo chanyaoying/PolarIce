@@ -39,6 +39,10 @@ def getRoomOfUser(sid):
 # Cache (to improve networking speeds)
 ####
 
+# TODO
+# rebuild cache on startup
+# build with data from Game.py
+
 # live_data: list of players in the game
 # current_question: current question number in the game
 # started: whether the live game has started or not
@@ -91,7 +95,7 @@ def startRoom():
         cache["started"][code] = False
         cache["questions_list"][code] = questions
 
-        return jsonify(response), 200
+        return jsonify(response['code']), 200
 
     return "Bad request.", 400
 
@@ -222,15 +226,6 @@ def handle_sendMessage(data):
 # Game Events
 ####
 
-# MIGHT NOT BE USED; PLEASE CHECK
-# as users join, send questions data to them
-# @socketio.on('loadGame')
-# def on_loadGame(data):
-#     roomCode = data['roomID']
-#     print(f"sending game data of {roomCode} to user {request.sid}")
-#     # send question data from here
-#     # TODO
-
 
 # as prof clicks "Start", change component to "gameArea", which already displays the first question
 @socketio.on('startGame')
@@ -240,7 +235,11 @@ def on_startGame(data):
     cache["started"][roomCode] = True
 
     # Add players into the Game object
-    # TODO
+    players_to_add = json.dumps(list(cache['live_data'][roomCode].values()))
+    print(players_to_add)
+    response = requests.get(f"http://127.0.0.1:5002/addPlayers/{roomCode}", params={"players": players_to_add})
+    if response.status_code == 400:
+        print("Unable to add players in Game object.")
 
     print(f"Starting game at {roomCode}.")
     emit("changeComponent", "gameArea", room=roomCode)
