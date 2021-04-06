@@ -48,7 +48,7 @@ def getRoomOfUser(sid):
 # started: whether the live game has started or not
 # questions_list: the list of questions
 cache = {"live_data": {'testRoom': {'testSid1': "TestPlayer1", 'testSid2': "TestPlayer2"}},
-         "current_question": {'testRoom': 0}, "started": {'testRoom': False}, "questions_list": {'testRoom': {}}}
+         "current_question": {'testRoom': 0}, "started": {'testRoom': False}, "questions_list": {'testRoom': {}}, "counts": {"testRoom": 0}, "results": {"testRoom": []}}
 
 ####
 # Room creation Event
@@ -94,11 +94,34 @@ def startRoom():
         cache["current_question"][code] = 0
         cache["started"][code] = False
         cache["questions_list"][code] = questions
+        cache["results"][code] = {}
+        cache["counts"][code] = 0
 
         return jsonify(response['code']), 200
 
     return "Bad request.", 400
 
+
+@app.route("/match/<roomCode>")
+def match(roomCode):
+    """
+    Carries out the business logic for matching.
+    1. Gets the cached results by roomCode
+    2. Put it into the Game object for data translation. Translated data will be returned.
+    3. Invoke the Matching microservice. A list of matchings will be returned.
+    4. Parse the matching and return each user's matching.
+        TODO:   a. Customise a response for each user
+                b. Get SID by nickname, then return that response to each SID that is still connected.
+    """
+    results = json.dumps(cache["results"][roomCode])
+    
+    # invoke Game.py
+    transformed_result = requests.get(f"http://127.0.0.1:5002/match/{roomCode}", params={"results": results}).json()
+
+    # invoke Matching.py
+    # TODO
+
+    return jsonify(transformed_result), 200
 
 ####
 # Room join/leave Events
@@ -237,7 +260,8 @@ def on_startGame(data):
     # Add players into the Game object
     players_to_add = json.dumps(list(cache['live_data'][roomCode].values()))
     print(players_to_add)
-    response = requests.get(f"http://127.0.0.1:5002/addPlayers/{roomCode}", params={"players": players_to_add})
+    response = requests.get(
+        f"http://127.0.0.1:5002/addPlayers/{roomCode}", params={"players": players_to_add})
     if response.status_code == 400:
         print("Unable to add players in Game object.")
 
@@ -254,6 +278,13 @@ def on_endGame(data):
     print(f"Ending game at {roomCode}.")
     emit("changeComponent", "gameLobby", room=roomCode)
     emit("nextQuestion", 0, room=roomCode)
+    
+
+@socketio.on("collectAnswers")
+def on_collectAnswers(data):
+    roomCode = data['roomID']
+    emit("endGame", True, room=roomCode)
+
 
 
 @socketio.on('nextQuestion')
@@ -276,6 +307,27 @@ def on_getQuestions(data):
     questions = cache["current_question"][roomCode]
     print(f"Getting questions for {request.sid} at {roomCode}.")
     emit("getQuestions", questions, room=roomCode)
+
+
+@socketio.on('sendResult')
+def on_sendResult(data):
+    """
+    Each player's responses are collected here.
+    """
+    roomCode = data['roomID']
+    nickname = data['nickname']
+    results = data['results']
+
+    # cache the results
+    cache["results"][roomCode][nickname] = results
+
+    # add to counts; track how many has submitted
+    cache['counts'][roomCode] += 1
+    current = cache['counts'][roomCode]
+    total = len(cache["live_data"][roomCode])
+    print({"current": current, "total": total})
+    emit("submissionCount", {"current": current, "total": total}, room=roomCode)
+    
 
 
 if __name__ == '__main__':

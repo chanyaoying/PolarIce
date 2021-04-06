@@ -19,7 +19,27 @@
 			<b-button class="btn-lg" id="end" variant="danger" @click="endGame"
 				>End</b-button
 			>
+			<b-button
+				class="btn-lg"
+				id="end"
+				variant="primary"
+				@click="collectAnswers"
+				v-if="allQuestionsViewed && !submitted"
+				>Collect Answers</b-button
+			>
+			<b-button
+				class="btn-lg"
+				id="end"
+				variant="success"
+				@click="match"
+				v-if="allQuestionsViewed && submitted"
+				>Match Results</b-button
+			>
 			<br /><br />
+			<div v-if="allQuestionsViewed">
+				<h5>{{ current }} out of {{ total }} submissions.</h5>
+			</div>
+			<br />
 			<component :is="currentComponent"></component>
 		</div>
 
@@ -90,9 +110,17 @@ export default {
 		getQuestions(data) {
 			this.socket_getQuestions(data);
 		},
+		submissionCount(data) {
+			this.current = data.current;
+			this.total = data.total;
+			this.submitted = this.current > 0;
+		},
 	},
 	data: () => ({
 		started: false,
+		total: 0,
+		current: 0,
+		submitted: false,
 	}),
 	methods: {
 		...mapMutations(["setRoomID"]),
@@ -124,6 +152,18 @@ export default {
 				roomID: this.roomID,
 				currentQuestionNumber: this.currentQuestion,
 			});
+		},
+		collectAnswers() {
+			this.$socket.client.emit("collectAnswers", {
+				roomID: this.roomID,
+			});
+		},
+		match() {
+			axios.get(`http://127.0.0.1:5001/match/${this.roomID}`).then(res => {
+				console.log('res :>> ', res);
+			}).catch(err => {
+				console.log('err :>> ', err);
+			})
 		},
 	},
 	computed: {

@@ -39,13 +39,28 @@ class Game:
     def __repr__(self):
         return f"Game object for roomID: {self.roomID}, created at {self.timeCreated}"
 
-    def setResult(self, sid, qid):
-        # gameManagement will call on a route to update the Game object
-        pass
+    def setResult(self, results, filler=None):
+
+        # data translation
+        transformed = {}
+        for nickname, answer in results.items():
+            for i in range(len(self.questions)):
+                if str(i) not in answer.keys():
+                    answer[str(i)] = filler
+            transformed[nickname] = answer
+
+        transformed = {nickname: answers.values()
+                       for nickname, answers in transformed.items()}
+
+        # add missing players
+        for player in self.players:
+            if player not in transformed:
+                transformed[player] = [filler * qNo]
+
+        self.result = transformed
 
     def getResult(self):
-        # translate the result into json to pass to the Matching Microservice
-        return self.results
+        return json.dumps(self.results)
 
     def addPlayers(self, players):
         # add new players to the game even if it has started
@@ -108,7 +123,7 @@ def addPlayers(roomCode):
     """
     Params:
     - roomCode <int>: the identifier
-    
+
     GET:
     players (json): list of new players
     """
@@ -119,19 +134,38 @@ def addPlayers(roomCode):
     if targetGame:
         players = json.loads(request.args.get('players'))
         # get players who are not in the Game object
-        newPlayers = [player for player in players if player not in targetGame.players]
+        newPlayers = [
+            player for player in players if player not in targetGame.players]
         targetGame.addPlayers(newPlayers)
         print(targetGame.players)
         return "Players added.", 200
     return "Game not found.", 400
-    
 
 
-# PLACEHOLDER
+@app.route("/match/<roomCode>")
+def match(roomCode):
+    """
+    Params:
+    - roomCode <int>: the identifier
 
-testGame = Game('testRoom', {"1":  {
-                "title": "Are you a cat or dog person?", "choices": "True/False"}, "2": {"title": "Yes or no?", "choices": "Yes/No"}}, )
-Games[testGame.getCode()] = testGame
+    GET:
+    results  (json): list of new players
+    """
+    global Games
+
+    targetGame = Games.get(roomCode, False)
+
+    if targetGame:
+
+        # dict: each key is a player nickname and each value is a dict: {index, answer}
+        results = json.loads(request.args.get('results'))
+
+        targetGame.setResult(results, filler=None)
+
+        return jsonify(targetGame.getResult()), 200
+
+    return "Game instance not found.", 400
+
 
 if __name__ == '__main__':
     print(Games)

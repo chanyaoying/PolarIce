@@ -10,10 +10,10 @@
 
 		<div v-if="nickname">
 			<h1>Room ID: {{ roomID }}</h1>
-			<br>
+			<br />
 			<div v-if="currentComponent != 'gameArea'">
 				<!-- {{currentQuestion}} -->
-				
+
 				<b-container class="bv-example-row">
 					<b-row>
 						<b-col>
@@ -25,13 +25,19 @@
 					</b-row>
 				</b-container>
 
-				<b-button @click="leaveRoom(nameInput)" variant="primary mt-3 mb-3">
+				<b-button
+					@click="leaveRoom(nameInput)"
+					variant="primary mt-3 mb-3"
+				>
 					Leave Room
 				</b-button>
 			</div>
 			<div v-else>
 				<component :is="currentComponent"></component>
-				<b-button @click="leaveRoom(nameInput)" variant="primary mt-3 mb-3">
+				<b-button
+					@click="leaveRoom(nameInput)"
+					variant="primary mt-3 mb-3"
+				>
 					Leave Room
 				</b-button>
 			</div>
@@ -62,7 +68,6 @@
 
 
 <script>
-
 // document.addEventListener('click', musicPlay);
 // function musicPlay() {
 //     document.getElementById('music').play();
@@ -73,7 +78,6 @@ import { mapState, mapMutations, mapActions } from "vuex";
 import chatBox from "../components/gameComponents/chatBox";
 import gameArea from "../components/gameComponents/gameArea";
 import gameLobby from "../components/gameComponents/gameLobby";
-
 
 export default {
 	name: "playGame",
@@ -99,6 +103,17 @@ export default {
 		},
 		getQuestions(data) {
 			this.socket_getQuestions(data);
+		},
+		endGame(data) {
+			if (data) {
+				// send data up to the server
+				console.log('this.playerChoices :>> ', this.playerChoices);
+				this.$socket.client.emit("sendResult", {
+					roomID: this.roomID,
+					nickname: this.nickname,
+					results: this.playerChoices,
+				});
+			}
 		},
 	},
 	data: () => ({
@@ -132,8 +147,14 @@ export default {
 		},
 	},
 	computed: {
-		...mapState(["nickname", "roomID", "currentComponent"]),
-		
+		...mapState([
+			"nickname",
+			"roomID",
+			"currentComponent",
+			"playerChoices",
+			"nickname",
+		]),
+
 		// currentQuestion(){
 		// 	return this.$store.getters.GetCurrentQuestion;
 		// }
@@ -171,10 +192,9 @@ h1 {
 	bottom: 15px;
 	right: 15px;
 }
-#music{
+#music {
 	width: 20%;
 	margin-top: 10px;
 	margin-left: 75%;
 }
-
 </style>
