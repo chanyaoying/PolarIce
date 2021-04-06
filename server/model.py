@@ -31,7 +31,14 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' +    os.path.join(basedir, 
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
+engine = create_engine('sqlite:///database.sqlite3', convert_unicode=True)
+db_session = scoped_session(sessionmaker(autocommit=False,
+                                         autoflush=False,
+                                         bind=engine))
+
 Base = declarative_base()
+# We will need this for querying
+Base.query = db_session.query_property()
 
 # Modules
 db = SQLAlchemy(app)
@@ -87,6 +94,8 @@ class Query(graphene.ObjectType):
     roomid = graphene.Field(RoomObject, rid=graphene.Int()) # find room by id
     profid = graphene.Field(RoomObject, pid=graphene.Int()) # find prof by id
 
+    # sortroom = graphene.Field(RoomObject)
+
     def resolve_roomid(self, args,rid): #resolver 
         room = Room.query.filter_by(roomid=rid).first()
         return room
@@ -94,6 +103,10 @@ class Query(graphene.ObjectType):
     def resolve_profid(self,args,pid):
         room = Room.query.filter_by(profid=pid).first()
         return room
+    
+    # def resolve_sortroom(self,args):
+    #     room = Room.query.order_by()
+    #     return room
 
 
 # noinspection PyTypeChecker
