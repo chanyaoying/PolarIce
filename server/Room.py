@@ -22,7 +22,8 @@ def create_room():
     print(gql_rooms["data"]["allRooms"]["edges"]) # + [num]["node"]["roomid"]/["profid"] for specific rooms
     # create questions in graphql
 
-
+    # get all questions in gql table
+    # gql_questions = requests.get( "Query all questions: query{allQuestions{edges{node{roomid questionid question choices}}}}" ) 
     
     return {}
 
@@ -30,6 +31,10 @@ def create_room():
 @app.route("/rooms")
 def get_rooms():
     # return all rooms in DB
+
+    # get rooms currently in gql table 
+    gql_rooms = requests.get( "http://127.0.0.1:5003/graphql?query=query{allRooms{edges{node{roomid profid}}}}" ) 
+    
     pass
 
 
