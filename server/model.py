@@ -53,7 +53,7 @@ except sqlite3.OperationalError:
 class Room(db.Model):
     __tablename__ = 'room'
     roomid = db.Column(db.Integer, primary_key=True, unique=True)
-    profid = db.Column(db.Integer, index=True, unique=True)
+    profid = db.Column(db.String, index=True, unique=True)
 
     questions = db.relationship('Question', backref='room') # backeref establishes a .room attribute on Question, which will refer to the parent Room object 
     
