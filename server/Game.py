@@ -78,7 +78,7 @@ def createGame():
 
     # query from GQL
     questions = [{"title": "Are you a cat or dog person?",
-                  "choices": "True/False"}, {"title": "Yes or no?", "choices": "Yes/No"}]  # placeholder
+                  "choices": "True/False"}, {"title": "Yes or no?", "choices": "Yes/No"}, {"title": "Are you okay?", "choices": "Not okay./Meh."}]  # placeholder
 
     # instantiate Game object
     newGame = Game(roomID, questions)

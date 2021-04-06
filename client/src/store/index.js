@@ -17,7 +17,7 @@ export default new Vuex.Store({
         users: [],
         chatHistory: {},
         questions: sampleQuestions,
-        collectedResult: [],
+        playerChoices: {},
     },
     mutations: {
         setNickname(state, nickname) {
@@ -61,11 +61,8 @@ export default new Vuex.Store({
         getQuestions(state, data) {
             state.cachedQuestions = data
         },
-        addCollectedResult(state, select) {
-            state.collectedResult.push({
-                name: state.nickname,
-                data: select
-            })
+        addPlayerChoices(state, {currentQuestion, choice}) {
+            Vue.set(state.playerChoices, currentQuestion, choice)
         },
         addFinalQuestion(state, question_list) {
             var userCreated = []
