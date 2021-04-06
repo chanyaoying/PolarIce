@@ -5,7 +5,7 @@
 		<br />
 		<div class="scroll">
 			<ul style="list-style-type:none;">
-				<li v-for="(data, key) in chatHistory[roomID]" :key="key" >
+				<li v-for="(data, key) in chatHistory[roomID]" :key="key" style="text-align: left;">
 					<div class="profword" v-if="data[0] == ':'">
 						{{ profMessage(data) }}
 					</div>
@@ -16,7 +16,6 @@
 			</ul>
 		</div>
 		Send a message to the room: <br />
-		<!-- {{chatHistory}} <br> -->
 	
 		<b-input-group id="message" class="mt-3">
 			<b-form-input
@@ -31,8 +30,6 @@
 				</b-button>
 			</b-input-group-append>
 		</b-input-group>
-		
-		<!-- <p>Current Players (chat): {{ users }}</p> -->
 		<br />
 		</b-card>
 	</div>
