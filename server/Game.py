@@ -76,6 +76,7 @@ def createGame():
     roomID = request.form['roomID']
     players = json.loads(request.form['players'])
 
+    # TODO
     # query from GQL
     questions = [{"title": "Are you a cat or dog person?",
                   "choices": "True/False"}, {"title": "Yes or no?", "choices": "Yes/No"}, {"title": "Are you okay?", "choices": "Not okay./Meh."}]  # placeholder

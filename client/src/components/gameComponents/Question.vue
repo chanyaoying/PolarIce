@@ -43,7 +43,6 @@ export default {
 		onSelect(choice) {
 			this.addPlayerChoices({currentQuestion: this.currentQuestion, choice});
 			this.clicked = true;
-			console.log(this.playerChoices);
 		},
 	},
 	computed: {
