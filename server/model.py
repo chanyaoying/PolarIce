@@ -32,8 +32,6 @@ app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 Base = declarative_base()
-# We will need this for querying
-# Base.query = db_session.query_property()
 
 # Modules
 db = SQLAlchemy(app)
@@ -77,8 +75,6 @@ class QuestionObject(SQLAlchemyObjectType):
         interfaces = (graphene.relay.Node,)
 
 class RoomObject(SQLAlchemyObjectType):
-    # rid = Integer() #added for resolver
-    # profid = Integer()
     class Meta:
         model = Room 
         interfaces = (graphene.relay.Node,)
@@ -88,7 +84,6 @@ class Query(graphene.ObjectType):
     node = graphene.relay.Node.Field()
     all_questions = SQLAlchemyConnectionField(QuestionObject)
     all_rooms = SQLAlchemyConnectionField(RoomObject)
-    # question_by_id = graphene.Field(QuestionType, id=graphene.String())
     roomid = graphene.Field(RoomObject,rid=graphene.Int()) # find room by id
     def resolve_roomid(self, args,rid):
         room = Room.query.filter_by(roomid=rid).first()
