@@ -8,7 +8,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, send, join_room, leave_room
-from invokes import invoke_http
+import json
+import requests
 
 app = Flask(__name__)
 
@@ -38,50 +39,50 @@ def getRoomOfUser(sid):
 # Data
 ####
 
-players_data = {'testRoom': {'testSid1': "TestPlayer1",
-                             'testSid2': "TestPlayer2"}}  # placeholder
+# players_data = {'testRoom': {'testSid1': "TestPlayer1",
+#                              'testSid2': "TestPlayer2"}}  # placeholder
 
-questions_data = {'testRoom': {'started': False, 'currentQuestionNumber': 0, 'questions': [{
-    "title": 'Are you a cat or dog person?',
-    "choices": "Cat/Dog"
-},
-    {
-        "title": 'Are you a happy or sad person?',
-        "choices": "Happy/Sad"
-},
-    {
-        "title": 'Are you a female or male person?',
-        "choices": "Female/Male"
-},
-    {
-        "title": 'Are you a introvert or extrovert person?',
-        "choices": "Introvert/Extrovert"
-},
-    {
-        "title": 'Are you a tall or short person?',
-        "choices": "Tall/Short"
-},
-    {
-        "title": 'I think carefully before I say something.?',
-        "choices": "YES/NO"
-},
-    {
-        "title": 'I’m a “Type A” go-getter. I’d rather die than quit.',
-        "choices": "YES/NO"
-},
-    {
-        "title": 'I feel overwhelmed and I’m not sure what to change.',
-        "choices": "YES/NO"
-},
-    {
-        "title": 'I make decisions based on logic.',
-        "choices": "YES/NO"
-},
-    {
-        "title": 'I appreciate it when someone gives me their undivided attention.',
-        "choices": "YES/NO"
-},
-]}}
+# questions_data = {'testRoom': {'started': False, 'currentQuestionNumber': 0, 'questions': [{
+#     "title": 'Are you a cat or dog person?',
+#     "choices": "Cat/Dog"
+# },
+#     {
+#         "title": 'Are you a happy or sad person?',
+#         "choices": "Happy/Sad"
+# },
+#     {
+#         "title": 'Are you a female or male person?',
+#         "choices": "Female/Male"
+# },
+#     {
+#         "title": 'Are you a introvert or extrovert person?',
+#         "choices": "Introvert/Extrovert"
+# },
+#     {
+#         "title": 'Are you a tall or short person?',
+#         "choices": "Tall/Short"
+# },
+#     {
+#         "title": 'I think carefully before I say something.?',
+#         "choices": "YES/NO"
+# },
+#     {
+#         "title": 'I’m a “Type A” go-getter. I’d rather die than quit.',
+#         "choices": "YES/NO"
+# },
+#     {
+#         "title": 'I feel overwhelmed and I’m not sure what to change.',
+#         "choices": "YES/NO"
+# },
+#     {
+#         "title": 'I make decisions based on logic.',
+#         "choices": "YES/NO"
+# },
+#     {
+#         "title": 'I appreciate it when someone gives me their undivided attention.',
+#         "choices": "YES/NO"
+# },
+# ]}}
 
 
 ####
@@ -97,25 +98,29 @@ def startRoom():
     POST: Put the roomID into live_rooms, return that live room.
     """
 
-    global players_data
-
-    if request.method == 'GET':
-        roomID = request.args.get('roomID')
-        return jsonify({'live': roomID in players_data}), 200
+    # WIP
+    # if request.method == 'GET':
+    #     roomID = request.args.get('roomID')
+    #     return jsonify({'live': roomID in players_data}), 200
 
     if request.method == 'POST':
         try:
             roomID = request.form['roomID']
+            # placeholder
+            players = json.dumps(["testPlayer3", "testPlayer4"])
         except Exception as error:
             print(error)  # for logging
             raise error
 
-        players_data[roomID] = []
+        # create game instance in Game.py, making the game live
+        # questions as well as the room code should be returned
+        response = requests.post("http://127.0.0.1:5002/create", data={'roomID': roomID, 'players': players})
+        return jsonify(response.json()), 200
 
-        # for logging
-        print(f"Room with roomID: {roomID}")
+        # # for logging
+        # print(f"Room with roomID: {roomID}")
 
-        return jsonify(players_data[roomID]), 200
+        # return jsonify(players_data[roomID]), 200
 
     return "Bad request.", 400
 

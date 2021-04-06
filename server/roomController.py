@@ -34,7 +34,6 @@ import json
 
 app = Flask(__name__)
 from twitter import tweet
-# import flask_compressor
 from firebase import firebase
 # run_with_ngrok(app)  # Start ngrok when app is run
 
@@ -287,29 +286,32 @@ def questionBank():
         return e, 400
     
 
-@app.route('/load', methods=['POST'])
+@app.route('/load')
 @login_required
 def start():
     """
-    Client calls this function.
+    ----------------
+    :Business Logic:
+    ----------------
+    Client calls this function, passing in the roomID (the PK of the rooms table)
     Authenticated user sends the roomID of the room to be started.
     The room will become live. A room that is not live cannot be connected by a student, even if the roomID exists.
-    Store live rooms as a list within gameManagement, with 7 digit room code
-    Create a Game Object in Game.py --> return questions
+    Create a Game Object in Game.py --> return questions and room code
+    Store live rooms as a list within Game.py, with 7 digit room code
     A unique link is generated for clients to join via websocket
-    Return the unique link to the client.
+    Return the link to gameConsole to the authenticated client.
 
     This is just a simple function to make sure that the user is can only perform this when authenticated.
     """
 
     # start the room; make it live
-    if request.method == 'POST':
-        response = requests.post('http://127.0.0.1:5001/live', data={'roomID': roomID})
+    roomID = request.args.get('roomID')
+    response = requests.post('http://127.0.0.1:5001/live', data={'roomID': roomID})
+    data = response.json()
+    roomCode = data['code']
 
-        if response.status == 200:
-            return f"https://127.0.0.1:8080/playGame/console/{roomID}", 200 # this link is where the prof will use to control the game; redirect?
-
-    # create Game object, return questions
+    if response.status_code == 200:
+        return f"/playGame/console/{roomCode}", 200 # this link is where the prof will use to control the game; redirect?
 
     return "Bad request", 400
 
