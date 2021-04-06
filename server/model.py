@@ -77,6 +77,8 @@ class QuestionObject(SQLAlchemyObjectType):
         interfaces = (graphene.relay.Node,)
 
 class RoomObject(SQLAlchemyObjectType):
+    # rid = Integer() #added for resolver
+    # profid = Integer()
     class Meta:
         model = Room 
         interfaces = (graphene.relay.Node,)
@@ -86,11 +88,11 @@ class Query(graphene.ObjectType):
     node = graphene.relay.Node.Field()
     all_questions = SQLAlchemyConnectionField(QuestionObject)
     all_rooms = SQLAlchemyConnectionField(RoomObject)
-    
-    # room_by_roomid = Field(Room, roomid=graphene.Int()) # find room by id
-    # def resolve_room_by_roomid(self,root,info,roomid):
-    #     room = Room(roomid=roomid) #lookup which room 
-    #     return room
+    # question_by_id = graphene.Field(QuestionType, id=graphene.String())
+    roomid = graphene.Field(RoomObject,rid=graphene.Int()) # find room by id
+    def resolve_roomid(self, args,rid):
+        room = Room.query.filter_by(roomid=rid).first()
+        return room
 
 # noinspection PyTypeChecker
 schema_query = graphene.Schema(query=Query)
