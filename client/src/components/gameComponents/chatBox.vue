@@ -7,7 +7,7 @@
 			<ul style="list-style-type:none;">
 				<li v-for="(data, key) in chatHistory[roomID]" :key="key" >
 					<div class="profword" v-if="data[0] == ':'">
-						{{ data }}
+						{{ profMessage(data) }}
 					</div>
 					<div v-else>
 						{{ data }}
@@ -63,7 +63,10 @@ export default {
 			var container = document.querySelector(".scroll");
 			var scrollHeight = container.scrollHeight;
 			container.scrollTop = scrollHeight;
-		}
+		},
+		profMessage(word) {
+			return word.slice(1)
+		},
 	},
 	mounted(){
 		this.scrollToEnd();
@@ -96,6 +99,7 @@ h2{
 #message {
 	width: 400px;
 	margin: auto;
+	align-content: left;
 }
 .scroll{
 	margin:auto;
