@@ -21,12 +21,12 @@ Games = {0: 0}
 
 class Game:
 
-    def __init__(self, roomID, players, questions):
+    def __init__(self, roomID, questions):
         self.roomID = roomID
         self.timeCreated = datetime.now().strftime("%a, %d/%m/%Y %H:%M:%S")
 
         # dict: {sid: username, ...}
-        self.players = players
+        self.players = []
 
         # {qid: {"title": "..." ,"choice": "..."}, ...}
         self.questions = questions
@@ -46,7 +46,7 @@ class Game:
         # translate the result into json to pass to the Matching Microservice
         return self.results
 
-    def setPlayers(self, players):
+    def addPlayers(self, players):
         # add new players to the game even if it has started
         self.players.extend(players)
         return jsonify([self.roomID, self.players, self.questions])
@@ -57,7 +57,7 @@ class Game:
         """
         global Games
         while (self.code in Games):
-            self.code = randint(1000000, 9999999)
+            self.code = str(randint(1000000, 9999999))
         return self.code
 
 ####
@@ -88,24 +88,29 @@ def createGame():
     del question_query_result
 
     # instantiate Game object
-    newGame = Game(roomID, players, questions)
-    global Games
-    Games[newGame.getCode()] = newGame
+    newGame = Game(roomID, questions)
+    gameCode = newGame.getCode()
+    Games[gameCode] = newGame
 
-    print(f"Game created. Game code: {newGame.getCode()}")
+    print(f"Game created. Game code: {gameCode}")
+    print(f"Games now: {Games}")
 
-    return jsonify({'questions': newGame.questions, 'code': newGame.getCode()}), 200
+    return jsonify({'questions': newGame.questions, 'code': gameCode}), 200
 
 
 @app.route('/getGame/<roomCode>')
-def getGame(roomID):
-    GameInstance = Games.get(roomCode, False)
+def getGame(roomCode):
+    roomCode = str(roomCode)
+    try:
+        GameInstance = Games[roomCode]
+    except KeyError as err:
+        GameInstance = False
     return (repr(GameInstance), 200) if GameInstance else ("Game not instantiated.", 400)
 
 
 # PLACEHOLDER
 
-testGame = Game('testRoom', ["testPlayer1", "testPlayer2"], {"1":  {
+testGame = Game('testRoom', {"1":  {
                 "title": "Are you a cat or dog person?", "choice": "True/False"}, "2": {"title": "Yes or no?", "choice": "Yes/No"}}, )
 Games[testGame.getCode()] = testGame
 
