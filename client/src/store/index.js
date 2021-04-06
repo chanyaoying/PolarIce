@@ -134,9 +134,6 @@ export default new Vuex.Store({
 
     },
     getters: {
-        // GetCurrentQuestion(state) {
-        //     return state.currentQuestion;
-        // },
         GetFireBase(state) {
             return state.questions;
         },
@@ -146,5 +143,3 @@ export default new Vuex.Store({
     },
     modules: {}
 })
-
-// export const store = new Vuex.Store({});
