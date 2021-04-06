@@ -105,7 +105,7 @@ class Query(graphene.ObjectType):
         return room
     
     # def resolve_sortroom(self,args):
-    #     room = Room.query.order_by()
+    #     room = Room.query.order_by(Room.roomid)
     #     return room
 
 
