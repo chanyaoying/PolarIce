@@ -55,8 +55,7 @@ print(user_rankings)
 @app.route("/matching", methods=['POST'])
 def matching():
     #result = request.json.get('result', None)
-    result_list = result.items()
-
+    result_list = user_rankings
     return (result_list)
    
 if __name__ == '__main__':
