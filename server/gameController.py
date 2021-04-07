@@ -8,7 +8,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, send, join_room, leave_room
-from invokes import invoke_http
+import json
+import requests
 
 app = Flask(__name__)
 
@@ -27,98 +28,100 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 
 
 def getRoomOfUser(sid):
-    global players_data
-    for room, players in players_data.items():
+    global cache
+    for roomCode, players in cache["live_data"].items():
         if sid in players:
-            return room
+            return roomCode
     return False
 
 
 ####
-# Data
+# Cache (to improve networking speeds)
 ####
 
-players_data = {'testRoom': {'testSid1': "TestPlayer1",
-                             'testSid2': "TestPlayer2"}}  # placeholder
+# TODO
+# rebuild cache on startup
+# build with data from Game.py
 
-questions_data = {'testRoom': {'started': False, 'currentQuestionNumber': 0, 'questions': [{
-    "title": 'Are you a cat or dog person?',
-    "choices": "Cat/Dog"
-},
-    {
-        "title": 'Are you a happy or sad person?',
-        "choices": "Happy/Sad"
-},
-    {
-        "title": 'Are you a female or male person?',
-        "choices": "Female/Male"
-},
-    {
-        "title": 'Are you a introvert or extrovert person?',
-        "choices": "Introvert/Extrovert"
-},
-    {
-        "title": 'Are you a tall or short person?',
-        "choices": "Tall/Short"
-},
-    {
-        "title": 'I think carefully before I say something.?',
-        "choices": "YES/NO"
-},
-    {
-        "title": 'I’m a “Type A” go-getter. I’d rather die than quit.',
-        "choices": "YES/NO"
-},
-    {
-        "title": 'I feel overwhelmed and I’m not sure what to change.',
-        "choices": "YES/NO"
-},
-    {
-        "title": 'I make decisions based on logic.',
-        "choices": "YES/NO"
-},
-    {
-        "title": 'I appreciate it when someone gives me their undivided attention.',
-        "choices": "YES/NO"
-},
-]}}
-
+# live_data: list of players in the game
+# current_question: current question number in the game
+# started: whether the live game has started or not
+# questions_list: the list of questions
+cache = {"live_data": {'testRoom': {'testSid1': "TestPlayer1", 'testSid2': "TestPlayer2"}},
+         "current_question": {'testRoom': 0}, "started": {'testRoom': False}, "questions_list": {'testRoom': {}}, "counts": {"testRoom": 0}, "results": {"testRoom": []}}
 
 ####
 # Room creation Event
 ####
+
 
 @app.route('/live', methods=['GET', 'POST'])
 def startRoom():
     """
     Get room data from graphql model or from roomManagement.py (not decided yet)
 
-    GET: Return all live rooms.
-    POST: Put the roomID into live_rooms, return that live room.
+    GET: Check if a room is live
+    POST: Put the code into live_data, return that live room.
     """
 
-    global players_data
-
+    # Check if a room is live
     if request.method == 'GET':
         roomID = request.args.get('roomID')
-        return jsonify({'live': roomID in players_data}), 200
+        code = requests.get(
+            f"http://127.0.0.1:5002/getGame/{roomID}").status_code
+        return jsonify({'live': code == 200}), 200
 
     if request.method == 'POST':
+
         try:
             roomID = request.form['roomID']
+            # placeholder
+            # get current players in the room before the game has started
+            players = json.dumps(["testPlayer3", "testPlayer4"])
         except Exception as error:
             print(error)  # for logging
             raise error
 
-        players_data[roomID] = []
+        # create game instance in Game.py, making the game live
+        # questions as well as the room code should be returned
+        response = requests.post(
+            "http://127.0.0.1:5002/create", data={'roomID': roomID, 'players': players}).json()
+        code = response['code']
+        questions = response['questions']
 
-        # for logging
-        print(f"Room with roomID: {roomID}")
+        # initiate caching
+        cache["live_data"][code] = {}
+        cache["current_question"][code] = 0
+        cache["started"][code] = False
+        cache["questions_list"][code] = questions
+        cache["results"][code] = {}
+        cache["counts"][code] = 0
 
-        return jsonify(players_data[roomID]), 200
+        return jsonify(response['code']), 200
 
     return "Bad request.", 400
 
+
+@app.route("/match/<roomCode>")
+def match(roomCode):
+    """
+    Carries out the business logic for matching.
+    1. Gets the cached results by roomCode
+    2. Put it into the Game object for data translation. Translated data will be returned.
+    3. Invoke the Matching microservice. A list of matchings will be returned.
+    4. Parse the matching and return each user's matching.
+        TODO:   a. Customise a response for each user
+                b. Get SID by nickname, then return that response to each SID that is still connected.
+    """
+    results = json.dumps(cache["results"][roomCode])
+    
+    # invoke Game.py
+    transformed_result = requests.get(f"http://127.0.0.1:5002/match/{roomCode}", params={"results": results}).json()
+
+    # invoke Matching.py
+    # TODO
+
+    return jsonify(transformed_result), 200
 
 ####
 # Room join/leave Events
@@ -126,34 +129,41 @@ def startRoom():
 
 @socketio.on('join')
 def on_join(data):
-    global players_data
+    global live_data
     username = data['username']
-    room = data['roomID']
+    roomCode = data['roomID']
 
     try:
         gameMaster = data['gameMaster']
     except:
         gameMaster = False
 
-    if room in players_data:  # if room is live
+    if roomCode in cache["live_data"]:  # if room is live
 
-        join_room(room)
-        print(f"{username} joined {room}.")
+        join_room(roomCode)
+        print(f"{username} joined {roomCode}.")
 
         # bypass adding prof in player list
         if not gameMaster:
-            players_data[room][request.sid] = username
-            print(list(players_data[room].values()), ", added " + username)
-            emit('join', {"roomID": room,
-                          "message": f"{username} has entered the room."}, room=room)
+            cache['live_data'][roomCode][request.sid] = username
+            print(list(cache['live_data'][roomCode].values()),
+                  ", added " + username)
+            emit('join', {"roomID": roomCode,
+                          "message": f"{username} has entered the room."}, room=roomCode)
 
-        # get current players data
-        emit('receivePlayers', players_data[room], room=room)
-        emit('nextQuestion', questions_data[room]
-             ['currentQuestionNumber'], room=room)  # get current question number if user rejoins halfway and the game has ended
-        component = "gameArea" if questions_data[room]['started'] else "gameLobby"
-        # get game status if when user joins (user can join a started game)
-        emit('changeComponent', component, room=room)
+        # get current list of players
+        emit('receivePlayers', cache['live_data'][roomCode], room=roomCode)
+
+        # get current question number if user rejoins halfway and the game has ended
+        emit('nextQuestion', cache["current_question"]
+             [roomCode], room=roomCode)
+
+        # get cached question_list
+        emit('getQuestions', cache["questions_list"][roomCode], room=roomCode)
+
+        # show gameArea if the game has started
+        component = "gameArea" if cache["started"][roomCode] else "gameLobby"
+        emit('changeComponent', component, room=roomCode)
 
     else:
         # return error
@@ -163,18 +173,19 @@ def on_join(data):
 
 @socketio.on('leave')
 def on_leave(data):
-    global players_data
+
     username = data['username']
-    room = data['roomID']
-    leave_room(room)
-    if request.sid in players_data[room]:
-        players_data[room].pop(request.sid)
+    roomCode = data['roomID']
+    leave_room(roomCode)
+    if request.sid in cache['live_data'][roomCode]:
+        cache['live_data'][roomCode].pop(request.sid)
     else:
         print(f"player: {username} is not in the room.")
-    print(players_data[room], "removed " + username)
-    emit("leave", {"roomID": room,
-                   "message": f"{username} has left the room."}, room=room)
-    emit('receivePlayers', players_data[room], room=room)
+
+    print(f"players: {cache['live_data'][roomCode]}; removed {username}")
+    emit("leave", {"roomID": roomCode,
+                   "message": f"{username} has left the room."}, room=roomCode)
+    emit('receivePlayers', cache['live_data'][roomCode], room=roomCode)
 
 
 ####
@@ -190,24 +201,25 @@ def test_connect():
     print("Client connected.")
     global num_users
     num_users += 1
+    print(f'User {request.sid} connected. Current players={num_users}')
     emit('connect', f'User {request.sid} connected', broadcast=True)
 
 
 @socketio.on('disconnect')
 def test_connect():
     print("Client disconnected.")
-    global num_users
+    global num_users, live_data
     num_users -= 1
 
-    room = getRoomOfUser(request.sid)
+    roomCode = getRoomOfUser(request.sid)
 
-    if room and request.sid in players_data[room]:
-        username = players_data[room][request.sid]
-        players_data[room].pop(request.sid)
+    if roomCode and request.sid in cache['live_data'][roomCode]:
+        username = cache['live_data'][roomCode][request.sid]
+        cache['live_data'][roomCode].pop(request.sid)
         print(f"Removed {request.sid} from all rooms.")
         emit('disconnect', {
-             "roomID": room, "message": f"{username} has disconnected."}, room=room)
-        emit('receivePlayers', players_data[room], room=room)
+             "roomID": roomCode, "message": f"{username} has disconnected."}, room=roomCode)
+        emit('receivePlayers', cache['live_data'][roomCode], room=roomCode)
     else:
         print(f"player: {request.sid} is not in the room.")
 
@@ -219,8 +231,8 @@ def test_connect():
 @socketio.on('getCurrentPlayers')
 def on_getCurrentPlayers(data):
     print("trying to get all players now")
-    room = data['roomID']
-    emit('receivePlayers', players_data[room], room=room)
+    roomCode = data['roomID']
+    emit('receivePlayers', cache['live_data'][roomCode], room=roomCode)
 
 
 @socketio.on('sendMessage')
@@ -228,63 +240,94 @@ def handle_sendMessage(data):
     print('message received: ', data)
     msg = data['msg']
     username = data['nickname']
-    room = data['roomID']
-    emit('receiveMessage', {"roomID": room,
-                            "message": f"{username}: {msg}"}, room=room)
+    roomCode = data['roomID']
+    emit('receiveMessage', {"roomID": roomCode,
+                            "message": f"{username}: {msg}"}, room=roomCode)
 
 
 ####
 # Game Events
 ####
 
-# as users join, send questions data to them
-@socketio.on('loadGame')
-def on_loadGame(data):
-    room = data['roomID']
-    print(f"sending game data of {room} to user {request.sid}")
-    # send question data from here
-
 
 # as prof clicks "Start", change component to "gameArea", which already displays the first question
 @socketio.on('startGame')
 def on_startGame(data):
-    room = data['roomID']
-    questions_data[room]['started'] = True
-    print(f"Starting game at {room}.")
-    emit("changeComponent", "gameArea", room=room)
-    emit("nextQuestion", 0, room=room)
+    roomCode = data['roomID']
+    # set game status to true when the game starts
+    cache["started"][roomCode] = True
+
+    # Add players into the Game object
+    players_to_add = json.dumps(list(cache['live_data'][roomCode].values()))
+    print(players_to_add)
+    response = requests.get(
+        f"http://127.0.0.1:5002/addPlayers/{roomCode}", params={"players": players_to_add})
+    if response.status_code == 400:
+        print("Unable to add players in Game object.")
+
+    print(f"Starting game at {roomCode}.")
+    emit("changeComponent", "gameArea", room=roomCode)
+    emit("nextQuestion", 0, room=roomCode)
 
 
 @socketio.on('endGame')
 def on_endGame(data):
-    room = data['roomID']
-    questions_data[room]["currentQuestionNumber"] = 0
-    questions_data[room]['started'] = False
-    print(f"Ending game at {room}.")
-    emit("changeComponent", "gameLobby", room=room)
-    emit("nextQuestion", 0, room=room)
+    roomCode = data['roomID']
+    cache["current_question"][roomCode] = 0
+    cache["started"][roomCode] = False
+    print(f"Ending game at {roomCode}.")
+    emit("changeComponent", "gameLobby", room=roomCode)
+    emit("nextQuestion", 0, room=roomCode)
+    
+
+@socketio.on("collectAnswers")
+def on_collectAnswers(data):
+    roomCode = data['roomID']
+    emit("endGame", True, room=roomCode)
+
 
 
 @socketio.on('nextQuestion')
 def on_nextQuestion(data):
-    room = data['roomID']
+    roomCode = data['roomID']
     currentQuestionNumber = data['currentQuestionNumber']
 
     nextQuestionNumber = (currentQuestionNumber +
-                          1) % (len(questions_data[room]['questions']) + 1)
+                          1) % (len(cache["questions_list"][roomCode]) + 1)
 
-    questions_data[room]['currentQuestionNumber'] = nextQuestionNumber
+    cache["current_question"][roomCode] = nextQuestionNumber
 
-    print(f"Next question number: {nextQuestionNumber} at {room}.")
-    emit("nextQuestion", nextQuestionNumber, room=room)
+    print(f"Next question number: {nextQuestionNumber} at {roomCode}.")
+    emit("nextQuestion", nextQuestionNumber, room=roomCode)
 
 
 @socketio.on('getQuestions')
 def on_getQuestions(data):
-    room = data['roomID']
-    questions = questions_data[room]['questions']
-    print(f"Getting questions for {request.sid} at {room}.")
-    emit("getQuestions", questions, room=room)
+    roomCode = data['roomID']
+    questions = cache["current_question"][roomCode]
+    print(f"Getting questions for {request.sid} at {roomCode}.")
+    emit("getQuestions", questions, room=roomCode)
+
+
+@socketio.on('sendResult')
+def on_sendResult(data):
+    """
+    Each player's responses are collected here.
+    """
+    roomCode = data['roomID']
+    nickname = data['nickname']
+    results = data['results']
+
+    # cache the results
+    cache["results"][roomCode][nickname] = results
+
+    # add to counts; track how many has submitted
+    cache['counts'][roomCode] += 1
+    current = cache['counts'][roomCode]
+    total = len(cache["live_data"][roomCode])
+    print({"current": current, "total": total})
+    emit("submissionCount", {"current": current, "total": total}, room=roomCode)
+    
 
 
 if __name__ == '__main__':

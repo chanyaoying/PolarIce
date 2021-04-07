@@ -16,16 +16,44 @@ import os
 import requests
 import random
 import graphene
+from graphene import Field,String,Int
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
-from flask_graphql import GraphQLView
-import json
+
 
 app = Flask(__name__)
+    
+# Configs
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['ENV'] = 'development'
+app.config['DEBUG'] = True
+app.config['SECRET_KEY'] = 'mysecret'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' +    os.path.join(basedir, 'data.sqlite')
+app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
+engine = create_engine('sqlite:///database.sqlite3', convert_unicode=True)
+db_session = scoped_session(sessionmaker(autocommit=False,
+                                         autoflush=False,
+                                         bind=engine))
+
+Base = declarative_base()
+# We will need this for querying
+Base.query = db_session.query_property()
+
+# Modules
+db = SQLAlchemy(app)
+# Naive database setup
+try:
+    init_db_command()
+    db.create_all()
+except sqlite3.OperationalError:
+    # Assume it's already been created
+    pass
 
 class Room(db.Model):
     __tablename__ = 'room'
-    roomid = db.Column(db.Integer, primary_key=True, unique=True)
-    profid = db.Column(db.Integer, index=True, unique=True)
+    roomid = db.Column(db.String(256), primary_key=True, unique=True)
+    profid = db.Column(db.String(256), index=True, unique=True)
 
     questions = db.relationship('Question', backref='room') # backeref establishes a .room attribute on Question, which will refer to the parent Room object 
     
@@ -34,10 +62,10 @@ class Room(db.Model):
 
 class Question(db.Model):
     __tablename__ = 'question'
-    questionid = db.Column(db.Integer, primary_key=True, unique=True)
+    questionid = db.Column(db.String(256), primary_key=True, unique=True)
     question = db.Column(db.String(256), index=True)
     choices = db.Column(db.String(256), index=True)    
-    roomid = db.Column(db.Integer, ForeignKey('room.roomid'))
+    roomid = db.Column(db.String(256), ForeignKey('room.roomid'))
     
     def __repr__(self):
         return '<Question %r>' % self.question
@@ -47,7 +75,6 @@ class Question(db.Model):
 show what kind of type of object will be shown in the graph. 
 '''
 
-# -------------------- GQL Schemas ------------------
 class QuestionObject(SQLAlchemyObjectType):
     class Meta:
         model = Question
@@ -58,19 +85,39 @@ class RoomObject(SQLAlchemyObjectType):
         model = Room 
         interfaces = (graphene.relay.Node,)
 
+
 class Query(graphene.ObjectType):
     node = graphene.relay.Node.Field()
     all_questions = SQLAlchemyConnectionField(QuestionObject)
-    all_roooms = SQLAlchemyConnectionField(RoomObject)
+    all_rooms = SQLAlchemyConnectionField(RoomObject)
+
+    roomid = graphene.Field(RoomObject, rid=graphene.String(256)) # find room by id
+    profid = graphene.Field(RoomObject, pid=graphene.String(256)) # find prof by id
+
+    # sortroom = graphene.Field(RoomObject)
+
+    def resolve_roomid(self, args,rid): #resolver 
+        room = Room.query.filter_by(roomid=rid).first()
+        return room
+
+    def resolve_profid(self,args,pid):
+        room = Room.query.filter_by(profid=pid).first()
+        return room
+    
+    # def resolve_sortroom(self,args):
+    #     room = Room.query.order_by(Room.roomid)
+    #     return room
+
 
 # noinspection PyTypeChecker
 schema_query = graphene.Schema(query=Query)
 
+
 # Mutation Objects Schema
 class CreateRoom(graphene.Mutation):
     class Arguments:
-        roomid = graphene.Int(required=True)
-        profid = graphene.Int(required=True) 
+        roomid = graphene.String(required=True)
+        profid = graphene.String(required=True) 
 
     room = graphene.Field(lambda: RoomObject)
 
@@ -82,10 +129,10 @@ class CreateRoom(graphene.Mutation):
 
 class CreateQuestion(graphene.Mutation):
     class Arguments:
-        questionid = graphene.Int(required=True)
+        questionid = graphene.String(required=True)
         question = graphene.String(required=True)
         choices = graphene.String(required=True)
-        roomid = graphene.Int(required=True)
+        roomid = graphene.String(required=True)
     
     question = graphene.Field(lambda: QuestionObject)
 
@@ -126,4 +173,4 @@ app.add_url_rule('/graphql-mutation', view_func=GraphQLView.as_view(
 ))
 
 if __name__ == '__main__':
-    app.run(ssl_context="adhoc", port=5003)
+    app.run(port=5003)

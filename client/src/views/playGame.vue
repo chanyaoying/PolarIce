@@ -10,10 +10,10 @@
 
 		<div v-if="nickname">
 			<h1>Room ID: {{ roomID }}</h1>
-			<br>
+			<br />
 			<div v-if="currentComponent != 'gameArea'">
 				<!-- {{currentQuestion}} -->
-				
+
 				<b-container class="bv-example-row">
 					<b-row>
 						<b-col>
@@ -25,12 +25,21 @@
 					</b-row>
 				</b-container>
 
-				<b-button @click="leaveRoom(nameInput)" variant="primary mt-3 mb-3">
+				<b-button
+					@click="leaveRoom(nameInput)"
+					variant="primary mt-3 mb-3"
+				>
 					Leave Room
 				</b-button>
 			</div>
 			<div v-else>
 				<component :is="currentComponent"></component>
+				<b-button
+					@click="leaveRoom(nameInput)"
+					variant="primary mt-3 mb-3"
+				>
+					Leave Room
+				</b-button>
 			</div>
 		</div>
 
@@ -45,6 +54,8 @@
 					v-model="nameInput"
 					@keyup.enter="joinRoom(nameInput)"
 					placeholder="Your nickname"
+					:state="nameInput !== ''"
+					aria-describedby="input-live-feedback"
 				></b-form-input>
 				<b-input-group-append>
 					<b-button @click="joinRoom(nameInput)" variant="dark"
@@ -52,6 +63,10 @@
 					>
 				</b-input-group-append>
 			</b-input-group>
+
+			<b-form-invalid-feedback id="input-live-feedback">
+				Please enter something!
+			</b-form-invalid-feedback>
 		</div>
 	</div>
 </template>
@@ -59,7 +74,6 @@
 
 
 <script>
-
 // document.addEventListener('click', musicPlay);
 // function musicPlay() {
 //     document.getElementById('music').play();
@@ -70,7 +84,6 @@ import { mapState, mapMutations, mapActions } from "vuex";
 import chatBox from "../components/gameComponents/chatBox";
 import gameArea from "../components/gameComponents/gameArea";
 import gameLobby from "../components/gameComponents/gameLobby";
-
 
 export default {
 	name: "playGame",
@@ -94,9 +107,24 @@ export default {
 		changeComponent(data) {
 			this.socket_changeComponent(data);
 		},
+		getQuestions(data) {
+			this.socket_getQuestions(data);
+		},
+		endGame(data) {
+			if (data) {
+				// send data up to the server
+				console.log("this.playerChoices :>> ", this.playerChoices);
+				this.$socket.client.emit("sendResult", {
+					roomID: this.roomID,
+					nickname: this.nickname,
+					results: this.playerChoices,
+				});
+			}
+		},
 	},
 	data: () => ({
 		nameInput: "",
+		state: null,
 	}),
 	methods: {
 		...mapMutations(["setRoomID"]),
@@ -106,15 +134,19 @@ export default {
 			"socket_receivePlayers",
 			"socket_updateChatNoRepeat",
 			"socket_changeComponent",
+			"socket_getQuestions",
 		]),
 		joinRoom(nameInput) {
-			this.$socket.client.emit("join", {
-				roomID: this.roomID,
-				username: nameInput,
-			});
-			console.log("you have joined the room!");
-			// set nickname in vuex
-			this.socket_setNickname(nameInput);
+			if (nameInput === "") {
+				alert("Please enter something!");
+			} else {
+				this.$socket.client.emit("join", {
+					roomID: this.roomID,
+					username: nameInput,
+				});
+				// set nickname in vuex
+				this.socket_setNickname(nameInput);
+			}
 		},
 		leaveRoom(nameInput) {
 			this.$socket.client.emit("leave", {
@@ -125,11 +157,17 @@ export default {
 		},
 	},
 	computed: {
-		...mapState(["nickname", "roomID", "currentComponent"]),
-		
-		currentQuestion(){
-			return this.$store.getters.GetCurrentQuestion;
-		}
+		...mapState([
+			"nickname",
+			"roomID",
+			"currentComponent",
+			"playerChoices",
+			"nickname",
+		]),
+
+		// currentQuestion(){
+		// 	return this.$store.getters.GetCurrentQuestion;
+		// }
 	},
 	created() {
 		this.setRoomID(this.$route.params.roomID);
@@ -164,10 +202,9 @@ h1 {
 	bottom: 15px;
 	right: 15px;
 }
-#music{
+#music {
 	width: 20%;
 	margin-top: 10px;
 	margin-left: 75%;
 }
-
 </style>

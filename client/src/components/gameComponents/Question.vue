@@ -1,61 +1,62 @@
 <template>
 	<b-container>
-	<b-card id="ques">
-	<div v-if="currentQuestion == clicked">
-		<div id="question">
-			<h2>{{ title }}</h2>
-		</div>
-		<div class="choice">
-			<div class="col-md-12 text-center">
-				<b-form>
-					<b-button
-						class="choice1 btn-lg"
-						variant="primary"
-						v-for="(choice, key) in splitChoices"
-						:key="key"
-						@click="onSelect(choice)"
-						>{{choice}}
-					</b-button>
-				</b-form>
+		<b-card id="ques">
+			<div v-if="!clicked">
+				<div id="question">
+					<h2>{{ title }}</h2>
+				</div>
+				<div class="choice">
+					<div class="col-md-12 text-center">
+						<b-form>
+							<b-button
+								class="choice1 btn-lg"
+								variant="primary"
+								v-for="(choice, key) in splitChoices"
+								:key="key"
+								@click="onSelect(choice)"
+								>{{ choice }}
+							</b-button>
+						</b-form>
+					</div>
+				</div>
 			</div>
-		</div>
-		
-	</div>
-	<div id="question" v-else>
-		<h2>Answer Submited! Please wait for the next question.</h2>
-	</div>
-	</b-card>
+			<div id="question" v-else>
+				<h2>Answer Submited! Please wait for the next question.</h2>
+			</div>
+		</b-card>
 	</b-container>
 </template>
 
 <script>
+import { mapState, mapGetters, mapMutations } from "vuex";
 
 export default {
 	name: "question",
 	props: ["title", "choices"],
 	sockets: {},
 	data: () => ({
-		select: [],
-		clicked:0
+		select: {},
+		clicked: false,
 	}),
 	methods: {
-		onSelect(choice){
-			this.select.push(choice);
-			this.clicked += 1;
-			console.log(this.select);
-			if (this.clicked === this.$store.getters.getLoadedQLength){
-				console.log("last question, pushing to state.");
-				this.$store.commit('addCollectedResult',this.select);
-				// console.log(this.$store.state.collectedResult);
-			}
-		}
+		...mapMutations(["addPlayerChoices"]),
+		onSelect(choice) {
+			this.addPlayerChoices({currentQuestion: this.currentQuestion, choice});
+			this.clicked = true;
+		},
 	},
 	computed: {
+		...mapState(["currentQuestion", "playerChoices"]),
+		...mapGetters(["getLoadedQLength"]),
 		splitChoices() {
-			return this.choices.split("/")
+			return this.choices.split("/");
 		},
-		currentQuestion(){
-			return this.$store.getters.GetCurrentQuestion; 
+	},
+	watch: {
+		// every time the question is changed
+		currentQuestion: function () {
+			// reset clicked
+			this.clicked = false;
 		},
 	},
 };
@@ -83,7 +84,7 @@ h1 {
 	/* width:400px; */
 	width: 40%;
 }
-#ques{
+#ques {
 	height: 400px;
 }
 </style>

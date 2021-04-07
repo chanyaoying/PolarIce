@@ -7,8 +7,8 @@
 			<h1>All questions answered.</h1>
 		</div>
 		<Question
-			:title="loadedQuestions[currentQuestion].title"
-			:choices="loadedQuestions[currentQuestion].choices"
+			:title="cachedQuestions[currentQuestion].title"
+			:choices="cachedQuestions[currentQuestion].choices"
 			v-else
 		/>
 	</div>
@@ -16,7 +16,7 @@
 
 <script>
 import Question from "./Question";
-import { mapState, mapActions } from "vuex";
+import { mapState, mapGetters ,mapActions } from "vuex";
 
 export default {
 	name: "gameArea",
@@ -25,26 +25,18 @@ export default {
 		nextQuestion(data) {
 			this.socket_nextQuestion(data);
 		},
-        getQuestions(data) {
-            this.socket_getQuestions(data);
-        }
 	},
 	data: () => ({}),
 	methods: {
-        ...mapActions(["socket_nextQuestion", "socket_getQuestions"])
+        ...mapActions(["socket_nextQuestion"])
     },
 	computed: {
-		...mapState(["loadedQuestions", "currentQuestion", "roomID"]),
+		...mapState(["cachedQuestions", "currentQuestion", "roomID"]),
+		...mapGetters(["getLoadedQLength"]),
 		allQuestionsViewed() {
-			return this.loadedQuestions.length === this.currentQuestion;
+			return this.getLoadedQLength === this.currentQuestion;
 		},
 	},
-    created() {
-        // get game data
-        this.$socket.client.emit("getQuestions", {
-            roomID: this.roomID
-        });
-    }
 };
 </script>
 

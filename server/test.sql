@@ -1,11 +1,11 @@
 -- SELECT * FROM ROOM;
 
--- DROP TABLE ROOMS;'
+-- DROP TABLE ROOM;
 
--- CREATE TABLE ROOM (
---     roomid int,
---     profid int
--- )
+CREATE TABLE ROOM (
+    roomid int,
+    profid int
+)
 
 -- CREATE TABLE QUESTION (
 --     questionid int, 
@@ -14,4 +14,6 @@
 --     roomid INT
 -- )
 
-SELECT * FROM QUESTION
+-- SELECT * FROM QUESTION
+
+-- SELECT * FROM ROOM

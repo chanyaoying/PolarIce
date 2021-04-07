@@ -1,13 +1,17 @@
+from logging import FATAL
 from flask import Flask, render_template, url_for, request, abort, jsonify, redirect, json
+from flask_cors import CORS
 import os
 from dotenv import load_dotenv
 load_dotenv()
 import stripe
 
 app = Flask(__name__)
-
+CORS(app)
 app.config['ENV'] = 'development'
 app.config['DEBUG'] = False
+
+
 
 stripe_keys = {
     "secret_key": os.environ.get("STRIPE_SECRET_KEY"),
@@ -21,6 +25,10 @@ print(stripe_keys)
 # app.config['STRIPE_SECRET_KEY'] = 'YOUR_STRIPE_SECRET_KEY'
 # stripe.api_key = app.config['STRIPE_SECRET_KEY']
 
+
+"""
+# Placeholder Page, same as page with 'Create Room' button
+"""
 @app.route('/')
 def index():
     '''
@@ -50,8 +58,9 @@ def stripe_pay():
             'quantity': 1,
         }],
         mode='payment',
-        success_url=url_for('thanks', _external=True) + '?session_id={CHECKOUT_SESSION_ID}',
-        cancel_url=url_for('index', _external=True),
+        # success_url=url_for('thanks', _external=True) + '?session_id={CHECKOUT_SESSION_ID}',
+        success_url = 'https://127.0.0.1:5000/create/callback', # proceed with room creation on successful payment
+        cancel_url='https://127.0.0.1:8080/manageRoom', # redirect back to room management page if cancelled or payment failure
     )
     return {
         'checkout_session_id': session['id'], 

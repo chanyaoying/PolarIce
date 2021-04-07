@@ -32,12 +32,11 @@ import amqp_setup
 import pika
 import json
 
-from twitter import tweet
-
-# import flask_compressor
-
 app = Flask(__name__)
+from twitter import tweet
+from firebase import Firebase
 # run_with_ngrok(app)  # Start ngrok when app is run
+
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -51,8 +50,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' +    os.path.join(basedir, 
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
-# Modules
-db = SQLAlchemy(app)
+
 
 ## to call twitter service
 # status = tweet("hello!")
@@ -62,14 +60,6 @@ db = SQLAlchemy(app)
 # Model layer
 ######################################################################################
 
-##################  ##### FIREBASE ###########################
-
-# from firebase import firebase
-# fb_app = firebase.FirebaseApplication('https://polarice-95e3e-default-rtdb.firebaseio.com/', None)
-# result = fb_app.get('/question', None)
-# print(result)
-
-####################### FIREBASE ###########################
 
 ######################################################################################
 # AUTHENTICATION
@@ -217,25 +207,68 @@ def logout():
 # ROOM CREATION (LOGIN REQUIRED)
 ######################################################################################
 
-@app.route('/create', methods=['POST'])
+room_creation_params = {"profid": "", "questions": ""}
+
+
+@app.route('/create', methods=['GET'])
 @login_required #decorater (wrapper for function) deifined by flask-login. using google oauth, check if works. 
 def createRoom():
     """
     Redirect to stripe payment page first
     Authenticated user  with all the details of the room/questions.
+    """
+
+    global room_creation_params
+
+    # get POST body
+    profid = request.args.get("pid")
+    questions = request.args.get('q')
+
+    # keep params for callback
+    room_creation_params["profid"] = profid
+    room_creation_params["questions"] = questions
+
+    return redirect("http://127.0.0.1:5011/") # redirect to stripe payment confirmation page
+
+
+@app.route('/create/callback')
+@login_required
+def createRoomCallback():
+    """
     A unique RID is generated.
     Parse this json and send the room state to the database.
     Return a success message to the client.
     """
-    # get POST body
-    pid = requests.form["pid"]
-    questions = requests.form['questions']
+    request_data = {}
 
-    # redirect to stripe
-    # TODO
+    # get GET params
+    global room_creation_params
+    pid = room_creation_params["profid"] # value: id integer
+    q = room_creation_params["questions"] # value: list of question obj -> title, choices, dbsrc
 
-    # store 
+    # business logic
+    # print(pid)
+    # print(json.loads(q))
+    # translate data to format in model.py tables -> profid, questionid, roomid, question, choices -> qid and rid to be generated in Room.py
+    # request_data = {"profid": "", "question X":{"":""}, } 
+    request_data["profid"] = pid
+    question_list = []
+    for question_obj in json.loads(q):
+        translated_qn = {} # create temp question object that stores formatted questions to be added to data to be requested
+        translated_qn["question"] = question_obj["title"]
+        translated_qn["choices"] = question_obj["choices"]
+        question_list.append(translated_qn)
+    
+    request_data["questions"] = question_list
+    print(request_data)
+    # send request to Room.py with data to be mutated in graphql
+    response = requests.post( "http://127.0.0.1:5004/create", data=json.dumps(request_data) ) 
+    
+    # print response code, get all rooms (to check + to log)
 
+    # redirect to manageRoom
+    print("redirecting to manageRoom now")
+    return redirect("https://127.0.0.1:8080/manageRoom")   
 
 
 @app.route('/getQuestionBank')
@@ -245,35 +278,42 @@ def questionBank():
     Authenticated user will request for question from the question bank.
     Retrieve the questions and return it as a json to the client.
     """
-    pass
+    fb_app = firebase.FirebaseApplication('https://polarice-95e3e-default-rtdb.firebaseio.com/', None)
+    try: 
+        result = jsonify(list(fb_app.get('/question', None).values()))
+        return result, 200
+    except Exception as e:
+        return e, 400
+    
 
-@app.route('/load', methods=['POST'])
+@app.route('/load')
 @login_required
 def start():
     """
-    Client calls this function.
+    ----------------
+    :Business Logic:
+    ----------------
+    Client calls this function, passing in the roomID (the PK of the rooms table)
     Authenticated user sends the roomID of the room to be started.
     The room will become live. A room that is not live cannot be connected by a student, even if the roomID exists.
-    Store live rooms as a list within gameManagement, with 7 digit room code
-    Create a Game Object in Game.py --> return questions
+    Create a Game Object in Game.py --> return questions and room code
+    Store live rooms as a list within Game.py, with 7 digit room code
     A unique link is generated for clients to join via websocket
-    Return the unique link to the client.
+    Return the link to gameConsole to the authenticated client.
 
     This is just a simple function to make sure that the user is can only perform this when authenticated.
     """
 
     # start the room; make it live
-    if request.method == 'POST':
-        response = requests.post('http://127.0.0.1:5001/live', data={'roomID': roomID})
+    roomID = request.args.get('roomID')
+    response = requests.post('http://127.0.0.1:5001/live', data={'roomID': roomID})
+    roomCode = response.json()
 
-        if response.status == 200:
-            return f"https://127.0.0.1:8080/playGame/console/{roomID}", 200 # this link is where the prof will use to control the game; redirect?
-
-    # create Game object, return questions
+    if response.status_code == 200:
+        return f"/playGame/console/{roomCode}", 200 # this link is where the prof will use to control the game; redirect?
 
     return "Bad request", 400
 
 
 if __name__ == '__main__':
     app.run(ssl_context="adhoc", port=5000)
-    # app.run()

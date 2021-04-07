@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import sampleQuestions from "./sampleQuestions"
 
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -12,11 +13,11 @@ export default new Vuex.Store({
         roomID: '', // this room ID is the ID of the room that the user is currently in. e.g. Test Room
         currentComponent: 'gameLobby',
         currentQuestion: 0, // changes as the prof clicks next
-        loadedQuestions: [], // the questions in the game
+        cachedQuestions: [], // the questions in the game
         users: [],
         chatHistory: {},
         questions: sampleQuestions,
-        collectedResult: [],
+        playerChoices: {},
     },
     mutations: {
         setNickname(state, nickname) {
@@ -58,13 +59,10 @@ export default new Vuex.Store({
             state.currentQuestion = data
         },
         getQuestions(state, data) {
-            state.loadedQuestions = data
+            state.cachedQuestions = data
         },
-        addCollectedResult(state, select) {
-            state.collectedResult.push({
-                name: state.nickname,
-                data: select
-            })
+        addPlayerChoices(state, {currentQuestion, choice}) {
+            Vue.set(state.playerChoices, currentQuestion, choice)
         },
         addFinalQuestion(state, question_list) {
             var userCreated = []
@@ -90,7 +88,7 @@ export default new Vuex.Store({
         },
         setUserData(state, payload) {
             state.userData = payload
-        },
+        }
     },
     actions: {
         socket_updateChat({
@@ -136,17 +134,12 @@ export default new Vuex.Store({
 
     },
     getters: {
-        GetCurrentQuestion(state) {
-            return state.currentQuestion;
-        },
         GetFireBase(state) {
             return state.questions;
         },
         getLoadedQLength(state) {
-            return state.loadedQuestions.length;
+            return state.cachedQuestions.length;
         }
     },
     modules: {}
 })
-
-// export const store = new Vuex.Store({});
