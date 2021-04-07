@@ -21,16 +21,20 @@
         
         <nav class="navbar navbar-light bg-light">
           <div class="container-fluid">
-            <a class="navbar-brand" >
-              <img src="{{ url_for('static', filename='PolarIcelogo.png') }}" style="height: 50px; width: 50px; " class="d-inline-block align-text-top">
+            <a class="navbar-brand" href="https://127.0.0.1:8080/" >
+              <img src="{{ url_for('static', filename='PolarIcelogo.png') }}" 
+              style="height: 50px; width: 50px; " class="d-inline-block align-text-top">
               <span style="font-weight: bold; font-size: 30px;">
                 PolarIce</span>
             </a>
+
             <ul class="nav nav-pills"
               <li class="nav-item">
-                <a class="nav-link active" href="https://127.0.0.1:8080/manageRoom">Cancel Payment <span class="sr-only"></span></a>
+                <a class="nav-link active" href="https://127.0.0.1:8080/manageRoom">Cancel Payment <span class="sr-only"></span>
+                </a>
               </li>
             </ul>
+            
           </div>
         </nav>
       </div>
@@ -46,6 +50,8 @@
       <footer class="footer">
         <p>&copy; PolarIce 2021</p>
       </footer>
+
+
       <script src="https://js.stripe.com/v3/"></script>
       {#
       <script>
