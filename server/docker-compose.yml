@@ -3,10 +3,6 @@ version: "3.8"
 volumes:
   rabbitmq_data:
 
-# web:
-#   env_file:
-#     - .env
-
 services:
 
   ####################################
@@ -44,6 +40,10 @@ services:
     build:
       context: .
       dockerfile: ./roomcontroller.Dockerfile
+      # args:
+      #   # FOO: ${FOO}
+      #   GOOGLE_CLIENT_ID: "247832333935-utbjk5kkg0er0nic8ava6l2nrsu7f2m0.apps.googleusercontent.com"
+      #   GOOGLE_CLIENT_SECRET: "3NrnnWhhUUoaJR7pSgeCZWyB"
     depends_on:
       - rabbitmq
     restart: always
@@ -52,5 +52,38 @@ services:
       FLASK_APP: roomController
     ports:
       - "127.0.0.1:5000:5000"
+
+  #################################################
+  # manageRoom controller image
+  #################################################
+  room: 
+    build: 
+      context: .
+      dockerfile: ./room.Dockerfile
+    restart: always
+    environment: 
+      PYTHONBUFFERED: 1
+      FLASK_APP: Room
+    ports:
+      - "127.0.0.1:5004:5004"
+
+  #################################################
+  # 
+  #################################################
+
+  #################################################
+  # Frontend vue application
+  #################################################
+  # frontend: 
+  #   build:
+  #     context: .
+  #     dockerfile: ../client/frontend.Dockerfile
+  #   ports:
+  #     - "8080:8080"
+
+  #################################################
+  # 
+  #################################################
+
 
 # network: 
