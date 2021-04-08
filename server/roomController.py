@@ -271,7 +271,7 @@ def createRoomCallback():
     return redirect("https://127.0.0.1:8080/manageRoom")   
 
 
-@app.route('/getQuestionBank') #this is not being used at all
+@app.route('/getQuestionBank')
 @login_required
 def questionBank():
     """
@@ -294,6 +294,10 @@ def questionBank():
     }
 
     try:
+
+        # TO YASH:
+        # There is an error here.
+
         firebase = Firebase(config)
         db = firebase.database()
         firebase_result = db.child("question").get()
@@ -302,7 +306,8 @@ def questionBank():
             result[data.key()] = data.val()
         return json.dumps(result), 200
     except Exception as e:
-        return e, 400
+        print(f"Error: {e}")
+        return "An error has occurred", 400
 
 
 
