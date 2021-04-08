@@ -263,7 +263,7 @@ def createRoomCallback():
     request_data["questions"] = question_list
     print(request_data)
     # send request to Room.py with data to be mutated in graphql
-    response = requests.post( "http://127.0.0.1:5004/create", data=json.dumps(request_data) ) 
+    response = requests.post("http://127.0.0.1:5004/create", data=json.dumps(request_data) ) 
     
     # print response code, get all rooms (to check + to log)
 
