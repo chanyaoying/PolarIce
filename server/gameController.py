@@ -75,9 +75,6 @@ def startRoom():
 
         try:
             roomID = request.form['roomID']
-            # placeholder
-            # get current players in the room before the game has started #TODO 
-            players = json.dumps(["testPlayer3", "testPlayer4"])
         except Exception as error:
             print(error)  # for logging
             raise error
@@ -85,7 +82,7 @@ def startRoom():
         # create game instance in Game.py, making the game live
         # questions as well as the room code should be returned
         response = requests.post(
-            "http://127.0.0.1:5002/create", data={'roomID': roomID, 'players': players}).json()
+            "http://127.0.0.1:5002/create", data={'roomID': roomID}).json()
         code = response['code']
         questions = response['questions']
 
@@ -117,6 +114,8 @@ def match(roomCode):
     
     # invoke Game.py
     transformed_result = requests.get(f"http://127.0.0.1:5002/match/{roomCode}", params={"results": results}).json()
+    print("##################################################")
+    print(transformed_result)
 
     # invoke Matching.py
     # TODO

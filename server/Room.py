@@ -163,4 +163,6 @@ def get_room_questions(roomid):
 
 
 if __name__ == '__main__':
-    app.run(port=5004)
+    # app.run(port=5004)
+    # app.run(ssl_context="adhoc", host='0.0.0.0', port=5004)
+    app.run(host='0.0.0.0', port=5004)

@@ -64,9 +64,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 ######################################################################################
 # AUTHENTICATION
 ######################################################################################
-
-GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
-GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", None)
+GOOGLE_CLIENT_ID= "247832333935-utbjk5kkg0er0nic8ava6l2nrsu7f2m0.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET= "3NrnnWhhUUoaJR7pSgeCZWyB"
+# GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
+# GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", None)
 GOOGLE_DISCOVERY_URL = (
     "https://accounts.google.com/.well-known/openid-configuration"
 )
@@ -201,7 +202,7 @@ def callback():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for("index"))
+    return "Logged out.", 200
 
 ######################################################################################
 # ROOM CREATION (LOGIN REQUIRED)
@@ -350,4 +351,6 @@ def start():
 
 
 if __name__ == '__main__':
-    app.run(ssl_context="adhoc", port=5000)
+    app.run(ssl_context="adhoc", host='0.0.0.0', port=5000)
+    # app.run(ssl_context="adhoc", port=5000)
+    # app.run(port=5000)

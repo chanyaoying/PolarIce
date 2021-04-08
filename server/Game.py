@@ -7,6 +7,7 @@ from flask_cors import CORS
 import json
 from datetime import datetime
 from random import randint
+import requests
 
 app = Flask(__name__)
 
@@ -49,7 +50,7 @@ class Game:
                     answer[str(i)] = filler
             transformed[nickname] = answer
 
-        transformed = {nickname: answers.values()
+        transformed = {nickname: list(answers.values())
                        for nickname, answers in transformed.items()}
 
         # add missing players
@@ -58,6 +59,7 @@ class Game:
                 transformed[player] = [filler * qNo]
 
         self.result = transformed
+        return transformed
 
     def getResult(self):
         return json.dumps(self.results)
@@ -90,12 +92,10 @@ def createGame():
     """
 
     roomID = request.form['roomID']
-    players = json.loads(request.form['players'])
 
     # TODO
     # query from GQL
-    questions = [{"title": "Are you a cat or dog person?",
-                  "choices": "True/False"}, {"title": "Yes or no?", "choices": "Yes/No"}, {"title": "Are you okay?", "choices": "Not okay./Meh."}]  # placeholder
+    questions = requests.get(f"http://127.0.0.1:5004/roomQuestions/{roomID}").json()
 
     # instantiate Game object
     newGame = Game(roomID, questions)
@@ -160,9 +160,9 @@ def match(roomCode):
         # dict: each key is a player nickname and each value is a dict: {index, answer}
         results = json.loads(request.args.get('results'))
 
-        targetGame.setResult(results, filler=None)
+        transformed_result = targetGame.setResult(results, filler=None)
 
-        return jsonify(targetGame.getResult()), 200
+        return jsonify(transformed_result), 200
 
     return "Game instance not found.", 400
 
