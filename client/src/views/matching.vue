@@ -2,7 +2,7 @@
 <!-- If not connected, prompt user for name -->
 <template>
     <div>
-        <h1>Room ID: {{ roomID }}</h1><br>
+        <h1>PIN: {{ roomID }}</h1><br>
         <b-container style="width:70%">
             <b-card>
                 <b-img id="bear" src="../assets/bear.gif"></b-img>

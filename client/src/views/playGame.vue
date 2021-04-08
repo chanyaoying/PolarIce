@@ -9,7 +9,7 @@
 		</audio> -->
 
 		<div v-if="nickname">
-			<h1>Room ID: {{ roomID }}</h1>
+			<h1>PIN: {{ roomID }}</h1>
 			<br />
 			<div v-if="currentComponent != 'gameArea'">
 				<!-- {{currentQuestion}} -->
@@ -44,7 +44,7 @@
 		</div>
 
 		<div v-else>
-			<h1>Room ID: {{ roomID }}</h1>
+			<h1>PIN: {{ roomID }}</h1>
 			<br />
 			Please enter your name to join the room: <br />
 

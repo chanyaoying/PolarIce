@@ -8,7 +8,7 @@
         <b-button @click="login()" variant="dark">Login</b-button> <br/>
 
         <b-input-group id="join" class="mt-3">
-            <b-form-input id="roomid" type="text" v-model="roomID" placeholder="Room ID" ></b-form-input>
+            <b-form-input id="roomid" type="text" v-model="roomID" placeholder="PIN" ></b-form-input>
             <b-input-group-append>
             <b-button @click="joinRoom" >Join Room</b-button>
             </b-input-group-append>
