@@ -201,7 +201,7 @@ def callback():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for("index"))
+    return "Logged out.", 200
 
 ######################################################################################
 # ROOM CREATION (LOGIN REQUIRED)
