@@ -201,7 +201,7 @@ def callback():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for("index"))
+    return "Logged out.", 200
 
 ######################################################################################
 # ROOM CREATION (LOGIN REQUIRED)
@@ -350,4 +350,6 @@ def start():
 
 
 if __name__ == '__main__':
-    app.run(ssl_context="adhoc", port=5000)
+    app.run(ssl_context="adhoc", host='0.0.0.0', port=5000)
+    # app.run(ssl_context="adhoc", port=5000)
+    # app.run(port=5000)
