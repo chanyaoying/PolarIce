@@ -47,7 +47,9 @@ services:
       # shipping_record_URL: http://shipping_record:5002/shipping_record 
       PYTHONUNBUFFERED: 1
       FLASK_APP: roomController
+    # ports:
+    #   - "5000:5000"
     ports:
-      - "5000:5000"
+      - "127.0.0.1:5000:5000"
 
 # network: 
