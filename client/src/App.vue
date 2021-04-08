@@ -83,11 +83,11 @@ export default {
         authAxios
             .get("https://127.0.0.1:5000/")
             .then((res) => {
-                console.log("result :>> ", res);
+                console.log("Logged in.");
                 this.async_setUserData(res.data);
             })
             .catch((err) => {
-                console.log("err :>> ", err);
+                console.warn("err :>> ", err);
             });
     },
     methods: {
