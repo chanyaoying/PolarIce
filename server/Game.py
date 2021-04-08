@@ -15,6 +15,17 @@ app.config['ENV'] = 'development'
 app.config['DEBUG'] = True
 
 ####
+# Helper Functions(s)
+####
+
+def flatten_list(array):
+    result = []
+    for inner_array in array:
+        for element in inner_array:
+            result.append(element)
+    return result
+
+####
 # Game Object
 ####
 
@@ -50,6 +61,10 @@ class Game:
                     answer[str(i)] = filler
             transformed[nickname] = answer
 
+        # sort dictionary by key
+        transformed = {nickname: {index: choice for index, choice in sorted(
+            answers.items(), key=lambda n: n[0])} for nickname, answers in transformed.items()}
+
         transformed = {nickname: list(answers.values())
                        for nickname, answers in transformed.items()}
 
@@ -57,6 +72,8 @@ class Game:
         for player in self.players:
             if player not in transformed:
                 transformed[player] = [filler * qNo]
+
+        transformed = {nickname: flatten_list(answers) for nickname, answers in transformed.items()}
 
         self.result = transformed
         return transformed
@@ -95,7 +112,8 @@ def createGame():
 
     # TODO
     # query from GQL
-    questions = requests.get(f"http://127.0.0.1:5004/roomQuestions/{roomID}").json()
+    questions = requests.get(
+        f"http://127.0.0.1:5004/roomQuestions/{roomID}").json()
 
     # instantiate Game object
     newGame = Game(roomID, questions)
@@ -160,7 +178,9 @@ def match(roomCode):
         # dict: each key is a player nickname and each value is a dict: {index, answer}
         results = json.loads(request.args.get('results'))
 
-        transformed_result = targetGame.setResult(results, filler=None)
+        transformed_result = targetGame.setResult(results, filler=[0, 0])
+
+        print(transformed_result)
 
         return jsonify(transformed_result), 200
 

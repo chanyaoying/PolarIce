@@ -43,12 +43,6 @@ const routes = [{
     name: 'playGame/console/roomID',
     component: () => import('../views/gameConsole.vue')
   },
-
-  {
-    path: '/matching/:roomID',
-    name: 'matching/roomID',
-    component: () => import('../views/matching.vue')
-  },
   {
     path: '/404_notLoggedIn',
     name: '404_notLoggedIn',

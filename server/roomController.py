@@ -302,9 +302,6 @@ def questionBank():
 
     try:
 
-        # TO YASH:
-        # There is an error here.
-
         firebase = Firebase(config)
         db = firebase.database()
         firebase_result = db.child("question").get()

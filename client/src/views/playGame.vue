@@ -84,10 +84,11 @@ import { mapState, mapMutations, mapActions } from "vuex";
 import chatBox from "../components/gameComponents/chatBox";
 import gameArea from "../components/gameComponents/gameArea";
 import gameLobby from "../components/gameComponents/gameLobby";
+import matchResults from "../components/gameComponents/matchResults"
 
 export default {
 	name: "playGame",
-	components: { chatBox, gameArea, gameLobby },
+	components: { chatBox, gameArea, gameLobby, matchResults },
 	sockets: {
 		connect(data) {
 			console.log("Users: " + data);
@@ -121,6 +122,23 @@ export default {
 				});
 			}
 		},
+		getMatching(data) {
+			if (data) {
+				// send nickname up to the server
+				this.$socket.client.emit("matchingResult", {
+					nickname: this.nickname,
+					roomID: this.roomID,
+				})
+			}
+		},
+		matchingResult(data) {
+			if (data) {
+				this.socket_setMatchResults(data)
+			}
+			else {
+				console.warn('Failed.', data);
+			}
+		}
 	},
 	data: () => ({
 		nameInput: "",
@@ -135,6 +153,7 @@ export default {
 			"socket_updateChatNoRepeat",
 			"socket_changeComponent",
 			"socket_getQuestions",
+			"socket_setMatchResults",
 		]),
 		joinRoom(nameInput) {
 			if (nameInput === "") {

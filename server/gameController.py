@@ -106,21 +106,27 @@ def match(roomCode):
     1. Gets the cached results by roomCode
     2. Put it into the Game object for data translation. Translated data will be returned.
     3. Invoke the Matching microservice. A list of matchings will be returned.
-    4. Parse the matching and return each user's matching.
-        TODO:   a. Customise a response for each user
-                b. Get SID by nickname, then return that response to each SID that is still connected.
     """
     results = json.dumps(cache["results"][roomCode])
+
+    
     
     # invoke Game.py
     transformed_result = requests.get(f"http://127.0.0.1:5002/match/{roomCode}", params={"results": results}).json()
-    print("##################################################")
+
+    print("##############################################################3")
     print(transformed_result)
 
     # invoke Matching.py
-    # TODO
+    response = requests.get("http://127.0.0.1:5005/match", params={"results": results})
+    if response.status_code == 200:
 
-    return jsonify(transformed_result), 200
+        # cache results
+        cache["results"][roomCode] = response.json()
+
+        return "Matching successful.", 200
+    else:
+        return "Matching failed.", 400
 
 ####
 # Room join/leave Events
@@ -326,7 +332,40 @@ def on_sendResult(data):
     total = len(cache["live_data"][roomCode])
     print({"current": current, "total": total})
     emit("submissionCount", {"current": current, "total": total}, room=roomCode)
-    
+
+
+@socketio.on('getMatching')
+def on_getMatching(data):
+    """
+    This function is called by the prof when the matching is successful.
+    Changes UI component and resets question displayed (if played again).
+    """
+    print("$$$$$$$$$$$$$$$$$$$$$$$$$4\ngetMatching called")
+    roomCode = data['roomID']
+    emit("getMatching", True, room=roomCode)
+    emit("nextQuestion", 0, room=roomCode)
+    emit("changeComponent", "matchResults", room=roomCode) # change to matching component on frontend #TODO
+
+
+@socketio.on("matchingResult")
+def on_matchingResult(data):
+    """
+    Each client invokes this function to get their personalized matching.
+    """
+    roomCode = data['roomID']
+    nickname = data["nickname"]
+
+    personal_room = str(roomCode) + nickname
+    join_room(personal_room)
+
+    results = cache['results'][roomCode]
+    personalized_result = results.get(nickname, False)
+
+    if personalized_result and len(personalized_result) > 3:
+        personalized_result = personalized_result[:3]
+
+    emit("matchingResult", personalized_result, room=personal_room)
+
 
 
 if __name__ == '__main__':
