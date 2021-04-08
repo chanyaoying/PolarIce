@@ -103,7 +103,7 @@
 														<b-button
 															variant="warning"
 															@click="
-																add(firebasedb)
+																add(firebasedb,i)
 															"
 															>Add</b-button
 														>
@@ -145,7 +145,7 @@
 												<b-button
 													variant="danger"
 													@click="
-														remove(addedQuestion)
+														remove(addedQuestion,i)
 													"
 													>Remove</b-button
 												>
@@ -166,6 +166,7 @@
 <script>
 import authAxios from "../components/authAxios";
 import { mapState } from "vuex";
+// from flask import jsonify; 
 
 export default {
 	name: "room",
@@ -182,6 +183,7 @@ export default {
 	}),
 	mounted:function(){
 		this.getDataFromFirebase();
+		console.log('this.firebase:>> ', this.firebase);
 	},
 	methods: {
 		// generateRoom(){
@@ -205,12 +207,15 @@ export default {
 			this.newQ.choice1 = "";
 			this.newQ.choice2 = "";
 		},
-		add(firebasedb) {
+		add(firebasedb,i) {
 			this.question_list.push(firebasedb);
-			this.firebase.splice(firebasedb,1)
+			console.log('i :>> ', i);
+			console.log('firebasedb :>> ', firebasedb);
+			this.firebase.splice(i, 1);
 		},
-		remove(addedQuestion) {
-			this.question_list.splice(addedQuestion, 1);
+		remove(addedQuestion,i) {
+			this.question_list.splice(i, 1);
+			console.log('addedQuestion :>> ', addedQuestion);
 			if (addedQuestion.dbsrc == "firebase"){
 				this.firebase.push(addedQuestion)
 			}
@@ -229,7 +234,15 @@ export default {
             authAxios   
                 .get("https://127.0.0.1:5000/getQuestionBank")
                 .then((res) => {
-                    this.firebase = res.data;
+					
+                    this.firebase = Object.keys(res.data).map((question) => {
+						return {
+							title:res.data[question].title,
+							choices: res.data[question].choices,
+							dbsrc:res.data[question].dbsrc
+						}
+					});
+					
                     console.log("firebase results", res.data)
                 })
                 .catch((err) => {
