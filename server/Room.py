@@ -108,8 +108,7 @@ def create_room():
 
     # return response.ok if both requests have status code of <400
     # returns true only if new room is created and all passed questions are added
-    return room_mutation_success and question_mutation_success
-
+    return json.dumps(room_mutation_success and question_mutation_success)
 
 @app.route("/rooms")
 def get_rooms():

@@ -345,6 +345,7 @@ def start():
     roomCode = response.json()
 
     if response.status_code == 200:
+        requests.get(f"http://127.0.0.1:5013/{roomCode}") # posts the s
         return f"/playGame/console/{roomCode}", 200
 
     return "Bad request", 400
