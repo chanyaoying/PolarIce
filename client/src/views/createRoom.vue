@@ -215,7 +215,7 @@ export default {
 			}
 		},
 		done() {
-			if (!this.question_list) {
+			if (this.question_list.length > 0) {
 				this.$store.commit("addFinalQuestion", this.question_list); // what is this for?
 				console.log("this.question_list :>> ", this.question_list);
 
