@@ -85,6 +85,7 @@
 											>
 												<b-row>
 													<b-col cols="10">
+														
 														<span
 															><b>Question:</b>
 															{{
@@ -179,7 +180,7 @@ export default {
 			choice2: "",
 		},
 	}),
-	mounted: function () {
+	mounted:function(){
 		this.getDataFromFirebase();
 	},
 	methods: {
@@ -206,54 +207,49 @@ export default {
 		},
 		add(firebasedb) {
 			this.question_list.push(firebasedb);
-			this.firebase.splice(firebasedb, 1);
+			this.firebase.splice(firebasedb,1)
 		},
 		remove(addedQuestion) {
 			this.question_list.splice(addedQuestion, 1);
-			if (addedQuestion.dbsrc == "firebase") {
-				this.firebase.push(addedQuestion);
+			if (addedQuestion.dbsrc == "firebase"){
+				this.firebase.push(addedQuestion)
 			}
+			
 		},
 		done() {
-			if (this.question_list.length > 0) {
-				this.$store.commit("addFinalQuestion", this.question_list); // what is this for?
-				console.log("this.question_list :>> ", this.question_list);
+			this.$store.commit("addFinalQuestion", this.question_list); // what is this for?
+			console.log("this.question_list :>> ", this.question_list);
 
-				// invoke roomController/create
-				window.location.href = `https://127.0.0.1:5000/create?pid=${
-					this.userData.pid
-				}&q=${JSON.stringify(this.question_list)}`;
-				this.question_list = [];
-			}
-			else {
-				console.warn('There are no questions. Please add in some questions.');
-			}
+			// invoke roomController/create
+			window.location.href = `https://127.0.0.1:5000/create?pid=${this.userData.pid}&q=${JSON.stringify(this.question_list)}`;
+			this.question_list = [];
 		},
-
-		getDataFromFirebase() {
-			authAxios
-				.get("https://127.0.0.1:5000/getQuestionBank")
-				.then((res) => {
-					this.firebase = res.data;
-					console.log("firebase results", res.data);
-				})
-				.catch((err) => {
-					if (status == 400) {
-						console.log("Failed in fetching firebase db", err);
-					}
-				});
-		},
+		
+        getDataFromFirebase(){
+            authAxios   
+                .get("https://127.0.0.1:5000/getQuestionBank")
+                .then((res) => {
+                    this.firebase = res.data;
+                    console.log("firebase results", res.data)
+                })
+                .catch((err) => {
+                    if (status == 400) {
+                        console.log("Failed in fetching firebase db",err)
+                    } 
+                }) 
+        },
 	},
 
 	computed: {
-		...mapState(["userData"]),
+        ...mapState(['userData']),
+		
 	},
 
 	created() {
 		// redirect user if not logged in
 		if (!this.userData) {
 			// not logged in
-			this.$router.push("/404_notLoggedIn");
+			this.$router.push("/404_notLoggedIn")
 		}
 	},
 };
