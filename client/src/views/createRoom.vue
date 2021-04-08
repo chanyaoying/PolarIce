@@ -183,7 +183,6 @@ export default {
 	}),
 	mounted:function(){
 		this.getDataFromFirebase();
-		console.log('this.firebase:>> ', this.firebase);
 	},
 	methods: {
 		// generateRoom(){
@@ -209,13 +208,10 @@ export default {
 		},
 		add(firebasedb,i) {
 			this.question_list.push(firebasedb);
-			console.log('i :>> ', i);
-			console.log('firebasedb :>> ', firebasedb);
 			this.firebase.splice(i, 1);
 		},
 		remove(addedQuestion,i) {
 			this.question_list.splice(i, 1);
-			console.log('addedQuestion :>> ', addedQuestion);
 			if (addedQuestion.dbsrc == "firebase"){
 				this.firebase.push(addedQuestion)
 			}
