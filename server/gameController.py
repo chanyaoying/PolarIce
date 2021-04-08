@@ -76,7 +76,7 @@ def startRoom():
         try:
             roomID = request.form['roomID']
             # placeholder
-            # get current players in the room before the game has started
+            # get current players in the room before the game has started #TODO 
             players = json.dumps(["testPlayer3", "testPlayer4"])
         except Exception as error:
             print(error)  # for logging

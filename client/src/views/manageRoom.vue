@@ -69,28 +69,63 @@
 				footer="PolarIce"
 				footer-tag="footer"
 			>
-				<b-col>
-					<b-link
-						id="link"
-						href="#foo"
-						@click="testLoadRoom('testRoom2')"
-						>Room: ESD Room 1</b-link
-					>
-				</b-col>
-				<b-col>
-					<b-link id="link" href="#foo">Room: ESD Room 2</b-link>
-				</b-col>
-				<b-col>
-					<b-link id="link" href="#foo">Room: ESD Room 3</b-link>
-				</b-col>
-				<b-col id="col">
-					<b-link id="link" href="#foo">Room: ESD Room 4</b-link>
+				<b-col v-for="(question, key) in questions" :key="key">
+					<b-link id="link" @click="loadRoom(question)">Room {{question}}</b-link>
 				</b-col>
 			</b-card>
 		</b-card-group>
 		<br /><br />
 	</div>
 </template>
+
+<script>
+import { mapState, mapActions } from "vuex";
+import authAxios from "../components/authAxios";
+import axios from "axios";
+
+export default {
+	name: "allRoom",
+	data: () => ({
+		questions: [],
+	}),
+	methods: {
+		...mapActions(["async_setUserData"]),
+		loadRoom(rID) {
+			authAxios
+				.get(`https://127.0.0.1:5000/load?roomID=${rID}`)
+				.then((res) => {
+					this.$router.push(res.data)
+				})
+				.catch((err) => {
+					console.warn("err :>> ", err);
+				});
+		},
+	},
+	computed: {
+		...mapState(["userData"]),
+	},
+	created() {
+		authAxios
+			.get("https://127.0.0.1:5000/")
+			.then((res) => {
+				this.async_setUserData(res.data);
+			})
+			.catch((err) => {
+				console.log("err :>> ", err);
+				// not logged in
+				this.$router.push("/404_notLoggedIn");
+			});
+		// get all rooms
+		axios.get("http://127.0.0.1:5004/rooms").then(res => {
+			console.log('res :>> ', res);
+			// display rooms
+			this.questions = res.data
+		}).catch(err => {
+			console.warn('err :>> ', err);
+		})
+	},
+};
+</script>
 
 <style scoped>
 #card-group {
@@ -129,43 +164,3 @@
 	width: 80%;
 }
 </style>
-
-<script>
-import { mapState, mapActions } from "vuex";
-import authAxios from "../components/authAxios";
-
-export default {
-	name: "allRoom",
-	data: () => ({}),
-	methods: {
-		...mapActions(["async_setUserData"]),
-		testLoadRoom(rID) {
-			authAxios
-				.get(`https://127.0.0.1:5000/load?roomID=${rID}`)
-				.then((res) => {
-					this.$router.push(res.data)
-				})
-				.catch((err) => {
-					console.log("err :>> ", err);
-				});
-		},
-	},
-	computed: {
-		...mapState(["userData"]),
-	},
-	created() {
-		authAxios
-			.get("https://127.0.0.1:5000/")
-			.then((res) => {
-				console.log("result :>> ", res);
-				this.async_setUserData(res.data);
-			})
-			.catch((err) => {
-				console.log("err :>> ", err);
-				// not logged in
-				this.$router.push("/404_notLoggedIn");
-			});
-		// get all rooms
-	},
-};
-</script>
