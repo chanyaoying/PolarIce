@@ -201,7 +201,7 @@ def callback():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for("index"))
+    return "Logged out.", 200
 
 ######################################################################################
 # ROOM CREATION (LOGIN REQUIRED)
@@ -344,7 +344,7 @@ def start():
     roomCode = response.json()
 
     if response.status_code == 200:
-        return f"/playGame/console/{roomCode}", 200 # this link is where the prof will use to control the game; redirect?
+        return f"/playGame/console/{roomCode}", 200
 
     return "Bad request", 400
 
