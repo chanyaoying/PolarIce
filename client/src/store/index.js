@@ -18,6 +18,7 @@ export default new Vuex.Store({
         chatHistory: {},
         questions: sampleQuestions,
         playerChoices: {},
+        matchResults: [], // matching results for the client
     },
     mutations: {
         setNickname(state, nickname) {
@@ -88,6 +89,9 @@ export default new Vuex.Store({
         },
         setUserData(state, payload) {
             state.userData = payload
+        },
+        setMatchResult(state, payload) {
+            state.matchResults = payload
         }
     },
     actions: {
@@ -130,6 +134,9 @@ export default new Vuex.Store({
             commit
         }, data) {
             commit("setUserData", data)
+        },
+        socket_setMatchResults({commit}, data) {
+            commit("setMatchResult", data)
         }
 
     },

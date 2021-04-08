@@ -161,6 +161,9 @@ export default {
 		match() {
 			axios.get(`http://127.0.0.1:5001/match/${this.roomID}`).then(res => {
 				console.log('res :>> ', res);
+				this.$socket.client.emit("getMatching", {
+					roomID: this.roomID,
+				})
 			}).catch(err => {
 				console.log('err :>> ', err);
 			})

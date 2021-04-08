@@ -13,7 +13,7 @@
 								variant="primary"
 								v-for="(choice, key) in splitChoices"
 								:key="key"
-								@click="onSelect(choice)"
+								@click="onSelect(key)"
 								>{{ choice }}
 							</b-button>
 						</b-form>
@@ -40,7 +40,8 @@ export default {
 	}),
 	methods: {
 		...mapMutations(["addPlayerChoices"]),
-		onSelect(choice) {
+		onSelect(index) {
+			let choice = index ? [0, 1] : [1, 0]
 			this.addPlayerChoices({currentQuestion: this.currentQuestion, choice});
 			this.clicked = true;
 		},

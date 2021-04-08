@@ -263,8 +263,14 @@ def createRoomCallback():
     request_data["questions"] = question_list
     print(request_data)
     # send request to Room.py with data to be mutated in graphql
-    response = requests.post("http://127.0.0.1:5004/create", data=json.dumps(request_data) ) 
-    
+    response = requests.post( "http://127.0.0.1:5004/create", data=json.dumps(request_data) ) 
+    if response.status_code == 200:
+        message = json.dumps(response.json())
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="game.activity", body=message)
+    else:
+        message = { "Error": response.reason, "Code": response.status_code }
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="game.error", body=json.dumps(message))
+
     # print response code, get all rooms (to check + to log)
 
     # redirect to manageRoom
@@ -295,9 +301,6 @@ def questionBank():
     }
 
     try:
-
-        # TO YASH:
-        # There is an error here.
 
         firebase = Firebase(config)
         db = firebase.database()
@@ -345,6 +348,7 @@ def start():
     roomCode = response.json()
 
     if response.status_code == 200:
+        requests.get(f"http://127.0.0.1:5013/{roomCode}") # posts the s
         return f"/playGame/console/{roomCode}", 200
 
     return "Bad request", 400
