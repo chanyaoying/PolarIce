@@ -4,7 +4,11 @@ import pika
 # In each instance of python interpreter (i.e., a program run), the same module is only imported once (guaranteed by the interpreter).
 
 hostname = "localhost" # default hostname
+<<<<<<< Updated upstream
 #hostname = "rabbitmq" # default hostname ##### BING CHANGE
+=======
+# hostname = "rabbitmq" # default hostname ##### BING CHANGE
+>>>>>>> Stashed changes
 
 port = 5672 # default port
 # connect to the broker and set up a communication channel in the connection
