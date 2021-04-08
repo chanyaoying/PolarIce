@@ -3,6 +3,10 @@ version: "3.8"
 volumes:
   rabbitmq_data:
 
+# web:
+#   env_file:
+#     - .env
+
 services:
 
   ####################################
@@ -42,13 +46,10 @@ services:
       dockerfile: ./roomcontroller.Dockerfile
     depends_on:
       - rabbitmq
+    restart: always
     environment:
-      # order_URL: http://order:5001/order
-      # shipping_record_URL: http://shipping_record:5002/shipping_record 
       PYTHONUNBUFFERED: 1
       FLASK_APP: roomController
-    # ports:
-    #   - "5000:5000"
     ports:
       - "127.0.0.1:5000:5000"
 
