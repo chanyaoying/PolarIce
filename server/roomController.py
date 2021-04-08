@@ -271,19 +271,48 @@ def createRoomCallback():
     return redirect("https://127.0.0.1:8080/manageRoom")   
 
 
-@app.route('/getQuestionBank')
+@app.route('/getQuestionBank') #this is not being used at all
 @login_required
 def questionBank():
     """
     Authenticated user will request for question from the question bank.
     Retrieve the questions and return it as a json to the client.
-    """
-    fb_app = firebase.FirebaseApplication('https://polarice-95e3e-default-rtdb.firebaseio.com/', None)
-    try: 
-        result = jsonify(list(fb_app.get('/question', None).values()))
-        return result, 200
+    # """
+
+    firebase_apikey = os.environ.get("firebase_apiKey")
+    firebase_authDomain = os.environ.get("firebase_authDomain")
+    firebase_databaseURL = os.environ.get("firebase_databaseURL")
+    firebase_storageBucket = os.environ.get("firebase_storageBucket")
+    firebase_appId = os.environ.get("firebase_appId")
+    firebase_storageBucket = os.environ.get("firebase_storageBucket")
+    
+    config = {
+        "apiKey": firebase_apikey,
+        "authDomain": firebase_authDomain,
+        "databaseURL": firebase_databaseURL,
+        "storageBucket": firebase_storageBucket
+    }
+
+    try:
+        firebase = Firebase(config)
+        db = firebase.database()
+        firebase_result = db.child("question").get()
+        result = {}
+        for data in firebase_result.each():
+            result[data.key()] = data.val()
+        return json.dumps(result), 200
     except Exception as e:
         return e, 400
+
+
+
+    
+    # fb_app = firebase.FirebaseApplication('https://polarice-95e3e-default-rtdb.firebaseio.com/', None)
+    # try: 
+    #     result = jsonify(list(fb_app.get('/question', None).values()))
+    #     return result, 200
+    # except Exception as e:
+    #     return e, 400
     
 
 @app.route('/load')
