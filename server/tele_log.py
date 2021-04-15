@@ -26,14 +26,16 @@ bot = Bot(token) # link to tele bot using bot token
 chat_id = "-1001315877981" # link to the group to send message to (bot must be inside group with access to messages)
 
 @app.route("/") # when port 5012 is accessed -> log activity/ error message
-def tele_log(json_obj_content, log_type_str): # gets python object (dict) of logs content e.g. { "key" : "value" }
+def tele_log(): 
 
-  
-
+    log_type = request.args.get('log_type')
+    log_content = json.loads(request.args.get('log_content')) # gets python object (dict) of logs content e.g. { "key" : "value" }
+    
     # send message to tele in a formatted manner -> line by line
     # iterate through every key-value pair in dict
-    test_str = f"<b><u>Logging : {log_type_str}</u></b>\n\n"
-    for key, value in json_obj_content.items():
+    # log_content = json.loads(log_content_json)
+    test_str = f"<b><u>Logging : {log_type}</u></b>\n\n"
+    for key, value in log_content.items():
         test_str += f"<u>{key}</u> : {value}\n" 
 
     # dispatch message to tele bot
@@ -42,4 +44,4 @@ def tele_log(json_obj_content, log_type_str): # gets python object (dict) of log
 
 
 if __name__ == '__main__':
-    app.run(port=5012)
+    app.run(port=5012, host="0.0.0.0")

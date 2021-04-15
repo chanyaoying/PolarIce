@@ -9,11 +9,12 @@ import os
 
 import amqp_setup
 
-from telegram import *
+
 import requests
 
-from tele_log import *
 
+
+tele_log_URL = "http://tele_log:5012/" # when sending get request to tele_log -> send logs to telegram group
 monitorBindingKey='*.error'
 
 def receiveError():
@@ -41,9 +42,18 @@ def processError(errorMsg):
         # requests.get(req_url)
         
         # pass python dict with error code to tele log function to send logs to tele bot
-        tele_log(error, "Error") 
+        # tele_log(error, "Error") 
+
+        # requests.get(req_url)
+        log_type = "Error"
+        log_content = error
+        # log_dict = {log_type : log_content} # dict to be passed on in request -> "Activity" : python dict
+        response_obj = requests.get( f"{tele_log_URL}?log_type={log_type}&log_content={json.dumps(log_content)}" ) # tele_log/log_type/log_content
+        # tele_log(order, "Activity")
+        if response_obj.ok:
+            print("successfully sent to tele bot") # successfully sent req and dispatched message to tele bot
+            return response_obj.content, response_obj.status_code
         
-        print("error message successfully sent") # successfully sent req and dispatched message to tele bot
 
         print("--JSON:", error)
     except Exception as e:

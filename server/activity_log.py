@@ -8,8 +8,11 @@ import json
 import os
 
 import amqp_setup
-from tele_log import *
+import requests
+from flask import jsonify
 
+
+tele_log_URL = "http://tele_log:5012/" # when sending get request to tele_log -> send logs to telegram group
 monitorBindingKey='*.activity'
 
 def receiveActivityLog():
@@ -24,16 +27,23 @@ def receiveActivityLog():
 
 def callback(channel, method, properties, body): # required signature for the callback; no return
     print("\nReceived an event log by " + __file__)
-    processOrderLog(json.loads(body))
+    processOrderLog(body)
     print() # print a new line feed
 
 def processOrderLog(order):
     print("Recording an order log:")
     print(order) # prints log in terminal/console
 
+    activity_content = json.loads(order)
     # requests.get(req_url)
-    tele_log(order, "Activity")
-    print("success") # successfully sent req and dispatched message to tele bot
+    log_type = "Activity"
+    log_content = activity_content
+    # response_obj = requests.get( f"{tele_log_URL}{log_type}/{json.dumps(log_content)}" ) # tele_log/log_type/log_content
+    response_obj = requests.get( f"{tele_log_URL}?log_type={log_type}&log_content={json.dumps(log_content)}" ) 
+    # tele_log(order, "Activity")
+    if response_obj.ok:
+        print("successfully sent to tele bot") # successfully sent req and dispatched message to tele bot
+        return response_obj.content, response_obj.status_code
 
 if __name__ == "__main__":  # execute this program only if it is run as a script (not by 'import')
     print("\nThis is " + os.path.basename(__file__), end='')
