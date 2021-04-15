@@ -55,14 +55,14 @@ services:
   # roomController image
   ###############################################
   room-controller:
-    build:
-      context: ./server
-      dockerfile: ./roomController.Dockerfile
-      # args:
-      #   # FOO: ${FOO}
-      #   GOOGLE_CLIENT_ID: "247832333935-utbjk5kkg0er0nic8ava6l2nrsu7f2m0.apps.googleusercontent.com"
-      #   GOOGLE_CLIENT_SECRET: "3NrnnWhhUUoaJR7pSgeCZWyB"
-    image: rudeous/room-controller:polarice
+    # build:
+    #   context: ./server
+    #   dockerfile: ./roomController.Dockerfile
+    #   # args:
+    #   #   # FOO: ${FOO}
+    #   #   GOOGLE_CLIENT_ID: "247832333935-utbjk5kkg0er0nic8ava6l2nrsu7f2m0.apps.googleusercontent.com"
+    #   #   GOOGLE_CLIENT_SECRET: "3NrnnWhhUUoaJR7pSgeCZWyB"
+    image: rudeous/polarice:room-controller
     container_name: roomController
     depends_on:
       - rabbitmq
@@ -88,10 +88,10 @@ services:
   # Room image
   #################################################
   room: 
-    build: 
-      context: ./server
-      dockerfile: ./Room.Dockerfile
-    image: rudeous/room:polarice
+    # build: 
+    #   context: ./server
+    #   dockerfile: ./Room.Dockerfile
+    image: rudeous/polarice:room
     container_name: Room
     restart: always
     environment: 
@@ -105,10 +105,10 @@ services:
   # model image
   ###############################################
   model:
-    build:
-      context: ./server
-      dockerfile: ./model.Dockerfile
-    image: rudeous/model:polarice
+    # build:
+    #   context: ./server
+    #   dockerfile: ./model.Dockerfile
+    image: rudeous/polarice:model
     container_name: model
     depends_on:
       - rabbitmq
@@ -125,14 +125,14 @@ services:
   # stripe_test image
   ###############################################
   stripe_test:
-    build:
-      context: ./server/flask_stripe
-      dockerfile: ./stripe_test.Dockerfile
+    # build:
+    #   context: ./server/flask_stripe
+    #   dockerfile: ./stripe_test.Dockerfile
       # args:
       #   # FOO: ${FOO}
       #   GOOGLE_CLIENT_ID: "247832333935-utbjk5kkg0er0nic8ava6l2nrsu7f2m0.apps.googleusercontent.com"
       #   GOOGLE_CLIENT_SECRET: "3NrnnWhhUUoaJR7pSgeCZWyB"
-    image: rudeous/stripe_test:polarice
+    image: rudeous/polarice:stripe_test
     container_name: stripe_test
     restart: always
     environment:
@@ -149,10 +149,10 @@ services:
   # twitter image
   ###############################################
   twitter:
-    build:
-      context: ./server
-      dockerfile: ./twitter.Dockerfile
-    image: rudeous/twitter:polarice
+    # build:
+    #   context: ./server
+    #   dockerfile: ./twitter.Dockerfile
+    image: rudeous/polarice:twitter
     container_name: twitter
     restart: always
     environment:
@@ -170,10 +170,10 @@ services:
   # gameController image
   ###############################################
   game-controller:
-    build:
-      context: ./server
-      dockerfile: ./gameController.Dockerfile
-    image: rudeous/game-controller:polarice
+    # build:
+    #   context: ./server
+    #   dockerfile: ./gameController.Dockerfile
+    image: rudeous/polarice:game-controller
     container_name: gameController
     depends_on:
       - room
@@ -190,10 +190,10 @@ services:
   # Game image
   ###############################################
   game:
-    build:
-      context: ./server
-      dockerfile: ./Game.Dockerfile
-    image: rudeous/game:polarice
+    # build:
+    #   context: ./server
+    #   dockerfile: ./Game.Dockerfile
+    image: rudeous/polarice:game
     container_name: Game
     restart: always
     environment:
@@ -207,10 +207,10 @@ services:
   # matching image
   ###############################################
   matching:
-    build:
-      context: ./server
-      dockerfile: ./matching.Dockerfile
-    image: rudeous/matching:polarice
+    # build:
+    #   context: ./server
+    #   dockerfile: ./matching.Dockerfile
+    image: rudeous/polarice:matching
     container_name: matching
     restart: always
     environment:

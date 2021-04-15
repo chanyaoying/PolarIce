@@ -11,7 +11,7 @@ import json
 app = Flask(__name__)
 
 app.config['ENV'] = 'development'
-app.config['DEBUG'] = True
+app.config['DEBUG'] = False
 
 # Sends content of log message (python dictionary) to telegram bot
 
