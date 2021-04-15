@@ -173,4 +173,4 @@ app.add_url_rule('/graphql-mutation', view_func=GraphQLView.as_view(
 ))
 
 if __name__ == '__main__':
-    app.run(port=5003)
+    app.run(port=5003, host="0.0.0.0")

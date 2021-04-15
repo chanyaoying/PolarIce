@@ -1,0 +1,239 @@
+version: "3.8"
+
+volumes: 
+    rabbitmq_data:
+    
+services: 
+
+
+  ####################################
+  # RabbitMQ: The messaging broker   
+  ####################################
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: polarice-rabbit
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes: 
+      - rabbitmq_data:/var/lib/rabbitmq
+
+#   #################################################
+#   # Activity Log: The Activity Log microservice (FIX TELE LOGGING SERVICE LATER FIRST)
+#   #################################################
+#   activity_log:
+#     build:
+#       context: ./
+#       dockerfile: activity_log.Dockerfile
+#     image: rudeous/activity_log:esd
+#     restart: always
+#     depends_on:
+#       - rabbitmq
+#     environment:
+#       rabbit_host: rabbitmq
+#       rabbit_port: 5672
+#       PYTHONUNBUFFERED: 1
+    
+#   ###################################
+#   # Error: The Error microservice
+#   ###################################
+#   error:
+#     build:
+#       context: ./
+#       dockerfile: error.Dockerfile
+#     image: rudeous/error:esd
+#     restart: always
+#     depends_on:
+#       - rabbitmq
+#     environment:
+#       rabbit_host: rabbitmq
+#       rabbit_port: 5672
+#       PYTHONUNBUFFERED: 1
+
+  ###############################################
+  # roomController image
+  ###############################################
+  room-controller:
+    build:
+      context: ./server
+      dockerfile: ./roomController.Dockerfile
+      # args:
+      #   # FOO: ${FOO}
+      #   GOOGLE_CLIENT_ID: "247832333935-utbjk5kkg0er0nic8ava6l2nrsu7f2m0.apps.googleusercontent.com"
+      #   GOOGLE_CLIENT_SECRET: "3NrnnWhhUUoaJR7pSgeCZWyB"
+    image: rudeous/room-controller:polarice
+    container_name: roomController
+    depends_on:
+      - rabbitmq
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+      FLASK_APP: roomController
+      rabbit_host: rabbitmq
+      rabbit_port: 5672 
+      firebase_apiKey:
+      firebase_authDomain:
+      firebase_databaseURL:
+      firebase_storageBucket:
+      firebase_appId:
+      firebase_storageBucket:
+      GOOGLE_CLIENT_ID:
+      GOOGLE_CLIENT_SECRET:
+    ports:
+      - "5000:5000"
+
+
+  #################################################
+  # Room image
+  #################################################
+  room: 
+    build: 
+      context: ./server
+      dockerfile: ./Room.Dockerfile
+    image: rudeous/room:polarice
+    container_name: Room
+    restart: always
+    environment: 
+      PYTHONBUFFERED: 1
+      FLASK_APP: Room
+    ports:
+      - "5004:5004"
+
+
+  ###############################################
+  # model image
+  ###############################################
+  model:
+    build:
+      context: ./server
+      dockerfile: ./model.Dockerfile
+    image: rudeous/model:polarice
+    container_name: model
+    depends_on:
+      - rabbitmq
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+      FLASK_APP: model
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+    ports:
+      - "5003:5003"
+
+  ###############################################
+  # stripe_test image
+  ###############################################
+  stripe_test:
+    build:
+      context: ./server/flask_stripe
+      dockerfile: ./stripe_test.Dockerfile
+      # args:
+      #   # FOO: ${FOO}
+      #   GOOGLE_CLIENT_ID: "247832333935-utbjk5kkg0er0nic8ava6l2nrsu7f2m0.apps.googleusercontent.com"
+      #   GOOGLE_CLIENT_SECRET: "3NrnnWhhUUoaJR7pSgeCZWyB"
+    image: rudeous/stripe_test:polarice
+    container_name: stripe_test
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+      FLASK_APP: stripe_test
+      STRIPE_SECRET_KEY:
+      STRIPE_PUBLISHABLE_KEY:
+      success_url: 'https://127.0.0.1:5000/create/callback'
+    ports:
+      - "5011:5011"
+
+
+  ###############################################
+  # twitter image
+  ###############################################
+  twitter:
+    build:
+      context: ./server
+      dockerfile: ./twitter.Dockerfile
+    image: rudeous/twitter:polarice
+    container_name: twitter
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+      FLASK_APP: twitter
+      twitter_consumer_key:
+      twitter_consumer_secret:
+      twitter_access_token:
+      twitter_access_secret:
+    ports:
+      - "5013:5013"
+  
+
+  ###############################################
+  # gameController image
+  ###############################################
+  game-controller:
+    build:
+      context: ./server
+      dockerfile: ./gameController.Dockerfile
+    image: rudeous/game-controller:polarice
+    container_name: gameController
+    depends_on:
+      - room
+      - game
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+      FLASK_APP: gameController
+    ports:
+      - "5001:5001"
+
+
+  ###############################################
+  # Game image
+  ###############################################
+  game:
+    build:
+      context: ./server
+      dockerfile: ./Game.Dockerfile
+    image: rudeous/game:polarice
+    container_name: Game
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+      FLASK_APP: game
+    ports:
+      - "5002:5002"
+
+    
+  ###############################################
+  # matching image
+  ###############################################
+  matching:
+    build:
+      context: ./server
+      dockerfile: ./matching.Dockerfile
+    image: rudeous/matching:polarice
+    container_name: matching
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+      FLASK_APP: matching
+    ports:
+      - "5005:5005"
+
+  
+
+
+  #################################################
+  # Frontend vue application
+  #################################################
+  # frontend: 
+  #   build:
+  #     context: ./client
+  #     command: npm run serve
+  #     dockerfile: ./frontend.Dockerfile
+
+  #   image: rudeous/frontend:polarice
+  #   ports:
+  #     - "8080:8080"
+  #   volumes:      
+  #     - .:/usr/app/
+  #     - /usr/app/node_modules

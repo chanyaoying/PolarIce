@@ -10,6 +10,9 @@ CORS(app)
 app.config['ENV'] = 'development'
 app.config['DEBUG'] = True
 
+# URLs to be used in requests later
+graphql_URL = "http://model:5003/graphql"
+
 
 @app.route("/create", methods=['POST'])
 def create_room():
@@ -22,7 +25,7 @@ def create_room():
     # CREATE ROOM IN GRAPHQL
     # get rooms currently in gql table
     gql_rooms_response = requests.get(
-        "http://127.0.0.1:5003/graphql?query=query{allRooms{edges{node{roomid profid}}}}")
+        graphql_URL + "?query=query{allRooms{edges{node{roomid profid}}}}")
     # gets json encoded response -> class : dict
     gql_rooms = gql_rooms_response.json()
     # print(gql_rooms)
@@ -53,7 +56,7 @@ def create_room():
     # profid = str(25)
     print(roomid, type(roomid), profid, type(profid),
           "will be created as a new room object in gql rooms table")
-    room_post_url = 'http://127.0.0.1:5003/graphql?query=mutation{createRoom' + \
+    room_post_url = graphql_URL + '?query=mutation{createRoom' + \
         f'(roomid:"{roomid}",profid:"{profid}")' + '{room{roomid profid}}}'
     room_mutation_response = requests.post(
         url=room_post_url)  # creates new room in gql table
@@ -67,7 +70,7 @@ def create_room():
     # get request to retrieve all questions in graphql tables -> request response
     # get json encoded response -> class : dict
     gql_questions_response = requests.get(
-        "http://127.0.0.1:5003/graphql?query=query{allQuestions{edges{node{roomid questionid question choices}}}}")
+        graphql_URL + "?query=query{allQuestions{edges{node{roomid questionid question choices}}}}")
     gql_questions = gql_questions_response.json()
     # print(gql_questions)
 
@@ -97,7 +100,7 @@ def create_room():
         largest_qid += 1  # update largest qid for future loops
         question = qn_obj["question"]
         choices = qn_obj["choices"]
-        question_post_url = 'http://127.0.0.1:5003/graphql?query=mutation{createQuestion' \
+        question_post_url = graphql_URL + '?query=mutation{createQuestion' \
             + f'(roomid:"{roomid}",questionid:"{questionid}",question:"{question}",choices:"{choices}")' \
             + '{question{roomid questionid question choices}}}'
 
@@ -117,7 +120,7 @@ def get_rooms():
     # get rooms currently in gql table
     # profid not needed since it's not restricted by prof anymore
     gql_rooms_response = requests.get(
-        "http://127.0.0.1:5003/graphql?query=query{allRooms{edges{node{roomid}}}}")
+        graphql_URL + "?query=query{allRooms{edges{node{roomid}}}}")
     gql_rooms = gql_rooms_response.json()
     # + [num]["node"]["roomid"]/["profid"] for specific rooms
     # print(gql_rooms["data"]["allRooms"]["edges"])
@@ -139,7 +142,7 @@ def get_room_questions(roomid):
 
     # get all question objects from questions table
     gql_questions_response = requests.get(
-        "http://127.0.0.1:5003/graphql?query=query{allQuestions{edges{node{roomid questionid question choices}}}}")
+        graphql_URL + "?query=query{allQuestions{edges{node{roomid questionid question choices}}}}")
     gql_questions = gql_questions_response.json()
 
     # iterate through question objects and add questions that match the roomid argument to list
@@ -164,4 +167,4 @@ def get_room_questions(roomid):
 if __name__ == '__main__':
     # app.run(port=<<<)
     # app.run(ssl_context="adhoc", host='0.0.0.0', port=5004)
-    app.run(host='0.0.0.0', port=5004)
+    app.run(port=5004, host='0.0.0.0')

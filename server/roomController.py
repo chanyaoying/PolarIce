@@ -33,7 +33,6 @@ import pika
 import json
 
 app = Flask(__name__)
-from twitter import tweet
 from firebase import Firebase
 # run_with_ngrok(app)  # Start ngrok when app is run
 
@@ -52,9 +51,23 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 
 
-## to call twitter service
-# status = tweet("hello!")
-# print(status)
+
+###################
+# container service names
+
+# room-controller
+# room
+# model
+# stripe_test
+
+# URLs of services to request
+stripe_test_URL = "http://127.0.0.1:5011/" # redirects to stripe frontend
+room_URL = "http://room:5004/" # use service name (set in yaml file) to communicate between containers
+gameController_URL = "http://game-controller:5001/" 
+twitter_URL = "http://twitter:5013/"
+###################
+
+
 
 ######################################################################################
 # Model layer
@@ -64,10 +77,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 ######################################################################################
 # AUTHENTICATION
 ######################################################################################
-GOOGLE_CLIENT_ID= "247832333935-utbjk5kkg0er0nic8ava6l2nrsu7f2m0.apps.googleusercontent.com"
-GOOGLE_CLIENT_SECRET= "3NrnnWhhUUoaJR7pSgeCZWyB"
-# GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
-# GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", None)
+# GOOGLE_CLIENT_ID= "247832333935-utbjk5kkg0er0nic8ava6l2nrsu7f2m0.apps.googleusercontent.com"
+# GOOGLE_CLIENT_SECRET= "3NrnnWhhUUoaJR7pSgeCZWyB"
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
+GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", None)
 GOOGLE_DISCOVERY_URL = (
     "https://accounts.google.com/.well-known/openid-configuration"
 )
@@ -229,7 +242,7 @@ def createRoom():
     room_creation_params["profid"] = profid
     room_creation_params["questions"] = questions
 
-    return redirect("http://127.0.0.1:5011/") # redirect to stripe payment confirmation page
+    return redirect(stripe_test_URL) # redirect to stripe payment confirmation page
 
 
 @app.route('/create/callback')
@@ -263,7 +276,7 @@ def createRoomCallback():
     request_data["questions"] = question_list
     print(request_data)
     # send request to Room.py with data to be mutated in graphql
-    response = requests.post( "http://127.0.0.1:5004/create", data=json.dumps(request_data) ) 
+    response = requests.post( room_URL + "create", data=json.dumps(request_data) ) 
     if response.status_code == 200:
         message = json.dumps(response.json())
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="game.activity", body=message)
@@ -344,17 +357,17 @@ def start():
 
     # start the room; make it live
     roomID = request.args.get('roomID')
-    response = requests.post('http://127.0.0.1:5001/live', data={'roomID': roomID})
+    response = requests.post( gameController_URL + "live", data={'roomID': roomID})
     roomCode = response.json()
 
     if response.status_code == 200:
-        requests.get(f"http://127.0.0.1:5013/{roomCode}") # posts the s
+        requests.get( twitter_URL + roomCode ) # new live room just went up, posts its room pin onto twitter
         return f"/playGame/console/{roomCode}", 200
 
     return "Bad request", 400
 
 
 if __name__ == '__main__':
-    app.run(ssl_context="adhoc", host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', ssl_context="adhoc", port=5000)
     # app.run(ssl_context="adhoc", port=5000)
     # app.run(port=5000)

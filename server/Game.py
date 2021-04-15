@@ -14,6 +14,8 @@ app = Flask(__name__)
 app.config['ENV'] = 'development'
 app.config['DEBUG'] = True
 
+room_URL = "http://room:5004/"
+
 ####
 # Helper Functions(s)
 ####
@@ -113,7 +115,7 @@ def createGame():
     # TODO
     # query from GQL
     questions = requests.get(
-        f"http://127.0.0.1:5004/roomQuestions/{roomID}").json()
+        f"{room_URL}roomQuestions/{roomID}").json()
 
     # instantiate Game object
     newGame = Game(roomID, questions)
@@ -189,4 +191,4 @@ def match(roomCode):
 
 if __name__ == '__main__':
     print(Games)
-    app.run(port=5002)
+    app.run(port=5002, host="0.0.0.0")

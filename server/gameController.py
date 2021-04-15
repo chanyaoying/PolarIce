@@ -22,6 +22,20 @@ app.config['SECRET_KEY'] = 'mysecret'
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 
+
+###################
+# container service names
+
+# game
+# matching
+
+# URLs of services to request later 
+
+game_URL = "http://game:5002/"
+matching_URL = "http://matching:5005/"
+###################
+
+
 ####
 # Helper functions
 ####
@@ -68,7 +82,7 @@ def startRoom():
     if request.method == 'GET':
         roomID = request.args.get('roomID')
         code = requests.get(
-            f"http://127.0.0.1:5002/getGame/{roomID}").status_code
+            game_URL + f"getGame/{roomID}").status_code
         return jsonify({'live': code == 200}), 200
 
     if request.method == 'POST':
@@ -82,7 +96,7 @@ def startRoom():
         # create game instance in Game.py, making the game live
         # questions as well as the room code should be returned
         response = requests.post(
-            "http://127.0.0.1:5002/create", data={'roomID': roomID}).json()
+            game_URL + "create", data={'roomID': roomID}).json()
         code = response['code']
         questions = response['questions']
 
@@ -112,13 +126,13 @@ def match(roomCode):
     
     
     # invoke Game.py
-    transformed_result = requests.get(f"http://127.0.0.1:5002/match/{roomCode}", params={"results": results}).json()
+    transformed_result = requests.get(game_URL + f"match/{roomCode}", params={"results": results}).json()
 
     print("##############################################################3")
     print(transformed_result)
 
     # invoke Matching.py
-    response = requests.get("http://127.0.0.1:5005/match", params={"results": results})
+    response = requests.get(matching_URL + "match", params={"results": results})
     if response.status_code == 200:
 
         # cache results
@@ -266,7 +280,7 @@ def on_startGame(data):
     players_to_add = json.dumps(list(cache['live_data'][roomCode].values()))
     print(players_to_add)
     response = requests.get(
-        f"http://127.0.0.1:5002/addPlayers/{roomCode}", params={"players": players_to_add})
+        game_URL + f"addPlayers/{roomCode}", params={"players": players_to_add})
     if response.status_code == 400:
         print("Unable to add players in Game object.")
 
@@ -369,4 +383,4 @@ def on_matchingResult(data):
 
 
 if __name__ == '__main__':
-    socketio.run(app, port=5001)
+    socketio.run(app, port=5001, host="0.0.0.0")
