@@ -70,16 +70,14 @@ services:
       FLASK_APP: roomController
       rabbit_host: rabbitmq
       rabbit_port: 5672 
-      firebase_apiKey: AIzaSyAr-xDgcEBJxaCIQgyN5CXGHC2NWnbXW54
-      firebase_authDomain: polarice-95e3e.firebaseapp.com
-      firebase_databaseURL: https://polarice-95e3e-default-rtdb.firebase
-      firebase_projectId: polarice-95e3e
-      firebase_storageBucket: polarice-95e3e.appspot.com
-      firebase_messagingSenderId: 1088055969732
-      firebase_appId: 1:1088055969732:web:37c08c0cedebacffc28691
-      firebase_storageBucket: gs://polarice-95e3e.appspot.com/
-      GOOGLE_CLIENT_ID: 247832333935-utbjk5kkg0er0nic8ava6l2nrsu7f2m0.apps.googleusercontent.com
-      GOOGLE_CLIENT_SECRET: 3NrnnWhhUUoaJR7pSgeCZWyB
+      firebase_apiKey:
+      firebase_authDomain:
+      firebase_databaseURL:
+      firebase_storageBucket:
+      firebase_appId:
+      firebase_storageBucket:
+      GOOGLE_CLIENT_ID:
+      GOOGLE_CLIENT_SECRET:
     ports:
       - "5000:5000"
 
@@ -138,8 +136,8 @@ services:
     environment:
       PYTHONUNBUFFERED: 1
       FLASK_APP: stripe_test
-      STRIPE_SECRET_KEY: sk_test_51IZDccAbp1R4NDVpwiDNokHhGocrvJcS5Hr81HRqA77ElouL0M1rPyqa3gvaR8vx2woadGWc5LXDe12nBdlEnlEN00xtFh2uWd
-      STRIPE_PUBLISHABLE_KEY: pk_test_51IZDccAbp1R4NDVpQtpOgEjkhND5iAIpLVieMS1HKByCl61ed6xNoMGLy8f5VdMgZwDngRIkeXzxrb5wAxzrwqAi00K6OPe4Ke
+      STRIPE_SECRET_KEY:
+      STRIPE_PUBLISHABLE_KEY:
       success_url: 'https://127.0.0.1:5000/create/callback'
     ports:
       - "5011:5011"
@@ -158,10 +156,10 @@ services:
     environment:
       PYTHONUNBUFFERED: 1
       FLASK_APP: twitter
-      twitter_consumer_key: 6iljKEF7roiA5zWsFTViL1mRy
-      twitter_consumer_secret: oB3qvpOlubGNwxEe1YcSKUKEeYkqfvUUO7EabTCQzbzgS1vm
-      twitter_access_token: 1373634574488530946-wqGBAKUYqfnX3bsrCcP5glIHTMuUUV
-      twitter_access_secret: LxCzPSKt3Ks0NALFkN1gV9txgmO7lhbex9ZYzq5ldjzz2
+      twitter_consumer_key:
+      twitter_consumer_secret:
+      twitter_access_token:
+      twitter_access_secret:
     ports:
       - "5013:5013"
   
@@ -233,7 +231,7 @@ services:
     environment:
       PYTHONUNBUFFERED: 1
       FLASK_APP: tele_log
-      tele_bot_token: 1569222163:AAG0_ajeXRNWghIyKQzkwDJ6HRjhKZBADRQ
+      tele_bot_token:
     ports:
       - "5012:5012"
 
