@@ -150,3 +150,14 @@ This is because the service that is handling the logging (roomController) in is 
 <a href='https://127.0.0.1:5000/'>https://127.0.0.1:5000</a>
 
 Once access is allowed on roomController, you will be able to log in on from the landing page.
+
+Hence the alternative to run your frontend locally is:
+
+```bash
+npm install
+```
+
+
+```bash
+npm run serve
+```

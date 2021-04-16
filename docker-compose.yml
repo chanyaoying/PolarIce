@@ -20,7 +20,7 @@ services:
       - rabbitmq_data:/var/lib/rabbitmq
 
   #################################################
-  # Activity Log: The Activity Log microservice (FIX TELE LOGGING SERVICE LATER FIRST)
+  # Activity Log: The Activity Log microservice
   #################################################
   activity_log:
     # build:
