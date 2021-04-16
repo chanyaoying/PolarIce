@@ -18,7 +18,6 @@ graphql_URL = "http://model:5003/graphql"
 def create_room():
     # mutate graph ql to create room
     data = request.data  # data to be mutated -> create room and questions
-    # print("successfully reached /create")
     data_json = json.loads(data)
     print(data_json)
 

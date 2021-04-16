@@ -2,11 +2,6 @@
 <!-- If not connected, prompt user for name -->
 <template>
 	<div>
-		<!-- student dont need to play music, only prof play-->
-		<!-- <audio autoplay controls loop id="music">
-			<source src="../assets/AreYouLost.mp3" type="audio/mpeg">
-			Your browser does not support the audio element.
-		</audio> -->
 
 		<div v-if="nickname">
 			<h1>PIN: {{ roomID }}</h1>
@@ -74,11 +69,7 @@
 
 
 <script>
-// document.addEventListener('click', musicPlay);
-// function musicPlay() {
-//     document.getElementById('music').play();
-//     document.removeEventListener('click', musicPlay);
-// }
+
 import axios from "axios";
 import { mapState, mapMutations, mapActions } from "vuex";
 import chatBox from "../components/gameComponents/chatBox";
@@ -184,9 +175,6 @@ export default {
 			"nickname",
 		]),
 
-		// currentQuestion(){
-		// 	return this.$store.getters.GetCurrentQuestion;
-		// }
 	},
 	created() {
 		this.setRoomID(this.$route.params.roomID);

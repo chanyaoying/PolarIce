@@ -19,11 +19,7 @@ stripe_keys = {
 }
 
 stripe.api_key = stripe_keys["secret_key"]
-print(stripe_keys)
-
-# app.config['STRIPE_PUBLIC_KEY'] = 'YOUR_STRIPE_PUBLIC_KEY'
-# app.config['STRIPE_SECRET_KEY'] = 'YOUR_STRIPE_SECRET_KEY'
-# stripe.api_key = app.config['STRIPE_SECRET_KEY']
+# print(stripe_keys)
 
 
 """
@@ -45,8 +41,6 @@ def index():
     '''
     return render_template(
         'index.html', 
-        #checkout_session_id=session['id'], 
-        #checkout_public_key=app.config['STRIPE_PUBLIC_KEY']
     )
 
 @app.route('/stripe_pay')

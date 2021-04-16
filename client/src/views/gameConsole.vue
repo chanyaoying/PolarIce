@@ -76,8 +76,6 @@ function musicPlay() {
 	document.getElementById("music").play();
 	document.removeEventListener("click", musicPlay);
 }
-// TODO:
-// Make sure that this page can only be accessed when authenticated. i.e. the prof OWNS the room.
 
 import { mapState, mapMutations, mapActions } from "vuex";
 import gameLobby from "../components/gameComponents/gameLobby";

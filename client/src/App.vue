@@ -99,13 +99,10 @@
 <script>
 import authAxios from "./components/authAxios.js";
 import { mapState, mapActions } from "vuex";
-// import animation from "../src/components/animation";
 
 export default {
-	// components: { animation},
 	name: "allRoom",
 	data: () => ({
-		// userData: "",
 		hover: false,
 	}),
 	created() {

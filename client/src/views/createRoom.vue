@@ -1,19 +1,8 @@
 <template>
 	<div class="room">
-		<!-- do v-if="roomID.length < 0", show modal button. 
-    Generae random roomID, add to roomID, show create Question page-->
-		<!-- <div v-if="!createdRoomID">
-        <b-form>
-            <h1 class="mt-5">Click the button to create New Room.</h1>
-            <b-button variant="dark" style="margin:10px; width:180px; height:50px;" @click="generateRoom()">Create</b-button>
-            <b-button variant="dark" style="margin:10px; width:180px; height:50px;" @click="getDataFromFirebase()">Get firebase data</b-button>
-        </b-form>
-    </div> -->
-
 		<div class="card" style="margin: 20px auto; width: 90%">
 			<div class="card-body">
 				<b-row>
-					<!-- <b-col cols="10"> <h1>Room ID: {{roomID}}</h1> </b-col> -->
 					<b-col
 						><b-button variant="success" @click="done()"
 							>Done</b-button
@@ -166,7 +155,6 @@
 <script>
 import authAxios from "../components/authAxios";
 import { mapState } from "vuex";
-// from flask import jsonify; 
 
 export default {
 	name: "room",
@@ -185,10 +173,6 @@ export default {
 		this.getDataFromFirebase();
 	},
 	methods: {
-		// generateRoom(){
-		//     this.roomID = (Math.floor(Math.random()*1000000));
-		//     this.createdRoomID = true;
-		// },
 		onSubmit() {
 			this.question_list.push({
 				title: this.newQ.question,

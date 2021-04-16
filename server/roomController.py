@@ -325,16 +325,6 @@ def questionBank():
     except Exception as e:
         print(f"Error: {e}")
         return "An error has occurred", 400
-
-
-
-    
-    # fb_app = firebase.FirebaseApplication('https://polarice-95e3e-default-rtdb.firebaseio.com/', None)
-    # try: 
-    #     result = jsonify(list(fb_app.get('/question', None).values()))
-    #     return result, 200
-    # except Exception as e:
-    #     return e, 400
     
 
 @app.route('/load')

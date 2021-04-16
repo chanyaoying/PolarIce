@@ -103,10 +103,7 @@ class Query(graphene.ObjectType):
     def resolve_profid(self,args,pid):
         room = Room.query.filter_by(profid=pid).first()
         return room
-    
-    # def resolve_sortroom(self,args):
-    #     room = Room.query.order_by(Room.roomid)
-    #     return room
+
 
 
 # noinspection PyTypeChecker

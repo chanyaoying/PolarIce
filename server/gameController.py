@@ -53,9 +53,6 @@ def getRoomOfUser(sid):
 # Cache (to improve networking speeds)
 ####
 
-# TODO
-# rebuild cache on startup
-# build with data from Game.py
 
 # live_data: list of players in the game
 # current_question: current question number in the game
