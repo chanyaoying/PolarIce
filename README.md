@@ -39,22 +39,22 @@ Run Flask Apps with
 python filename.py
 ```
 
-### Running roomManagement.py
-1. If you fail to run roomManagement.py, we have to set the environment variable FLASK_APP within our virtual environment.
+### Running roomController.py
+1. If you fail to run roomController.py, we have to set the environment variable FLASK_APP within our virtual environment.
 
 2. Add this line of code at the end of <code>venv/bin/activate</code> if you are using a UNIX system. 
 ```bash
-export FLASK_APP=roomManagement
+export FLASK_APP=roomController
 ```
 
 3. For Windows, in <code>venv\Scripts\activate.bat</code>.
 ```batch
-set FLASK_APP=roomManagement
+set FLASK_APP=roomController
 ```
 
 4. Then run the app.
 ```bash
-python roomManagement.py
+python roomController.py
 ```
 
 ### Setting up RabbitMQ Docker and Tele Bot logging
@@ -71,7 +71,7 @@ cd server
 python amqp_setup.py
 ```
 
-4. Finally, run the development server, app.py/roomManagement.py, activity_log.py, error_log.py on 4 different terminals in their respective directories.
+4. Finally, all backend services on different terminals in their respective directories.
 
 ## Installation: Front end
 ### Have node.js installed
@@ -100,12 +100,12 @@ npm run serve
 
 4. Make sure that docker is up and running + rabbitmq services from other apps are stopped/removed
 
-5. run the following to clear cache
+5. Run the following to clear cache
 ```bash 
 docker builder prune -a
 ```
 
-6. run the following in the proj root folder where the docker-compose.yml file is
+6. Run the following in the proj root folder where the docker-compose.yml file is
 ```bash
 docker-compose / docker-compose -d 
 ```
