@@ -114,7 +114,7 @@ docker-compose / docker-compose -d
 
 
 ### Frontend
-_Note: The dockerized frontend will not allow for OAuth2 Login feature to work._
+_Note: The dockerized frontend will not allow for OAuth2 Login feature to work. OAuth requires registration with docker to generate an access token_
 
 1. Pull code
 
@@ -154,6 +154,7 @@ Once access is allowed on roomController, you will be able to log in on from the
 Hence the alternative to run your frontend locally is:
 
 ```bash
+cd client
 npm install
 ```
 
