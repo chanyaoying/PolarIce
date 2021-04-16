@@ -91,7 +91,8 @@ npm install
 npm run serve
 ```
 
-## To run Dockerized Backend 
+## Running Dockerized versions
+### Backend 
 1. Pull code 
 
 2. Move .env file from within server to project root directory (one level above, same level as .yml file)
@@ -112,7 +113,7 @@ docker-compose / docker-compose -d
 
 
 
-## To run Dockerized Frontend
+### Frontend
 _Note: The dockerized frontend will not allow for OAuth2 Login feature to work._
 
 1. Pull code
@@ -135,3 +136,17 @@ docker build -t <YOUR-DOCKER-ID>/frontend -f frontend.Dockerfile .
 ```bash
 docker run -it -p 8080:8080 <YOUR-DOCKER-ID>/frontend -d
 ```
+
+## Caveats
+### Logging In
+Assuming that you are NOT running the dockerized frontend (i.e. you are running it locally on the terminal via <code>npm run serve</code>), there are a few things to take note of.
+
+Upon loading the webpage, certain browsers including Google Chrome will warn you that "Your connection is unsafe". This is because we are running the frontend on a HTTPS server without a valid certificate. For the purposes of testing, we are going to proceed by trusting this security certificate.
+
+On the landing page, there will be a button to log in. Clicking this would not do anything as of yet.
+
+This is because the service that is handling the logging (roomController) in is also a HTTPS server. That means we will also need to allow connections to the server via the browser, like what we did for the frontend.
+
+<a href='https://127.0.0.1:5000/'>https://127.0.0.1:5000</a>
+
+Once access is allowed on roomController, you will be able to log in on from the landing page.
