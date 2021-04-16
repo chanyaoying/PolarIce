@@ -113,4 +113,25 @@ docker-compose / docker-compose -d
 
 
 ## To run Dockerized Frontend
+_Note: The dockerized frontend will not allow for OAuth2 Login feature to work._
 
+1. Pull code
+
+2. Move .env file to the client directory
+
+3. Make sure that docker is up and running + rabbitmq services from other apps are stopped/removed
+
+4. run the following to clear cache
+```bash 
+docker builder prune -a
+```
+
+5. Run the following in client folder where the frontend.Dockerfile file is located to build the Docker image.
+```bash
+docker build -t <YOUR-DOCKER-ID>/frontend -f frontend.Dockerfile .
+```
+
+6. Run the following in the same folder to run the Docker container. 
+```bash
+docker run -it -p 8080:8080 <YOUR-DOCKER-ID>/frontend -d
+```
