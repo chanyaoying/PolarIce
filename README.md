@@ -1,5 +1,5 @@
-# ESD-project
-
+# PolarIce
+Coursework for IS213 Enterprise Solution Development
 ## Installation: Back end
 ### Setting up a virtual environment
 If you have not set up your virtual environment, it is recommended that you do so. If not, install the modules used in this project at your own risk!
